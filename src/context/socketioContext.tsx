@@ -35,6 +35,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             }
    
         }else{
+            
             setSocket(null)
             setOnline(false)
         }

@@ -8,7 +8,7 @@ import ProviderHomePage from '../pages/provider/providerHome';
 import ProviderAddService from '../pages/provider/AddServicePage';
 import Provider from '../pages/provider/provider';
 import { apiUrl } from '../api/common';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import {toast} from 'sonner'
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -28,6 +28,8 @@ import ViewBookingsOutlet from '../pages/provider/BookingsOutlet/ViewBookings';
 import ServicePage from '../pages/provider/servicePage';
 import ReuseCancelledAndLatestBookingPage from '../pages/provider/BookingsOutlet/ReuseCancelledAndLatestBookingPage';
 import ProviderChatPage from '../pages/provider/profileOutlets/Chat';
+import ProviderCallPage from '../pages/provider/providerCallPage';
+import ProviderInCommigCallModal from '../components/provider/providerIncomingCall';
 interface ProtectedRouteProps {
     children: ReactNode;
 }
@@ -75,37 +77,43 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
 
 const ProviderRoute = () => {
+    const [isModal,setModal] = useState<boolean>(false)
+
     return (
-        <Routes>
-            <Route path="/addworkshopdetails" element={<AddAddress />} />
-            <Route path='/otpverify' element={<OtpverifyPage/>}/>
-            <Route path='/signup' element={<ProviderSignUp/>}/>
-            <Route path='/signin' element={<SignInPage/>}/>
-            <Route path='/' element={<Provider/>}>
-            <Route index element={<ProtectedRoute><ProviderHomePage /></ProtectedRoute>} />
-            <Route path="addservice" element={<ProtectedRoute><ProviderAddService/></ProtectedRoute>} >
-                       <Route index element={<ProtectedRoute><AddServiceFirstOutletPage/></ProtectedRoute>} />
-                       <Route path='addTwowheelerService' element={<ProtectedRoute><AddServicePage2 value={2}></AddServicePage2></ProtectedRoute>}/>
-                       <Route path='addFourwheelerService' element={<ProtectedRoute><AddServicePage2 value={4}></AddServicePage2></ProtectedRoute>}/>
+       <> <Routes>
+       <Route path="/addworkshopdetails" element={<AddAddress />} />
+       <Route path='/otpverify' element={<OtpverifyPage/>}/>
+       <Route path='/call/:userid' element={<ProviderCallPage></ProviderCallPage>}/>
+       <Route path='/signup' element={<ProviderSignUp/>}/>
+       <Route path='/signin' element={<SignInPage/>}/>
+       <Route path='/' element={<Provider/>}>
+       <Route index element={<ProtectedRoute><ProviderHomePage /></ProtectedRoute>} />
+       <Route path="addservice" element={<ProtectedRoute><ProviderAddService/></ProtectedRoute>} >
+                  <Route index element={<ProtectedRoute><AddServiceFirstOutletPage/></ProtectedRoute>} />
+                  <Route path='addTwowheelerService' element={<ProtectedRoute><AddServicePage2 value={2}></AddServicePage2></ProtectedRoute>}/>
+                  <Route path='addFourwheelerService' element={<ProtectedRoute><AddServicePage2 value={4}></AddServicePage2></ProtectedRoute>}/>
+       </Route>
+       <Route path='/addsupportingBrands' element={<ProtectedRoute><AddSupportingBrandsPage/></ProtectedRoute>} />
+       <Route path='/profile' element={<ProtectedRoute><ProviderProfilePage/></ProtectedRoute>}>
+             <Route index element={<ProtectedRoute><OverViewPage/></ProtectedRoute>} />
+             <Route path='accountsettings' element={<ProtectedRoute><AccountSettingsPage/></ProtectedRoute>}/>
+             <Route path='chat/:chatid/:userid' element={<ProtectedRoute><ProviderChatPage/></ProtectedRoute>}/>
+       </Route>
+       <Route path='/bookings' element={<ProtectedRoute><BookingsPage/></ProtectedRoute>}>
+           <Route index element={<AddBookingDatesOutlet/>} />
+           <Route path='viewbookings' element={<ViewBookingsOutlet/>}/>
+           <Route path='cancelledBookings' element={<ReuseCancelledAndLatestBookingPage value={"cancelled"}></ReuseCancelledAndLatestBookingPage>}/>
+           <Route path='latestBookings' element={<ReuseCancelledAndLatestBookingPage value={"latest"}></ReuseCancelledAndLatestBookingPage>}/>
 
-            </Route>
-            <Route path='/addsupportingBrands' element={<ProtectedRoute><AddSupportingBrandsPage/></ProtectedRoute>} />
-            <Route path='/profile' element={<ProtectedRoute><ProviderProfilePage/></ProtectedRoute>}>
-                  <Route index element={<ProtectedRoute><OverViewPage/></ProtectedRoute>} />
-                  <Route path='accountsettings' element={<ProtectedRoute><AccountSettingsPage/></ProtectedRoute>}/>
-                  <Route path='chat/:chatid/:userid' element={<ProtectedRoute><ProviderChatPage/></ProtectedRoute>}/>
-            </Route>
-            <Route path='/bookings' element={<ProtectedRoute><BookingsPage/></ProtectedRoute>}>
-                <Route index element={<AddBookingDatesOutlet/>} />
-                <Route path='viewbookings' element={<ViewBookingsOutlet/>}/>
-                <Route path='cancelledBookings' element={<ReuseCancelledAndLatestBookingPage value={"cancelled"}></ReuseCancelledAndLatestBookingPage>}/>
-                <Route path='latestBookings' element={<ReuseCancelledAndLatestBookingPage value={"latest"}></ReuseCancelledAndLatestBookingPage>}/>
-
-            </Route>
-            <Route path='/services' element={<ProtectedRoute><ServicePage/></ProtectedRoute>}/>
-           
-            </Route>
-        </Routes>
+       </Route>
+       <Route path='/services' element={<ProtectedRoute><ServicePage/></ProtectedRoute>}/>
+      
+       </Route>
+   </Routes>
+   {
+    isModal&&<ProviderInCommigCallModal/>
+   }
+   </>
     );
 };
 

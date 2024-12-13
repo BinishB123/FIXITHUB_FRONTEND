@@ -9,17 +9,22 @@ import { toast } from "sonner";
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { useState } from "react";
 import { RxCross1 } from "react-icons/rx";
+import { useSocket } from "../../../context/socketioContext";
 
 function Header() {
   const { userInfo } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const {socket} = useSocket()
   const [mobileMenuOpen, setMobileMenu] = useState<boolean>(false);
 
   const handleLogoutOnClick = () => {
+   
     dispatch(logoutthunk()).then(() => {
+     
       toast("Logout successful");
       dispatch(urgentreset());
+      socket?.emit("disconnect")
     });
   };
 

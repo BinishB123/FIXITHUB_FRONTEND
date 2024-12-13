@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Marker } from "react-map-gl";
 import { FaLocationDot } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
-import { animate, motion } from "framer-motion";
+import {  motion } from "framer-motion";
 import car from "../../assets/sedan.png"
 import bike from '../../assets/motorbike (1).png'
 import { FaCaretLeft } from "react-icons/fa";

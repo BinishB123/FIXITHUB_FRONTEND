@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoIosChatboxes } from "react-icons/io";
 import { MdOutlineCall } from "react-icons/md";
 import { FaCaretDown } from "react-icons/fa";
@@ -9,6 +9,8 @@ import { ResponsegetBookingGreaterThanTodaysDate } from "../../../interfaces/use
 import { StatusColors, statusColors } from "../../../constants/colors";
 import {  getChatId } from "../../../services/user/userProfile";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "../../../context/socketioContext";
+import { toast } from "sonner";
 
 export function BookingHistory() {
     const {userInfo} = useSelector((state:RootState)=>state.user)
@@ -16,7 +18,9 @@ export function BookingHistory() {
     const [serviceHistory,setHistory] = useState<ResponsegetBookingGreaterThanTodaysDate[]|[]>([])
     const [upanddown, setupanddown] = useState(false);
     const [indext, setindex] = useState<number|undefined>(undefined);
-   
+    const {socket} = useSocket()
+    const provideridRef = useRef<string|null>(null)
+
    
    
 
@@ -24,8 +28,6 @@ export function BookingHistory() {
        if (userInfo?.id) {
         getServiceHistory(userInfo.id).then((response:any)=>{
           setHistory(response.data.data)
-         
-    
         }).catch((error)=>{
           console.log(error);
           
@@ -42,8 +44,6 @@ export function BookingHistory() {
     const chatCreation = (providerId:string,userId:string)=>{
       getChatId(providerId,userId).then((Response:any)=>{
        navigate(`/profile/chat/${Response.data.id}/${providerId}`)
-      
-       
       }).catch((error)=>{
         console.log(error);
         
@@ -51,6 +51,26 @@ export function BookingHistory() {
     
 }
 
+
+useEffect(()=>{
+  socket?.on("checkedUserIsOnlineOrNot",(response)=>{
+    if(!response.success){
+        toast.warning("User is Offline")
+    }else{
+      navigate(`/call/${provideridRef.current}`)
+    }
+    
+  })
+
+  return()=>{
+    socket?.off("checkedUserIsOnlineOrNot")
+  }
+
+},[socket])
+
+const checkUserisOnlinOrNotBeforeCalling = (providerid:string)=>{
+  socket?.emit("checkOnlineorNot",{userid:userInfo?.id,providerid:providerid,checker:"user"}) 
+}
 
     return (<>
         <div className="w-[80%] h-[700px]  flex flex-col ml-2 space-y-2">
@@ -87,7 +107,11 @@ export function BookingHistory() {
                     chatCreation(item.provider._id,userInfo?.id)
                    }
                   }}  className="text-orange text-2xl" />
-                  <MdOutlineCall className="text-2xl text-blue-500" />
+                  <MdOutlineCall className="text-2xl text-blue-500" onClick={()=>{
+                    provideridRef.current = item.provider._id
+                    checkUserisOnlinOrNotBeforeCalling(item.provider._id)
+                   
+                  }} />
                 </div>
                 <div className="w-[10%] h-[100%] flex flex-col justify-center items-center ">
                   <FaCaretDown

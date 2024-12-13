@@ -2,7 +2,7 @@ import { MdCancel } from "react-icons/md";
 import { FcViewDetails } from "react-icons/fc";
 import { IoIosChatboxes } from "react-icons/io";
 import { MdOutlineCall } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import sample from '../../assets/car-check (2).png'
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
@@ -13,11 +13,15 @@ import { ResponsegetBookingStillTodaysDate } from "../../interfaces/providerServ
 import { StatusColors, statusColors } from "../../constants/colors";
 import { useNavigate } from "react-router-dom";
 import { getChatId } from "../../services/provider/providerProfile";
+import { useSocket } from "../../context/socketioContext";
+import { toast } from "sonner";
 
 
 function Services() {
   const { providerInfo } = useSelector((state: RootState) => state.provider);
   const [searchString, setSearchString] = useState<any>("");
+  const {socket} = useSocket()
+   const useridRef = useRef<string|null>(null)
   const [isModal, setModalState] = useState<boolean>(false);
   const navigate = useNavigate()
   const FilterWithServiceStatus = [
@@ -47,6 +51,8 @@ function Services() {
   >([]);
   const [modalData, setModalData] =
     useState<ResponsegetBookingStillTodaysDate | null>(null);
+
+
    useEffect(() => {
     if (providerInfo) {
       getBookingStillTodaysDate(providerInfo?.id).then((response: any) => {
@@ -55,6 +61,25 @@ function Services() {
       });
     }
   }, []);
+ 
+
+
+  useEffect(()=>{
+    socket?.on("checkedUserIsOnlineOrNot",(response)=>{
+      if(!response.success){
+          toast.warning("User is Offline")
+      }else{
+        navigate(`/provider/call/${useridRef.current}`)
+      }
+      
+    })
+
+    return()=>{
+      socket?.off("checkedUserIsOnlineOrNot")
+    }
+
+  },[socket])
+
 
   const chatCreation = (providerId:string,userId:string)=>{``
          getChatId(providerId,userId).then((Response:any)=>{
@@ -122,6 +147,13 @@ function Services() {
       })
     } catch (error) { }
   };
+  
+
+  const checkUserisOnlinOrNotBeforeCalling = (userid:string)=>{
+       socket?.emit("checkOnlineorNot",{userid:userid,providerid:providerInfo?.id,checker:"provider"}) 
+  }
+
+  
 
 
   return (
@@ -210,7 +242,10 @@ function Services() {
                       chatCreation(providerInfo?.id,item.user._id)
                      }
                   }} />
-                  <MdOutlineCall className="text-2xl text-blue-500" />
+                  <MdOutlineCall className="text-2xl text-blue-500 cursor-pointer" onClick={()=>{
+                   useridRef.current = item.user._id
+                    checkUserisOnlinOrNotBeforeCalling(item.user._id)
+                  }} />
                 </div>
                 <div className="w-[10%] h-[70px] flex flex-col justify-center items-center group relative">
                   <FcViewDetails
