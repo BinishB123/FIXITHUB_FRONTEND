@@ -28,6 +28,7 @@ import BookingHistoryPage from '../pages/user/profileOutlets/BookingHistoryPage'
 import { ChatOutletPage } from '../pages/user/profileOutlets/ChatOutletPage';
 import UserCallPage from '../pages/user/userCallPage';
 import UserInCommigCallModal from '../components/user/userincommingcallmodal';
+import { useSocket } from '../context/socketioContext';
 interface ProtectedRouteProps {
     children: ReactNode;
 }
@@ -72,6 +73,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
 const UserRoute = () => {
     const [isModal,setModal] = useState(false)
+  
     
     
 

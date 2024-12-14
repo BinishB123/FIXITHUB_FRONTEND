@@ -30,6 +30,7 @@ import ReuseCancelledAndLatestBookingPage from '../pages/provider/BookingsOutlet
 import ProviderChatPage from '../pages/provider/profileOutlets/Chat';
 import ProviderCallPage from '../pages/provider/providerCallPage';
 import ProviderInCommigCallModal from '../components/provider/providerIncomingCall';
+import { useSocket } from '../context/socketioContext';
 interface ProtectedRouteProps {
     children: ReactNode;
 }
@@ -78,6 +79,21 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
 const ProviderRoute = () => {
     const [isModal,setModal] = useState<boolean>(false)
+    const {socket} = useSocket()
+    const [incomingcallResponse,setIncomingCallResponse] = useState<{success:boolean|null, getter:string|null, chatid: string|null}>({success:null,getter:null,chatid:null})
+    useEffect(()=>{
+        socket?.on("incomingcall",(response)=>{
+            setIncomingCallResponse({success:response.success,getter:response.getter,chatid:response.chatid})
+            setModal(true)
+        })
+
+        return()=>{
+            socket?.off("incomingcall")
+        }
+    },[socket])
+    const onChangeState =()=>{
+        setModal(false)
+    }
 
     return (
        <> <Routes>
@@ -111,7 +127,7 @@ const ProviderRoute = () => {
        </Route>
    </Routes>
    {
-    isModal&&<ProviderInCommigCallModal/>
+    isModal&&<ProviderInCommigCallModal setModal={onChangeState} success={incomingcallResponse.success} getter={incomingcallResponse.getter} chatid={incomingcallResponse.chatid}  />
    }
    </>
     );

@@ -40,6 +40,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
             setOnline(false)
         }
         
+        
     }, [loggedUserId])
   
     return (<socketContext.Provider value={{ socket ,online}}>
