@@ -42,35 +42,28 @@ function UserCallComponent() {
   useEffect(() => {
     socket?.emit("getChatidForCreatingRoom", { userid: userInfo?.id, providerid: params.providerid, getter: userInfo?.id, whomTocall: params.providerid })
   }, []);
-
+ 
   useEffect(() => {
-   if (!peerConection.current) {
-    peerConection.current = new RTCPeerConnection(servers);  
-      
-   }
-    socket?.on("callaccepted",callaccepted )
-    socket?.on("recieveAnswer", recieveAnswer)
-    socket?.on("recieveCandidate",recieveCandidate )
-    peerConection.current.ontrack = (event) => {
-      console.log("Received remote stream:", event.streams[0]);
-      console.log("Remote stream tracks:", event.streams[0].getTracks());
-     event.streams[0].getTracks().forEach((track) => {
-  console.log("Track kind:", track.kind, "Track readyState:", track.readyState);
-    });
+   
+    if (!peerConection.current) {
+      peerConection.current = new RTCPeerConnection(servers);
 
+    }
+    socket?.on("callaccepted", callaccepted)
+    socket?.on("recieveAnswer", recieveAnswer)
+    socket?.on("recieveCandidate", recieveCandidate)
+    peerConection.current.ontrack = (event) => {      
       if (remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = event.streams[0];
 
       }
     };
-    
-    
-
 
     return () => {
       if (peerConection.current) {
         peerConection.current.close();
         peerConection.current = null;
+        
       }
       socket?.off("callaccepted")
       socket?.off("recieveAnswer")
@@ -80,58 +73,56 @@ function UserCallComponent() {
   }, [socket])
 
 
- const callaccepted = async (response:any) => {
-  navigator.mediaDevices.getUserMedia({
-    audio: true
-  }).then((stream) => {
+  const callaccepted = async (response: any) => {
+    console.log(response);
+    
+    navigator.mediaDevices.getUserMedia({
+      audio: true
+    }).then((stream) => {
 
-    localStream.current = stream;
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-    }
-    stream.getTracks().forEach((track) => {
-      peerConection.current?.addTrack(track, stream)
-    })
-    peerConection.current?.addTransceiver('video', { direction: 'recvonly' }); // Inform willing to receive video
-
-     peerConection.current?.createOffer().then((offer) => {
-     socket?.emit('sendOffer', { receiver: params.providerid, offer: offer, sendid: userInfo?.id })
-      return peerConection.current?.setLocalDescription(offer)
-    })
-
-   if (peerConection.current) {
-     peerConection.current.onicecandidate = (event) => {
-      if (event.candidate) {
-        socket?.emit("sendCandidate", { event: event.candidate, recieverid: params.providerid });
+      localStream.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
       }
+      stream.getTracks().forEach((track) => {
+        peerConection.current?.addTrack(track, stream)
+      })
+      peerConection.current?.addTransceiver('video', { direction: 'recvonly' });
+
+      peerConection.current?.createOffer().then((offer) => {
+        socket?.emit('sendOffer', { receiver: params.providerid, offer: offer, sendid: userInfo?.id })
+        return peerConection.current?.setLocalDescription(offer)
+      })
+
+      if (peerConection.current) {
+        peerConection.current.onicecandidate = (event) => {
+          if (event.candidate) {
+            socket?.emit("sendCandidate", { event: event.candidate, recieverid: params.providerid });
+          }
+        }
+      }
+
+    }).catch((error) => {
+      console.log("error", error);
+
+    })
+
+  }
+
+
+  const recieveAnswer = (response: any) => {
+    if (peerConection.current) {
+      peerConection.current.setRemoteDescription(response.answer)
     }
-   }
 
-  }).catch((error) => {
-    console.log("error", error);
-
-  })
-
-}
+  }
 
 
-const recieveAnswer = (response:any) => { 
-  console.log("recieveAnswer",response);
-      
-  if (peerConection.current) {
-  peerConection.current.setRemoteDescription(response.answer)
-}
- 
-}
+  const recieveCandidate = async (response: any) => {
+     await peerConection.current?.addIceCandidate(new RTCIceCandidate(response.event))
 
+  }
 
-const recieveCandidate = (response:any) => {
-  console.log("recieveCandidate",response);
-  console.log("connection state",peerConection.current?.connectionState==="connected",peerConection.current?.connectionState);
-
-  peerConection.current?.addIceCandidate(new RTCIceCandidate(response.event))
-}
- 
 
 
 

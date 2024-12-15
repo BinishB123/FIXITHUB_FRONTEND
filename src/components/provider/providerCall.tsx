@@ -42,23 +42,28 @@ function ProviderCallComponent() {
     socket?.on("sendOfferToReceiver",sendOfferToReceiver )
     socket?.on("recieveCandidate", recieveCandidate)
 
+    console.log("peerConection.current?.connectionState",peerConection.current?.connectionState==="connected",peerConection.current?.connectionState);
 
       peerConection.current.ontrack = (event) => {
       const remoteStream = event.streams[0];
-      console.log("Received remote track:", event.streams[0]);
       if (videoRef.current) {
         videoRef.current.srcObject = remoteStream;
       }
     };
 
     return () => {
+      if (peerConection.current) {
+        peerConection.current.close();
+        peerConection.current = null;
+      }
+      
       socket?.off("sendOfferToReceiver")
       socket?.off("recieveCandidate")
     }
   }, [socket])
 
 
-  const sendOfferToReceiver = async (response:any) => {
+    const sendOfferToReceiver = async (response:any) => {
        const offer = new RTCSessionDescription(response.offer)
        await peerConection.current?.setRemoteDescription(offer);
        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
@@ -67,9 +72,7 @@ function ProviderCallComponent() {
         if (providerSideVideoRef.current) {
           providerSideVideoRef.current.srcObject = stream;
         }
-        console.log("Local stream tracks:", stream.getTracks());
         stream.getTracks().forEach((track) => {
-          console.log("Track kind:", track.kind, "Track readyState:", track.readyState);
           peerConection.current?.addTrack(track, stream);
         });
       })
@@ -88,9 +91,8 @@ function ProviderCallComponent() {
   
 
 
-  const recieveCandidate = (response:any) => {
-    console.log("connection state",peerConection.current?.connectionState==="connected",peerConection.current?.connectionState);
-    peerConection.current?.addIceCandidate(new RTCIceCandidate(response.event))
+  const recieveCandidate = async(response:any) => {
+   await peerConection.current?.addIceCandidate(new RTCIceCandidate(response.event))
   } 
  
 
