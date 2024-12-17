@@ -74,10 +74,12 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 const UserRoute = () => {
     const [isModal,setModal] = useState<boolean>(false)
     const {socket} = useSocket()
-    const [incomingcallResponse,setIncomingCallResponse] = useState<{success:boolean|null, getter:string|null, chatid: string|null}>({success:null,getter:null,chatid:null})
+    const [incomingcallResponse,setIncomingCallResponse] = useState<{success:boolean|null, getter:string|null, chatid: string|null
+        ,callerData:{workshopName:string|null,logoUrl:string|null}
+    }>({success:null,getter:null,chatid:null,callerData:{workshopName:null,logoUrl:null}})
     useEffect(()=>{
         socket?.on("incomingcall",(response)=>{
-            setIncomingCallResponse({success:response.success,getter:response.getter,chatid:response.chatid})
+            setIncomingCallResponse({success:response.success,getter:response.getter,chatid:response.chatid,callerData:response.callerData})
             setModal(true)
         })
 
@@ -117,7 +119,7 @@ const UserRoute = () => {
 
 
     </Routes>
-    {isModal&&<UserInCommigCallModal setModal={onChangeState} success={incomingcallResponse.success} getter={incomingcallResponse.getter} chatid={incomingcallResponse.chatid}  />}
+    {isModal&&<UserInCommigCallModal callerData={incomingcallResponse.callerData} setModal={onChangeState} success={incomingcallResponse.success} getter={incomingcallResponse.getter} chatid={incomingcallResponse.chatid}  />}
     </>
     );
 };

@@ -4,9 +4,10 @@ import { MdCallEnd } from "react-icons/md";
 import { AiFillAudio } from "react-icons/ai";
 import { useSocket } from "../../context/socketioContext";
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store/store";
+import { setTime } from "react-datepicker/dist/date_utils";
 
 
 const servers: RTCConfiguration = {
@@ -34,15 +35,19 @@ function ProviderCallComponent() {
   const providerSideVideoRef = useRef<HTMLVideoElement | null>(null);
   const peerConection = useRef<RTCPeerConnection | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [calleData, setCalleData] = useState<{ name: string | null, logoUrl: string | null }>({ name: null, logoUrl: null })
   const location = useLocation()
-  const {providerInfo} = useSelector((state:RootState)=>state.provider)
-  const [callingState, setCallingState] = useState<"calling" | "connected" | 'callEnded'>("calling")
-  const params = useParams();
+  const { providerInfo } = useSelector((state: RootState) => state.provider)
+  const [callingState, setCallingState] = useState<
+    "calling" | "connected" | "callEnded" | "disconnected" | "failed To Connect" | "Rejected" | "trying To connect"
+  >("trying To connect"); const params = useParams();
+  const navigate = useNavigate()
   const { socket } = useSocket()
-  
+
   useEffect(() => {
     if (!location.state) {
-      socket?.emit("getChatidForCreatingRoom", { userid:params.userid, providerid: providerInfo?.id, getter: providerInfo?.id, whomTocall: params.userid })
+      socket?.emit("getChatidForCreatingRoom", { userid: params.userid, providerid: providerInfo?.id, getter: providerInfo?.id, whomTocall: params.userid, callerData: { workshopName: providerInfo?.workshopname, logoUrl: providerInfo?.logoUrl } })
+      socket?.emit("getcalleData", { id: providerInfo?.id, calle: "user", calleid: params.userid })
     }
   }, []);
 
@@ -52,11 +57,19 @@ function ProviderCallComponent() {
     if (!peerConection.current) {
       peerConection.current = new RTCPeerConnection(servers)
     }
-    
+    socket?.on("rejected", () => {
+      setCallingState("Rejected")
+      setTimeout(() => {
+        navigate(-1)
+      }, 3000)
+    })
     socket?.on("callaccepted", callaccepted)
     socket?.on("recieveAnswer", recieveAnswer)
     socket?.on("sendOfferToReceiver", sendOfferToReceiver)
     socket?.on("recieveCandidate", recieveCandidate)
+    socket?.on("recieveCalleData", ({ data }) => {
+      setCalleData({ name: data.name, logoUrl: data.logoUrl })
+    })
 
 
     peerConection.current.ontrack = (event) => {
@@ -69,7 +82,12 @@ function ProviderCallComponent() {
 
     if (peerConection.current) {
       peerConection.current.oniceconnectionstatechange = () => {
-        console.log(peerConection.current?.iceConnectionState);
+        if (peerConection.current?.iceConnectionState === 'disconnected') {
+          setCallingState(peerConection.current?.iceConnectionState)
+        }
+        if (peerConection.current?.iceConnectionState === "connected") {
+          setCallingState(peerConection.current.iceConnectionState)
+        }
       };
     }
     return () => {
@@ -82,24 +100,26 @@ function ProviderCallComponent() {
       socket?.off("recieveCandidate")
       socket?.off("callaccepted")
       socket?.off("callaccepted")
+      socket?.off("recieveCalleData")
+      socket?.off("rejected")
+
     }
   }, [socket])
 
   const sendOfferToReceiver = async (response: any) => {
+
     const offer = new RTCSessionDescription(response.offer);
     await peerConection.current?.setRemoteDescription(offer);
-    
+
     navigator.mediaDevices.getUserMedia({ video: false, audio: true })
       .then((stream) => {
         console.log("Callee: Local media stream obtained:", stream);
         localStream.current = stream;
-
-       
         if (providerSideVideoRef.current) {
           providerSideVideoRef.current.srcObject = stream;
         }
 
-     
+
         stream.getTracks().forEach((track) => {
           peerConection.current?.addTrack(track, stream);
         });
@@ -116,11 +136,11 @@ function ProviderCallComponent() {
         console.error("Error acquiring media stream:", error);
       });
 
-   
+
     if (peerConection.current) {
       peerConection.current.onicecandidate = (event) => {
         if (event.candidate) {
-        
+
           socket?.emit("sendCandidate", { event: event.candidate, recieverid: params.userid });
         } else {
           console.log("Callee: All ICE candidates sent.");
@@ -147,9 +167,20 @@ function ProviderCallComponent() {
   }
 
 
+  const cutTheCall = () => {
+    if (peerConection.current) {
+      peerConection.current.close();
+      peerConection.current = null;
+    }
+    setTimeout(() => {
+      navigate(-1)
+    }, 5000)
+  }
+
 
 
   const callaccepted = async (response: any) => {
+
     navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true
@@ -166,7 +197,7 @@ function ProviderCallComponent() {
       peerConection.current?.addTransceiver('video', { direction: 'recvonly' });
 
       peerConection.current?.createOffer().then((offer) => {
-        socket?.emit('sendOffer', { receiver: params.userid, offer: offer, sendid: providerInfo?.id });
+        socket?.emit('sendOffer', { receiver: params.userid, offer: offer, sendid: providerInfo?.id, callerData: response.callerData });
         return peerConection.current?.setLocalDescription(offer);
       }).then(() => {
         if (peerConection.current) {
@@ -195,7 +226,7 @@ function ProviderCallComponent() {
     setCallingState("connected")
 
   }
-console.log(videoRef);
+
 
 
   return (
@@ -215,7 +246,7 @@ console.log(videoRef);
             </div>
             <div className="w-[30%] h-[100px]  space-y-2">
               <h5 className="text-center text-white font-dm text-md pt-1">
-                jesson Ok
+                {calleData.name}
               </h5>
               <h5 className="text-center text-gray-400 animate-pulse flex justify-center gap-2 font-dm font-semibold">
                 {callingState === "calling" ? "calling..." : callingState}
@@ -224,13 +255,15 @@ console.log(videoRef);
           </div>
           <div className="w-[100%] h-[100px] flex justify-center items-center cursor-pointer">
             <div className=" w-[100%] md:w-[50%] h-[100px]   flex justify-center space-x-4">
-              <div className="w-[20%] md:w-[10%] h-[50px] bg-gray-600 rounded-full flex justify-center items-center">
+              <div className="hidden w-[20%] md:w-[10%] h-[50px] bg-gray-600 rounded-full justify-center items-center">
                 <BsFillMicMuteFill className="text-xl" />
                 <AiFillAudio className="text-2xl hidden" />
               </div>
-              <div className="w-[20%] md:w-[10%] h-[50px] shadow-md hover:shadow-[0_10px_20px_rgba(255,_0,_0,_0.7)] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  bg-red rounded-full flex justify-center items-center animate-fadeInDownBig">
+              <div className="  w-[20%] md:w-[10%] h-[50px] shadow-md hover:shadow-[0_10px_20px_rgba(255,_0,_0,_0.7)] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  bg-red rounded-full flex justify-center items-center animate-fadeInDownBig">
                 {" "}
-                <MdCallEnd className="text-2xl text-white" />
+                <MdCallEnd className="text-2xl text-white" onClick={() => {
+                  cutTheCall()
+                }} />
               </div>
             </div>
           </div>

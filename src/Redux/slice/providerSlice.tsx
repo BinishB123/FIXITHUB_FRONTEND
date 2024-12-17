@@ -15,7 +15,9 @@ const initialState: ProviderInitialState = {
     isLoading: false,
     errorMessage: null,
     error: false,
-    message: null
+    message: null,
+    
+
 };
 
 const providerSlice = createSlice({

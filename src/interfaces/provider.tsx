@@ -42,6 +42,7 @@ export interface ProviderInfo {
     mobile: string,
     requested: boolean,
     blocked: boolean
+    logoUrl?:string|null
 }
 
 
@@ -52,6 +53,7 @@ export interface ProviderInitialState {
     errorMessage: string | null
     message: string | null
     success: null | boolean
+  
 }
 
 
