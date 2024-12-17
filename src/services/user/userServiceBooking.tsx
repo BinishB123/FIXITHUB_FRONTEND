@@ -58,9 +58,9 @@ export const getlatestBooking = (userid:string)=>{
 }
 
 
-export const getServiceHistory = (userId:string)=>{
+export const getServiceHistory = (userId:string,startIndex:number,endIndex:number)=>{
     return new Promise((resolve,reject)=>{
-        axiosInstance.get(services.servicHistory+`/${userId}`).then((response)=>{
+        axiosInstance.get(services.servicHistory+`/${userId}/${startIndex}/${endIndex}`).then((response)=>{
             resolve(response)
         }).catch((error)=>{
             reject(error)

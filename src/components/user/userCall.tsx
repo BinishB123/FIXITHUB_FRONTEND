@@ -2,9 +2,9 @@ import img from "../../assets/workshops.png";
 import { BsFillMicMuteFill } from "react-icons/bs";
 import { MdCallEnd } from "react-icons/md";
 import { AiFillAudio } from "react-icons/ai";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSocket } from "../../context/socketioContext";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store/store";
 
@@ -37,75 +37,92 @@ function UserCallComponent() {
   const peerConection = useRef<RTCPeerConnection | null>(null)
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  const [callingState, setCallingState] = useState<"calling" | "connected" | 'callEnded'>("calling")
+  const location = useLocation()
   const params = useParams();
 
   useEffect(() => {
-    socket?.emit("getChatidForCreatingRoom", { userid: userInfo?.id, providerid: params.providerid, getter: userInfo?.id, whomTocall: params.providerid })
+    if (!location.state) {
+      socket?.emit("getChatidForCreatingRoom", { userid: userInfo?.id, providerid: params.providerid, getter: userInfo?.id, whomTocall: params.providerid })
+    }
   }, []);
- 
+
   useEffect(() => {
-   
+
     if (!peerConection.current) {
       peerConection.current = new RTCPeerConnection(servers);
-
-    }
+     }
     socket?.on("callaccepted", callaccepted)
     socket?.on("recieveAnswer", recieveAnswer)
     socket?.on("recieveCandidate", recieveCandidate)
-    peerConection.current.ontrack = (event) => {      
+    socket?.on("sendOfferToReceiver", sendOfferToReceiver)
+
+    peerConection.current.ontrack = (event) => {
       if (remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = event.streams[0];
 
       }
     };
+    if (peerConection.current) {
+       peerConection.current.oniceconnectionstatechange = () => {
+        console.log("Caller: ICE connection state:", peerConection.current?.iceConnectionState);
+      };
+    }
+
 
     return () => {
       if (peerConection.current) {
         peerConection.current.close();
         peerConection.current = null;
-        
+
       }
       socket?.off("callaccepted")
       socket?.off("recieveAnswer")
       socket?.off("recieveCandidate")
+      socket?.off("sendOfferToReceiver")
     }
 
   }, [socket])
 
 
   const callaccepted = async (response: any) => {
-    console.log(response);
-    
     navigator.mediaDevices.getUserMedia({
+      video: true,
       audio: true
     }).then((stream) => {
-
+      console.log("Caller: Local media stream obtained:", stream);
       localStream.current = stream;
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
+
       stream.getTracks().forEach((track) => {
-        peerConection.current?.addTrack(track, stream)
-      })
+        peerConection.current?.addTrack(track, stream);
+      });
+
       peerConection.current?.addTransceiver('video', { direction: 'recvonly' });
 
       peerConection.current?.createOffer().then((offer) => {
-        socket?.emit('sendOffer', { receiver: params.providerid, offer: offer, sendid: userInfo?.id })
-        return peerConection.current?.setLocalDescription(offer)
-      })
-
-      if (peerConection.current) {
-        peerConection.current.onicecandidate = (event) => {
-          if (event.candidate) {
-            socket?.emit("sendCandidate", { event: event.candidate, recieverid: params.providerid });
-          }
+        socket?.emit('sendOffer', { receiver: params.providerid, offer: offer, sendid: userInfo?.id });
+        return peerConection.current?.setLocalDescription(offer);
+      }).then(() => {
+        if (peerConection.current) {
+          peerConection.current.onicecandidate = (event) => {
+            if (event.candidate) {
+              console.log("Caller: Sending ICE candidate:", event.candidate);
+              socket?.emit("sendCandidate", { event: event.candidate, recieverid: params.providerid });
+            } else {
+              console.log("Caller: All ICE candidates sent.");
+            }
+          };
         }
-      }
-
+      }).catch((error) => {
+        console.error("Error during offer creation or setting local description:", error);
+      });
     }).catch((error) => {
-      console.log("error", error);
-
-    })
+      console.error("Error obtaining local media stream:", error);
+    });
 
   }
 
@@ -114,14 +131,70 @@ function UserCallComponent() {
     if (peerConection.current) {
       peerConection.current.setRemoteDescription(response.answer)
     }
+    setCallingState("connected")
 
   }
 
 
   const recieveCandidate = async (response: any) => {
-     await peerConection.current?.addIceCandidate(new RTCIceCandidate(response.event))
+    await peerConection.current?.addIceCandidate(new RTCIceCandidate(response.event))
+  }
+
+
+
+  const sendOfferToReceiver = async (response: any) => {
+    const offer = new RTCSessionDescription(response.offer);
+    await peerConection.current?.setRemoteDescription(offer);
+    
+    navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+      .then((stream) => {
+       
+        localStream.current = stream;
+       
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+
+     
+        stream.getTracks().forEach((track) => {
+          peerConection.current?.addTrack(track, stream);
+        });
+
+
+        peerConection.current?.createAnswer().then(async (answer) => {
+          await peerConection.current?.setLocalDescription(answer);
+          socket?.emit("answer", { to: params.providerid, answer: answer });
+        }).catch((error) => {
+          console.error("Error creating SDP answer:", error);
+        });
+
+      }).catch((error) => {
+        console.error("Error acquiring media stream:", error);
+      });
+
+   
+    if (peerConection.current) {
+      peerConection.current.onicecandidate = (event) => {
+        if (event.candidate) {
+        
+          socket?.emit("sendCandidate", { event: event.candidate, recieverid: params.providerid });
+        } else {
+          console.log("Callee: All ICE candidates sent.");
+        }
+      };
+
+
+      peerConection.current.ontrack = (event) => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = event.streams[0];
+        }
+      };
+    }
+
 
   }
+
+
 
 
 
@@ -148,7 +221,7 @@ function UserCallComponent() {
                 jesson Ok
               </h5>
               <h5 className="text-center text-gray-400 animate-pulse flex justify-center gap-2 font-dm font-semibold">
-                Calling...
+                {callingState === "calling" ? "calling..." : callingState}
               </h5>
             </div>
           </div>

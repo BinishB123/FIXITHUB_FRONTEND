@@ -2,7 +2,18 @@ import {  motion } from "framer-motion";
 import img from "../../assets/workshops.png";
 import { FaPhone } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
-function UserInCommigCallModal(){
+import { useSocket } from "../../context/socketioContext";
+import { useNavigate } from "react-router-dom";
+function UserInCommigCallModal(props:{success:boolean|null, getter:string|null, chatid: string|null,setModal:()=>void}){
+    const {socket} = useSocket()
+    const navigate = useNavigate()
+  
+      const onClickAccept = ()=>{
+        socket?.emit("Accepted",props)
+        navigate(`/call/${props.getter}`,{state:true})
+        props.setModal()
+  
+      }
     return(<><motion.div
         className="fixed inset-0 h-[730px] bg-black bg-opacity-60 flex items-center justify-center transition delay-700"
         initial={{ opacity: 0 }}
@@ -30,7 +41,7 @@ function UserInCommigCallModal(){
              <div className="w-[12%] h-[40px]  md:h-[55px] rounded-full animate-fadeInDown bg-red flex justify-center items-center  ">
               <IoCloseSharp  className="text-white text-5xl" />
               </div>
-              <div className="w-[12%] h-[40px]  md:h-[55px] rounded-full animate-fadeInDownBig bg-green-500 flex justify-center items-center  ">
+              <div className="w-[12%] h-[40px]  md:h-[55px] rounded-full animate-fadeInDownBig bg-green-500 flex justify-center items-center  " onClick={onClickAccept}>
               <FaPhone className="text-white  text-xl " />
               </div>
              

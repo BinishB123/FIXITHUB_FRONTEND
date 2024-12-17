@@ -11,23 +11,29 @@ import {  getChatId } from "../../../services/user/userProfile";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../../../context/socketioContext";
 import { toast } from "sonner";
+import { GrFormNext } from "react-icons/gr";
 
 export function BookingHistory() {
     const {userInfo} = useSelector((state:RootState)=>state.user)
+    const [pageNumber,setPageNumber] = useState(0)
+    const [startIndexAndEndIndex,setStartIndexAndEndIndex] = useState<{start:number,end:number}>({start:0,end:5})
     const navigate = useNavigate()
     const [serviceHistory,setHistory] = useState<ResponsegetBookingGreaterThanTodaysDate[]|[]>([])
     const [upanddown, setupanddown] = useState(false);
     const [indext, setindex] = useState<number|undefined>(undefined);
     const {socket} = useSocket()
+    const [totalCount,setTotalCount] = useState<number>(0)
     const provideridRef = useRef<string|null>(null)
 
    
    
 
-    useEffect(()=>{
+    useEffect(()=>{ 
        if (userInfo?.id) {
-        getServiceHistory(userInfo.id).then((response:any)=>{
+        getServiceHistory(userInfo.id,startIndexAndEndIndex.start,startIndexAndEndIndex.end).then((response:any)=>{
           setHistory(response.data.data)
+          setTotalCount(response.data.count)
+          
         }).catch((error)=>{
           console.log(error);
           
@@ -52,6 +58,8 @@ export function BookingHistory() {
 }
 
 
+
+
 useEffect(()=>{
   socket?.on("checkedUserIsOnlineOrNot",(response)=>{
     if(!response.success){
@@ -68,16 +76,28 @@ useEffect(()=>{
 
 },[socket])
 
+const onClickPagination = (start:number)=>{
+  if (userInfo?.id) {
+    getServiceHistory(userInfo.id,start,startIndexAndEndIndex.end).then((response:any)=>{
+      setHistory(response.data.data)
+      setTotalCount(response.data.count)
+    }).catch((error)=>{
+      console.log(error);
+      
+    })
+   }
+}
+
 const checkUserisOnlinOrNotBeforeCalling = (providerid:string)=>{
   socket?.emit("checkOnlineorNot",{userid:userInfo?.id,providerid:providerid,checker:"user"}) 
 }
 
     return (<>
-        <div className="w-[80%] h-[700px]  flex flex-col ml-2 space-y-2">
+        <div className="w-[80%] h-[600px]  flex flex-col ml-2 space-y-2">
             <div className="w-[100%] h-[40px] bg-banner-gray rounded-sm">
               <h1 className="text-white font-medium font-dm ml-2 mt-2">Service History</h1>
             </div>
-            <div className="w-[100%]  h-[550px] space-y-1 overflow-y-scroll scrollbar-hide">
+            <div className="w-[100%]  h-[550px] space-y-1 overflow-y-scroll scrollbar-hide ">
                {
                 serviceHistory.map((item,index)=>(
                     <>
@@ -184,7 +204,36 @@ const checkUserisOnlinOrNotBeforeCalling = (providerid:string)=>{
             </>
                 ))
                }
+               
             </div>
+            <div className="w-[100%] h-[50px]  flex justify-center items-start space-x-2 cursor-pointer rounded-md">
+               <div className={`w-[4%] h-[40px] bg-orange ${pageNumber+1>1?"flex":"hidden"} items-center justify-center rounded-md`} onClick={()=>{
+                                    onClickPagination(startIndexAndEndIndex.start<0?0:startIndexAndEndIndex.start-5)
+
+                  setStartIndexAndEndIndex({start:startIndexAndEndIndex.start<0?0:startIndexAndEndIndex.start-5,end:startIndexAndEndIndex.end<5?5: startIndexAndEndIndex.end-5})
+    
+                    setPageNumber(pageNumber<=0?0:pageNumber-1)
+                
+                }} >
+                  {pageNumber+1>1&&                <GrFormNext className="text-xl text-white rotate-180" />
+                  }
+                </div>
+                <div className="w-[4%] h-[40px] bg-orange flex items-center justify-center rounded-md">
+                  <h1 className="text-white text-center">{pageNumber+1}</h1>
+                </div>
+                <div className={`w-[4%] h-[40px] bg-orange flex  ${startIndexAndEndIndex.start+10> Math.ceil(totalCount / 5) * 5 ?"hidden":"flex"} items-center justify-center rounded-md`} onClick={()=>{
+                                      onClickPagination(startIndexAndEndIndex.start+5)
+
+                  setStartIndexAndEndIndex({start:startIndexAndEndIndex.start+5,end:startIndexAndEndIndex.end*(pageNumber+1)})
+                 
+                    setPageNumber(pageNumber+1)
+
+                
+                }}>
+                <GrFormNext className="text-xl text-white" />
+                </div>
+
+              </div>
 
         </div>
 

@@ -17,10 +17,10 @@ function OverView() {
   const { userInfo, error, errormessage, success, message } = useSelector((state: RootState) => state.user);
   const [name, setName] = useState<string | null>(null);
   const [imagePreview, setImagePreview] = useState("")
-  const [imgfile,setimgfile] = useState<File|null>(null)
+  const [imgfile, setimgfile] = useState<File | null>(null)
   const [mobile, setMobile] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const imageInputref = useRef<HTMLInputElement|null>(null)
+  const imageInputref = useRef<HTMLInputElement | null>(null)
   const mobileInput = useRef<HTMLInputElement>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [isModal, setModalState] = useState<boolean>(false);
@@ -51,6 +51,11 @@ function OverView() {
         setEditName(false);
         return
       }
+      if (/\d/.test(name + "")) { // \d matches any digit (0-9)
+        toast.warning("Name should not contain numbers!")
+        return;
+      }
+
       if (name) {
         dispatch(
           updateProfileDetail({
@@ -67,6 +72,10 @@ function OverView() {
     if (whichIstoChange === "mobile") {
       if (mobile?.trim() === userInfo?.mobile) {
         setEditPhone(false);
+      }
+      if (!/^\d{10}$/.test(mobile+"")) { // ^ ensures it starts with digits, \d{10} ensures exactly 10 digits, $ ensures it ends there
+        toast.warning("Mobile number must be exactly 10 digits and contain only numbers!");
+        return;
       }
       if (mobile) {
         dispatch(
@@ -86,19 +95,19 @@ function OverView() {
     setimgfile(e.target.files[0])
     setImagePreview(URL.createObjectURL(e.target.files[0]))
     setModalState(true)
-   
+
   }
 
 
   const changeOrAddLogo = (e: File) => {
-      dispatch(
-        updateOrAddImage({
-            image: e, 
-            id: userInfo?.id || "", 
-            url: userInfo?.logoUrl || "", 
-        }) );
+    dispatch(
+      updateOrAddImage({
+        image: e,
+        id: userInfo?.id || "",
+        url: userInfo?.logoUrl || "",
+      }));
     setModalState(false)
- 
+
 
   }
   return (
@@ -122,10 +131,10 @@ function OverView() {
               {/* Icon positioned at the bottom-right inside the image */}
 
             </div>
-            <div className="w-[100%] h-[50px] flex space-x-1 bg-banner-gray mt-4 items-center justify-center rounded-md cursor-pointer " onClick={() => {
+            <div className="w-[100%] h-[50px] flex space-x-1 bg-banner-gray mt-4 items-center justify-center rounded-md cursor-pointer border-gray-500 border-dashed border-2" onClick={() => {
               imageInputref.current?.click()
             }}>
-              <RiImageEditFill className="bottom-0 right-2 text-2xl  text-gray-500 cursor-pointer" />
+              <RiImageEditFill className="bottom-0 right-2 text-2xl  text-gray-500 cursor-pointer  " />
               <h1 className="text-md font-dm font-semibold text-gray-400">Change image</h1>
             </div>
 
@@ -236,9 +245,9 @@ function OverView() {
           <div className="bg-transparent rounded-lg w-[95%] md:w-[30%] h-[80%] flex flex-col items-center ">
             <div className="w-[100%] h-[10%] mt-0  flex justify-end">
               <div className=" w-[90%] mt-4">
-               
+
               </div>
-              
+
             </div>
             <div className="w-[95%] h-[70%] flex-col space-y-2 scrollbar-hide  ">
               <img
@@ -250,17 +259,17 @@ function OverView() {
 
 
             <div className="w-[95%]  h-[10%] bg-opacity-75 flex justify-center items-center space-x-28 mt-6">
-              <button className="w-[40%] h-[60%] bg-green-500 text-white rounded-md" onClick={()=>{
+              <button className="w-[40%] h-[60%] bg-green-500 text-white rounded-md" onClick={() => {
                 if (imgfile) {
                   changeOrAddLogo(imgfile)
                 }
               }}>Done</button>
-              <button className="w-[40%] h-[60%] bg-red text-white rounded-md"  onClick={() => {
-                  setModalState(false);
+              <button className="w-[40%] h-[60%] bg-red text-white rounded-md" onClick={() => {
+                setModalState(false);
                 if (imageInputref.current?.value) {
                   imageInputref.current.value = ""
                 }
-                }}>Cancel</button>
+              }}>Cancel</button>
             </div>
           </div>
         </motion.div>

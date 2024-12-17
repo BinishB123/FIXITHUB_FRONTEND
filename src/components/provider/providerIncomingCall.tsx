@@ -10,7 +10,7 @@ function ProviderInCommigCallModal(props:{success:boolean|null, getter:string|nu
 
     const onClickAccept = ()=>{
       socket?.emit("Accepted",props)
-      navigate(`/provider/call/${props.getter}`)
+      navigate(`/provider/call/${props.getter}`,{state:true})
       props.setModal()
 
     }

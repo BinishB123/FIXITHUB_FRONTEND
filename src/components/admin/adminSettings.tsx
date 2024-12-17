@@ -15,6 +15,7 @@ import { addBrandApi, addVehicleTypeApi, addServicesApi, addNewSubTypeApi, delet
 function AdminSettingsComponent() {
     const navigate = useNavigate();
     const inputref = useRef<HTMLInputElement | null>(null)
+    const generalServiceAddIconref = useRef()
     const roadref = useRef<HTMLInputElement | null>(null)
     const [isModal, setModalState] = useState<boolean>(false);
     const [vehicletype, setType] = useState<number>(0);
@@ -384,8 +385,9 @@ function AdminSettingsComponent() {
                             </h1>
                         </div>
                         <div className="h-[60%] w-[95%]  flex justify-start space-x-4">
+                            
                             <input
-                                className="w-[25%]  text-center text-white text-sm rounded-sm bg-banner-gray "
+                                className="w-[25%]  text-center text-white text-sm rounded-sm bg-banner-gray  "
                                 type="text"
                                 value={generalService}
                                 placeholder="ADD MORE GENERAL SERVICE"
@@ -393,11 +395,20 @@ function AdminSettingsComponent() {
                                     setService(e.target.value);
                                 }}
                             />
+                           
+                                <button className="w-[25%] h-[50px] border-dashed border-2 rounded-md border-orange-400 flex justify-center items-center" onClick={()=>{
+                                    if (inputref.current) {
+                                        inputref.current?.click()
+                                    }
+                                }}>
+                                <h1 className="text-sm font-dm font-semibold text-white tracking-wider">Click to service Add Icon</h1>
+
+                                </button>
                             <input
                                 ref={inputref}
                                 type="file"
                                 accept="image/png, image/jpeg"
-                                className="text-white mt-3 "
+                                className="text-white mt-3 hidden "
                                 placeholder="add icon"
                                 onChange={(e) => {
                                     setFile(e.target.files?.[0] ? e.target.files[0] : "");
@@ -416,11 +427,11 @@ function AdminSettingsComponent() {
                         </div>
                     </div>
 
-                    <hr className="border-t-1 border-gray-600 w-[95%] mt-11"></hr>
+                    <hr className="border-t-1 border-gray-600 w-[95%] mt-11 hidden" ></hr>
                 </div>
                 {/* General service div end */}
                 {/* road assistance start */}
-                <div className="w-[100%] h-[50%]  flex flex-col items-center mt-11 bg-black">
+                <div className="w-[100%] h-[50%]   flex-col items-center mt-11 bg-black hidden">
                     <div className="w-[95%] h-[10%]  ">
                         <h1 className="text-2xl font-dm font-semibold text-white text-center border-gray-500  border-b-2 ">
                             Road Assistance
