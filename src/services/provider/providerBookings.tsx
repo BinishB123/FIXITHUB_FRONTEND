@@ -10,7 +10,6 @@ export const addDate = (date: Date, id: string): Promise<AddDateResponse | null>
   return new Promise((resolve, reject) => {
     axiosInstance.post(bookings.addDate, { date: date, id: id }).then((response) => {
       resolve(response.data)
-
     }).catch(() => {
       reject(null)
     })

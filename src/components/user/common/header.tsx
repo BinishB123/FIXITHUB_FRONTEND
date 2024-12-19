@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { GiAutoRepair } from "react-icons/gi";
 import { AppDispatch, RootState } from "../../../Redux/store/store";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { logoutthunk, urgentreset } from "../../../Redux/slice/userSlice";
 import { toast } from "sonner";
 import { IoReorderThreeOutline } from "react-icons/io5";
@@ -17,6 +17,7 @@ function Header() {
   const navigate = useNavigate();
   const {socket} = useSocket()
   const [mobileMenuOpen, setMobileMenu] = useState<boolean>(false);
+  const loaction = useLocation()
 
   const handleLogoutOnClick = () => {
    
@@ -48,19 +49,19 @@ function Header() {
       <div className="hidden md:flex space-x-8 ">
         <nav className="flex items-center space-x-6 cursor-pointer">
           <h1
-            className="font-dm font-semibold text-sm text-white hover:scale-105 hover:text-orange transition"
+            className={`font-dm font-semibold text-sm  hover:scale-105 ${location.pathname==='/'?"text-orange transition" : "text-white"}`}
             onClick={() => navigate("/")}
           >
             HOME
           </h1>
           <h1
-            className="font-dm font-semibold text-sm text-white hover:scale-105 hover:text-orange transition"
+            className={`font-dm font-semibold text-sm  hover:scale-105 ${location.pathname==='/services'?"text-orange transition" : "text-white"}`}
             onClick={() => navigate("/services")}
           >
             SERVICES
           </h1>
           <h1
-            className="font-dm font-semibold text-sm text-white hover:scale-105 hover:text-orange transition"
+            className={`font-dm font-semibold text-sm  hover:scale-105 ${location.pathname==='/profile'?"text-orange transition" : "text-white"}`}
             onClick={() => navigate("/profile")}
           >
             PROFILE

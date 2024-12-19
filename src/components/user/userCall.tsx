@@ -132,9 +132,9 @@ function UserCallComponent() {
           peerConection.current?.addTrack(track, stream);
         });
 
-        peerConection.current?.addTransceiver("video", {
-          direction: "recvonly",
-        });
+        // peerConection.current?.addTransceiver("video", {
+        //   direction: "recvonly",
+        // });
 
         peerConection.current
           ?.createOffer()
@@ -196,7 +196,7 @@ function UserCallComponent() {
     await peerConection.current?.setRemoteDescription(offer);
 
     navigator.mediaDevices
-      .getUserMedia({ video: false, audio: true })
+      .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         localStream.current = stream;
 
@@ -243,6 +243,19 @@ function UserCallComponent() {
   };
 
   const cutTheCall = () => {
+    if (localStream.current) {
+      localStream.current.getTracks().forEach((track) => track.stop());
+      localStream.current = undefined;
+    }
+  
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  
+    
     if (peerConection.current) {
       peerConection.current.close();
       peerConection.current = null;
@@ -258,13 +271,15 @@ function UserCallComponent() {
         <div className=" w-[100%] md:w-[60%] h-full md:h-[520px] bg-banner-gray flex flex-col justify-between rounded-sm">
           <div className="w-[100%] h-[300px]  flex flex-col justify-center items-center mt-4">
             <div className="w-[50%] h-[150px]  flex justify-between items-center  overflow-hidden bg-red">
-              {/* <video ref={""} autoPlay playsInline className="w-[40%] h-full  bg-green-300" /> */}
+              <h1>sender</h1>
+              <video ref={videoRef} autoPlay playsInline className="w-[40%] h-full  bg-green-300" />
               <video
                 ref={remoteVideoRef}
                 autoPlay
                 playsInline
                 className="w-[40%] h-full bg-blue-500 "
               />
+              <h1>Reciever</h1>
 
               {/* <img
                 src={img}
@@ -287,11 +302,11 @@ function UserCallComponent() {
                 <BsFillMicMuteFill className="text-xl" />
                 <AiFillAudio className="text-2xl hidden" />
               </div>
-              <div className="w-[20%] md:w-[10%] h-[50px] shadow-md hover:shadow-[0_10px_20px_rgba(255,_0,_0,_0.7)] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  bg-red rounded-full flex justify-center items-center animate-fadeInDownBig">
+              <div className="w-[20%] md:w-[10%] h-[50px] shadow-md hover:shadow-[0_10px_20px_rgba(255,_0,_0,_0.7)] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  bg-red rounded-full flex justify-center items-center animate-fadeInDownBig" onClick={cutTheCall}>
                 {" "}
                 <MdCallEnd
                   className="text-2xl text-white"
-                  onClick={cutTheCall}
+                  
                 />
               </div>
             </div>

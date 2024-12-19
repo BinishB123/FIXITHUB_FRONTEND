@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getbookingdates, stripePayment, } from "../../services/user/userServiceBooking";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
@@ -12,11 +12,14 @@ function UserBookingConfirm() {
     const location = useLocation()
     const [selectDate, setSelectedDate] = useState<undefined | string>(undefined)
     const [dates, setDates] = useState<{ count: number, date: Date, _id: string }[] | []>([])
-    
+    const navigate = useNavigate()
     const [suggestions,setsuggestion] = useState<string>("")
     const [selectedServices, setSelectedServices] = useState<{typeid: string; typename: string; startingprice: number; isAdded: boolean}[] | []>([])
     const {userInfo} = useSelector((state:RootState)=>state.user)
     useEffect(() => {  
+        if (!location.state) {
+            navigate('/services')
+          } else {
         
         getbookingdates(location.state.providerId).then((response: any) => { 
             console.log("location.state",location.state);  
@@ -36,6 +39,7 @@ function UserBookingConfirm() {
             setSelectedServices(filteredData)
             setDates(updatedData)
         })
+    }
 
     }, [])
     const calculatePercentage = (totalAmount:number, percentage=25) =>{

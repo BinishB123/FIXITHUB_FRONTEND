@@ -12,11 +12,15 @@ import { Workshop } from "../../interfaces/userInterface";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "sonner";
+import { getChatId } from "../../services/user/userProfile";
+import { useSelector } from "react-redux";
+import { RootState } from "../../Redux/store/store";
 
 function ShopProfile() {
     const location = useLocation()
     const [workshopDetails, setWorkshopDetails] = useState<Workshop | null>(null)
     const [isModal, setIsModal] = useState<boolean>(false)
+    const { userInfo } = useSelector((state: RootState) => state.user)
     const [selectService, setselectedService] = useState<{ typeid: string; typename: string; startingprice: number; isAdded: boolean }[] | []>([])
 
     const navigate = useNavigate()
@@ -111,6 +115,18 @@ function ShopProfile() {
 
     }
 
+
+
+    const chatCreation = (providerId: string, userId: string) => {
+        getChatId(providerId, userId).then((Response: any) => {
+            navigate(`/profile/chat/${Response.data.id}/${providerId}`)
+        }).catch((error) => {
+            console.log(error);
+
+        })
+
+    }
+
     return (
         <>
             <div className="bg-black h-auto w-[100%] flex flex-col items-center">
@@ -122,9 +138,10 @@ function ShopProfile() {
                             <img
                                 src={workshopDetails?.logoUrl}
                                 alt=""
-                                className="h-[100px] w-[100px] md:h-[80%] md:w-[80%] object-cover rounded-full"
+                                className="h-[100px] w-[100px] md:h-[80%] md:w-[80%] object-contain rounded-full"
                             />
                         </div>
+
                         {/* Workshop Details */}
                         <div className="h-[100px] md:h-full w-full md:w-[80%] flex flex-col justify-evenly px-4 md:px-2">
                             <h1 className="text-lg md:text-xl font-semibold text-white">
@@ -132,15 +149,15 @@ function ShopProfile() {
                             </h1>
                             {/* Desktop Description */}
                             <div className="hidden md:flex h-[160px] text-md text-gray-500">
-                            Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
-                        We take pride in providing high-quality service for all vehicle types.
-                        From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
-                        Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
-                        We take pride in providing high-quality service for all vehicle types.
-                        From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
-                        Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
-                        We take pride in providing high-quality service for all vehicle types.
-                        From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
+                                Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
+                                We take pride in providing high-quality service for all vehicle types.
+                                From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
+                                Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
+                                We take pride in providing high-quality service for all vehicle types.
+                                From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
+                                Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
+                                We take pride in providing high-quality service for all vehicle types.
+                                From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
                             </div>
                         </div>
                     </div>
@@ -174,7 +191,7 @@ function ShopProfile() {
                                 <h1 className="text-gray-300">Phone:</h1>
                                 <h1 className="text-white">{workshopDetails?.mobile}</h1>
                             </div>
-                            
+
                             <div className="flex w-[60%]  items-center space-x-1 px-2">
                                 <FaMapLocationDot className="text-2xl text-orange" />
                                 <h1 className="text-gray-300">Location:</h1>
@@ -183,9 +200,13 @@ function ShopProfile() {
                                 </h1>
                             </div>
                         </div>
-                       
+
                         <div className="w-full md:w-[30%] flex justify-around md:justify-end space-x-2 mt-4 md:mt-0">
-                            <button className="w-[40%] h- bg-orange text-white text-md font-semibold rounded-md flex items-center justify-center space-x-1">
+                            <button className="w-[40%] h- bg-orange text-white text-md font-semibold rounded-md flex items-center justify-center space-x-1" onClick={() => {
+                                if (userInfo) {
+                                    chatCreation(location.state.providerId, userInfo?.id)
+                                }
+                            }}>
                                 <span>Chat</span>
                                 <BsChatRightDotsFill className="text-xl" />
                             </button>

@@ -150,8 +150,6 @@ function AddBookings() {
                             <div className="w-[20%] h-[30px] ">
                                 <button className="w-[100%] rounded-md h-[40px] bg-orange flex justify-center items-center" onClick={()=>{
                                     if(item._id&&item.count>0){
-                                       console.log("ooo");
-                                       
                                         OnClickUpdateCount(item._id,"sub")
                                        }
                                 }}><GrFormSubtract className="text-2xl text-white " /></button>
@@ -159,7 +157,6 @@ function AddBookings() {
                             <div className="w-[60%] h-[50px]  flex flex-col justify-center items-center">
                             <h1 className=" h-[50px] text-center  text-white mt-4 text-sm"> {`Available count : ${item.count}`}</h1>
 
-                                <h1 className=" h-[50px] text-center  text-white mt-4 text-sm"> {`BookedCount : ${item.count}`}</h1>
 
                             </div>
                             <div className="w-[20%] h-[30px]  ">

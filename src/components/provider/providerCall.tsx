@@ -111,7 +111,7 @@ function ProviderCallComponent() {
     const offer = new RTCSessionDescription(response.offer);
     await peerConection.current?.setRemoteDescription(offer);
 
-    navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((stream) => {
         console.log("Callee: Local media stream obtained:", stream);
         localStream.current = stream;
@@ -140,7 +140,6 @@ function ProviderCallComponent() {
     if (peerConection.current) {
       peerConection.current.onicecandidate = (event) => {
         if (event.candidate) {
-
           socket?.emit("sendCandidate", { event: event.candidate, recieverid: params.userid });
         } else {
           console.log("Callee: All ICE candidates sent.");
@@ -168,13 +167,27 @@ function ProviderCallComponent() {
 
 
   const cutTheCall = () => {
+    if (localStream.current) {
+      localStream.current.getTracks().forEach((track) => track.stop());
+      localStream.current = undefined;
+    }
+  
+    if (providerSideVideoRef.current) {
+      providerSideVideoRef.current.srcObject = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  
+    
     if (peerConection.current) {
       peerConection.current.close();
       peerConection.current = null;
     }
+     
     setTimeout(() => {
       navigate(-1)
-    }, 5000)
+    }, 2000)
   }
 
 
@@ -194,7 +207,7 @@ function ProviderCallComponent() {
         peerConection.current?.addTrack(track, stream);
       });
 
-      peerConection.current?.addTransceiver('video', { direction: 'recvonly' });
+      // peerConection.current?.addTransceiver('video', { direction: 'recvonly' });
 
       peerConection.current?.createOffer().then((offer) => {
         socket?.emit('sendOffer', { receiver: params.userid, offer: offer, sendid: providerInfo?.id, callerData: response.callerData });
@@ -235,8 +248,10 @@ function ProviderCallComponent() {
         <div className=" w-[100%] md:w-[60%] h-full md:h-[520px] bg-banner-gray flex flex-col justify-between rounded-sm">
           <div className="w-[100%] h-[300px]  flex flex-col justify-center items-center mt-4">
             <div className="w-[50%] h-[150px]  flex justify-between items-center bg-red overflow-hidden">
+              <h1>provider side video</h1>
               <video ref={providerSideVideoRef} autoPlay playsInline className="w-[40%] h-full bg-gray-800 " />
-              {/* <video ref={videoRef} autoPlay playsInline className="w-[40%] h-full  bg-green-700" /> */}
+         
+              <video ref={videoRef} autoPlay playsInline className="w-[40%] h-full  bg-green-700" />
 
               {/* <img
                 src={img}
@@ -259,11 +274,11 @@ function ProviderCallComponent() {
                 <BsFillMicMuteFill className="text-xl" />
                 <AiFillAudio className="text-2xl hidden" />
               </div>
-              <div className="  w-[20%] md:w-[10%] h-[50px] shadow-md hover:shadow-[0_10px_20px_rgba(255,_0,_0,_0.7)] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  bg-red rounded-full flex justify-center items-center animate-fadeInDownBig">
-                {" "}
-                <MdCallEnd className="text-2xl text-white" onClick={() => {
+              <div className="  w-[20%] md:w-[10%] h-[50px] shadow-md hover:shadow-[0_10px_20px_rgba(255,_0,_0,_0.7)] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  bg-red rounded-full flex justify-center items-center animate-fadeInDownBig" onClick={() => {
                   cutTheCall()
-                }} />
+                }}>
+                {" "}
+                <MdCallEnd className="text-2xl text-white"  />
               </div>
             </div>
           </div>

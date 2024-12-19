@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { reset } from '../Redux/slice/userSlice';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import {  axiosInstance } from '../api/common';
+import { axiosInstance } from '../api/common';
 import { ReactNode, useEffect, useState } from 'react';
 import { AppDispatch, RootState } from '../Redux/store/store';
 import { useSelector } from 'react-redux';
@@ -72,55 +72,56 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
 
 const UserRoute = () => {
-    const [isModal,setModal] = useState<boolean>(false)
-    const {socket} = useSocket()
-    const [incomingcallResponse,setIncomingCallResponse] = useState<{success:boolean|null, getter:string|null, chatid: string|null
-        ,callerData:{workshopName:string|null,logoUrl:string|null}
-    }>({success:null,getter:null,chatid:null,callerData:{workshopName:null,logoUrl:null}})
-    useEffect(()=>{
-        socket?.on("incomingcall",(response)=>{
-            setIncomingCallResponse({success:response.success,getter:response.getter,chatid:response.chatid,callerData:response.callerData})
+    const [isModal, setModal] = useState<boolean>(false)
+    const { socket } = useSocket()
+    const [incomingcallResponse, setIncomingCallResponse] = useState<{
+        success: boolean | null, getter: string | null, chatid: string | null
+            , callerData: { workshopName: string | null, logoUrl: string | null }
+    }>({ success: null, getter: null, chatid: null, callerData: { workshopName: null, logoUrl: null } })
+    useEffect(() => {
+        socket?.on("incomingcall", (response) => {
+            setIncomingCallResponse({ success: response.success, getter: response.getter, chatid: response.chatid, callerData: response.callerData })
             setModal(true)
         })
 
-        return()=>{
+        return () => {
             socket?.off("incomingcall")
         }
-    },[socket])
-    const onChangeState =()=>{
+    }, [socket])
+    const onChangeState = () => {
         setModal(false)
     }
 
     return (
         <><Routes>
-        <Route path="/" element={<FixitHub />} >
-            <Route index element={<UserHomePage />} />
-            <Route path='services' element={<ProtectedRoute><ServicesPage /></ProtectedRoute>}>
-                <Route index element={<Services1stUi />} />
-                <Route path='selectGeneralservice' element={<ProtectedRoute><SelectServicePage value='general' /></ProtectedRoute>} />
-                <Route path='selectRoadAssistance' element={<ProtectedRoute><SelectServicePage value='road' /></ProtectedRoute>} />
-                <Route path='getuservehicleDetails' element={<ProtectedRoute><UserlocationAndvehicleDetailsPage /></ProtectedRoute>} />
-                <Route path='shoplist' element={<ProtectedRoute><ShopListPage /></ProtectedRoute>} />
-                <Route path='shopProfile' element={<ProtectedRoute><ShopProfilePage /></ProtectedRoute>} />
-                <Route path='confirmBooking' element={<UserBookingConfirmPage />} />
+            <Route path="/" element={<FixitHub />} >
+                <Route index element={<UserHomePage />} />
+                <Route path='services' element={<ProtectedRoute><ServicesPage /></ProtectedRoute>}>
+                    <Route index element={<Services1stUi />} />
+                    <Route path='selectGeneralservice' element={<ProtectedRoute><SelectServicePage value='general' /></ProtectedRoute>} />
+                    {/* <Route path='selectRoadAssistance' element={<ProtectedRoute><SelectServicePage value='road' /></ProtectedRoute>} /> */}
+                    <Route path='getuservehicleDetails' element={<ProtectedRoute><UserlocationAndvehicleDetailsPage /></ProtectedRoute>} />
+                    <Route path='shoplist' element={<ProtectedRoute><ShopListPage /></ProtectedRoute>} />
+                    <Route path='shopProfile' element={<ProtectedRoute><ShopProfilePage /></ProtectedRoute>} />
+                    <Route path='confirmBooking' element={<UserBookingConfirmPage />} />
+                </Route>
+                <Route path='/profile' element={<ProtectedRoute><UserProfilePage></UserProfilePage></ProtectedRoute>}>
+                    <Route index element={<ProtectedRoute><OverViewPage /></ProtectedRoute>} />
+                    <Route path='latestbooking' element={<ProtectedRoute><LatestBookingPage /></ProtectedRoute>} />
+                    <Route path='serviceHistory' element={<ProtectedRoute><BookingHistoryPage /></ProtectedRoute>} />
+                    <Route path='chat/:chatid/:providerid' element={<ProtectedRoute><ChatOutletPage /></ProtectedRoute>} />
+                </Route>
+                <Route path='/success' element={<BookingSuccessPage />} />
             </Route>
-            <Route path='/profile' element={<ProtectedRoute><UserProfilePage></UserProfilePage></ProtectedRoute>}>
-                <Route index element={<OverViewPage />} />
-                <Route path='latestbooking' element={<LatestBookingPage />} />
-                <Route path='serviceHistory' element={<BookingHistoryPage />} />
-                <Route path='chat/:chatid/:providerid' element={<ChatOutletPage />} />
-            </Route>
-            <Route path='/success' element={<BookingSuccessPage />} />
-        </Route>
-        <Route path='/call/:providerid' element={<UserCallPage></UserCallPage>} />
-        <Route path='/signup' element={<UserSignUP />} />
-        <Route path='/login' element={< UserSignInPage />} />
-        <Route path='/otpverify' element={<UserOtp />} />
+            <Route path='/call/:providerid' element={<ProtectedRoute><UserCallPage></UserCallPage></ProtectedRoute>} />
+            <Route path='/signup' element={<UserSignUP />} />
+            <Route path='/login' element={< UserSignInPage />} />
+            <Route path='/otpverify' element={<UserOtp />} />
 
 
-    </Routes>
-    {isModal&&<UserInCommigCallModal callerData={incomingcallResponse.callerData} setModal={onChangeState} success={incomingcallResponse.success} getter={incomingcallResponse.getter} chatid={incomingcallResponse.chatid}  />}
-    </>
+        </Routes>
+            {isModal && <UserInCommigCallModal callerData={incomingcallResponse.callerData} setModal={onChangeState} success={incomingcallResponse.success} getter={incomingcallResponse.getter} chatid={incomingcallResponse.chatid} />}
+        </>
     );
 };
 

@@ -401,7 +401,7 @@ function AdminSettingsComponent() {
                                         inputref.current?.click()
                                     }
                                 }}>
-                                <h1 className="text-sm font-dm font-semibold text-white tracking-wider">Click to service Add Icon</h1>
+                                <h1 className="text-sm font-dm font-semibold text-white tracking-wider">Click to  Add Icon</h1>
 
                                 </button>
                             <input
