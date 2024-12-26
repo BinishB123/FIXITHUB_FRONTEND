@@ -8,6 +8,7 @@ const settings = {
   addGeneralServiceOrRoadAssistance: commonSettingApi + "/addservices",
   addNewSubType: commonSettingApi + "/addSubtype",
   deleteSubType: commonSettingApi + "/deletesubtype",
+  editServiceName:commonSettingApi+'/editservicename'
 };
 
 export default settings;

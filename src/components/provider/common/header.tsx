@@ -3,13 +3,40 @@ import { TbBrandBooking } from "react-icons/tb";
 import { GiMechanicGarage } from "react-icons/gi";
 import { MdAddCircle } from "react-icons/md";
 import { RiProfileLine } from "react-icons/ri";
-import { FaRunning } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
+import { IoIosNotifications } from "react-icons/io";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Redux/store/store";
+import { notificationCounter } from "../../../services/provider/providerProfile";
+import { useSocket } from "../../../context/socketioContext";
 
 
 function Header() {
     const navigate = useNavigate()
     const location = useLocation()
+    const {socket} = useSocket()
+    const {providerInfo} = useSelector((state:RootState)=>state.provider)
+    const [notificationCount,setNotificationCount] = useState<number>(0)
+    
+    useEffect(()=>{
+        if (providerInfo?.id) {
+            notificationCounter(providerInfo.id).then((response:any)=>{
+            setNotificationCount(response.data.count)
+            })
+        }
+        socket?.on("notifictaionUpdated",(response:{count:number})=>{
+            console.log("response",response);
+            
+            setNotificationCount(response.count)
+         })
+
+         return ()=>{
+            socket?.off("notifictaionUpdated")
+        }
+
+    
+    },[socket])
    
 
     return (<>
@@ -50,9 +77,19 @@ function Header() {
                         }}>VIEW PROFILE</h1>
                 </div>
                 <div className="flex space-x-3 w-[100%] items-center">
-                    <FaRunning className="text-orange text-xl" />
-                    <h1 className={`font-dm font-semibold text-sm text-white hover:text-orange hover:scale-90 hover:text-md duration-200 ease-in animate-fadeInDownBig hover:border-b-2 hover:border-orange-400`}>Road Assistance</h1>
+                <div className="relative" >
+                                    <IoIosNotifications className="text-orange text-2xl" />
+                                   
+                                    <div className="absolute -top-3 -right-1 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center bg-green-500"
+                                    >
+                                        {notificationCount}
+                                    </div>
+                                </div>
+                    {/* <IoIosNotifications className="text-orange text-xl" /> */}
+                    <h1 className={`font-dm font-semibold text-sm text-white hover:text-orange hover:scale-90 hover:text-md duration-200 ease-in animate-fadeInDownBig hover:border-b-2 hover:border-orange-400`}>Notification</h1>
                 </div>
+                
+                
             </div>
         </div>
 

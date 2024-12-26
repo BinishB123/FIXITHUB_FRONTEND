@@ -7,8 +7,10 @@ import { IoMdClose } from "react-icons/io";
 import { axiosInstance } from "../../api/common";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { IoIosDoneAll } from "react-icons/io";
 import { Brand, FileDetails, generalServices, roadServices } from "../../interfaces/admin";
-import { addBrandApi, addVehicleTypeApi, addServicesApi, addNewSubTypeApi, deleteSubTypeApi } from "../../services/admin/settings";
+import { CiEdit } from "react-icons/ci";
+import { addBrandApi, addVehicleTypeApi, addServicesApi, addNewSubTypeApi, deleteSubTypeApi, callEditServiceName } from "../../services/admin/settings";
 
 
 
@@ -20,6 +22,7 @@ function AdminSettingsComponent() {
     const [isModal, setModalState] = useState<boolean>(false);
     const [vehicletype, setType] = useState<number>(0);
     const [brands, setBrands] = useState<Brand[]>([]);
+    const [editServiceName, setEditServiceName] = useState<{index:number|null,edit:boolean}>({index:null,edit:false})
     const [generalServices, setGeneralservices] = useState<generalServices[]>([]);
     const [roadServices, setroadServices] = useState<roadServices[]>([]);
     const [roadAssistance, setRoadAssistance] = useState<string>("");
@@ -92,8 +95,8 @@ function AdminSettingsComponent() {
         const formData = new FormData();
         const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
         if (!allowedTypes.includes(file.type)) {
-           toast.error("Add Image Type Only")
-            return 
+            toast.error("Add Image Type Only")
+            return
         }
 
         if (!file) {
@@ -161,8 +164,8 @@ function AdminSettingsComponent() {
                 setRoadAssistance("")
                 setroadServices([...(roadServices || []), created]);
             }
-        
-        
+
+
         } else {
             handleApiError(error, statusCode);
         }
@@ -219,6 +222,33 @@ function AdminSettingsComponent() {
             handleApiError(error, statusCode);
         }
     };
+
+
+    const handleEditServiceName = (id:string,name:string)=>{
+        if (generalService.trim()!="") {
+             if (generalService===name) {
+                return
+             } 
+            callEditServiceName(id,generalService).then(()=>{
+                const updatedData = generalServices.map((data)=>{
+                    if (data._id===id&&name===name) {
+                        
+                        return {...data,serviceType:generalService}
+                    }
+                    return data
+                })
+                setGeneralservices(updatedData)
+               
+                
+                setService("")
+                toast.success("service name updated")
+                setEditServiceName({index:null,edit:false})
+            }).catch((error:any)=>{
+                handleApiError(error,error.statusCode)
+            })
+        }
+        
+    }
 
     // Helper function to handle error and session expiration
     const handleApiError = (error: any, statusCode: number) => {
@@ -354,10 +384,33 @@ function AdminSettingsComponent() {
                                     <div className="w-[30%] h-[80%] ml-3 ">
                                         <img src={items.imageUrl} alt="" />
                                     </div>
-                                    <div className="w-[70%] h-[50%] overflow-hidden">
-                                        <h1 className="text-center font-bold text-sm ">
-                                            {items.serviceType}
-                                        </h1>
+                                    <div className="w-[70%] h-[50%] overflow-hidden flex justify-center space-x-2">
+                                        {
+                                            editServiceName.edit&&editServiceName.index===index ?
+                                                <>
+                                                <input className="w-[83%] h-[30px] bg-banner-gray outline-none border-b-2  " value={generalService}
+                                                    onChange={(e)=>{
+                                                        setService(e.target.value);
+                                                    }}
+                                                     />
+
+                                                    <IoIosDoneAll
+                                                        className="text-green-600 text-2xl cursor-pointer"
+                                                        onClick={() => {
+                                                            handleEditServiceName(items._id,items.serviceType)
+                                                        }}
+                                                    />
+                                                </>: <> <h1 className="text-center font-bold text-sm ">
+                                                    {items.serviceType}
+                                                </h1>
+                                                    <CiEdit
+                                                        className="text-blue-700 text-xl cursor-pointer"
+                                                        onClick={() => {
+                                                            setService(items.serviceType);
+                                                          setEditServiceName({index:index,edit:true})
+                                                        }}
+                                                    /></>
+                                        }
                                     </div>
                                     <div></div>
                                 </div>
@@ -385,7 +438,7 @@ function AdminSettingsComponent() {
                             </h1>
                         </div>
                         <div className="h-[60%] w-[95%]  flex justify-start space-x-4">
-                            
+
                             <input
                                 className="w-[25%]  text-center text-white text-sm rounded-sm bg-banner-gray  "
                                 type="text"
@@ -395,15 +448,15 @@ function AdminSettingsComponent() {
                                     setService(e.target.value);
                                 }}
                             />
-                           
-                                <button className="w-[25%] h-[50px] border-dashed border-2 rounded-md border-orange-400 flex justify-center items-center" onClick={()=>{
-                                    if (inputref.current) {
-                                        inputref.current?.click()
-                                    }
-                                }}>
+
+                            <button className="w-[25%] h-[50px] border-dashed border-2 rounded-md border-orange-400 flex justify-center items-center" onClick={() => {
+                                if (inputref.current) {
+                                    inputref.current?.click()
+                                }
+                            }}>
                                 <h1 className="text-sm font-dm font-semibold text-white tracking-wider">Click to  Add Icon</h1>
 
-                                </button>
+                            </button>
                             <input
                                 ref={inputref}
                                 type="file"
@@ -412,7 +465,7 @@ function AdminSettingsComponent() {
                                 placeholder="add icon"
                                 onChange={(e) => {
                                     setFile(e.target.files?.[0] ? e.target.files[0] : "");
-                                    
+
                                 }}
                                 name="images"
                             />

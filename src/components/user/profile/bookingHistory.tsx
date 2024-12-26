@@ -16,13 +16,15 @@ import { GrFormNext } from "react-icons/gr";
 export function BookingHistory() {
     const {userInfo} = useSelector((state:RootState)=>state.user)
     const [pageNumber,setPageNumber] = useState(0)
+    const [totalCount,setTotalCount] = useState<number>(0)
     const [startIndexAndEndIndex,setStartIndexAndEndIndex] = useState<{start:number,end:number}>({start:0,end:5})
     const navigate = useNavigate()
     const [serviceHistory,setHistory] = useState<ResponsegetBookingGreaterThanTodaysDate[]|[]>([])
     const [upanddown, setupanddown] = useState(false);
     const [indext, setindex] = useState<number|undefined>(undefined);
     const {socket} = useSocket()
-    const [totalCount,setTotalCount] = useState<number>(0)
+    const [addReview,setAddReview] = useState<boolean>(false)
+    const [viewReview,setViewReview] = useState<boolean>(false)
     const provideridRef = useRef<string|null>(null)
 
    
@@ -166,12 +168,22 @@ const checkUserisOnlinOrNotBeforeCalling = (providerid:string)=>{
                   <h1>{`Fuel Type: ${item.vechileDetails.fueltype}`}</h1>
                   <h1>{`Kilometer: ${item.vechileDetails.kilometer}`}</h1>
                   {
-              (  item.status==="completed"&&item.paymentStatus!=="paid") &&<div className="w-[60%] h-[100px] flex justify-center items-end">
-                <button className="w-[100%] h-[40px] bg-blue-600 rounded-md" onClick={()=>{
+                  (  item.status==="completed"&&item.paymentStatus!=="paid") &&<div className="w-[60%] h-[100px] flex justify-center items-end">
+                    <button className="w-[100%] h-[40px] bg-blue-600 rounded-md" onClick={()=>{
                   handleFullPayment(item._id,item.selectedService)
-                }}>{`pay ${Math.abs(item.selectedService.reduce((acc,cuu)=>acc+cuu.price,0)-item.advanceAmount)}`}</button>
+                   }}>{`pay ${Math.abs(item.selectedService.reduce((acc,cuu)=>acc+cuu.price,0)-item.advanceAmount)}`}</button>
                   </div>
-              }
+                 
+                 }
+
+                 {
+                  (item.status==="completed"&&item.paymentStatus==="paid")&&
+                  <div className="w-[60%] h-[100px] flex justify-center items-end">
+                   <button className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold " onClick={()=>{
+                  }}>Add Review</button>
+                  </div>
+                   
+                 }
                 </div>
 
                 {/* Center Section */}
@@ -215,20 +227,16 @@ const checkUserisOnlinOrNotBeforeCalling = (providerid:string)=>{
                     setPageNumber(pageNumber<=0?0:pageNumber-1)
                 
                 }} >
-                  {pageNumber+1>1&&                <GrFormNext className="text-xl text-white rotate-180" />
+                  {pageNumber+1>1&& <GrFormNext className="text-xl text-white rotate-180" />
                   }
                 </div>
                 <div className="w-[4%] h-[40px] bg-orange flex items-center justify-center rounded-md">
                   <h1 className="text-white text-center">{pageNumber+1}</h1>
                 </div>
-                <div className={`w-[4%] h-[40px] bg-orange flex  ${startIndexAndEndIndex.start+10> Math.ceil(totalCount / 5) * 5 ?"hidden":"flex"} items-center justify-center rounded-md`} onClick={()=>{
-                                      onClickPagination(startIndexAndEndIndex.start+5)
-
-                  setStartIndexAndEndIndex({start:startIndexAndEndIndex.start+5,end:startIndexAndEndIndex.end*(pageNumber+1)})
-                 
-                    setPageNumber(pageNumber+1)
-
-                
+                <div className={`w-[4%] h-[40px] bg-orange flex ${startIndexAndEndIndex.start+10> Math.ceil(totalCount / 5) * 5 ?"hidden":"flex"} items-center justify-center rounded-md`} onClick={()=>{
+                     onClickPagination(startIndexAndEndIndex.start+5)
+                     setStartIndexAndEndIndex({start:startIndexAndEndIndex.start+5,end:startIndexAndEndIndex.end*(pageNumber+1)})
+                     setPageNumber(pageNumber+1)
                 }}>
                 <GrFormNext className="text-xl text-white" />
                 </div>

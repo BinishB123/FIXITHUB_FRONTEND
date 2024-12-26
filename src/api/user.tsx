@@ -1,4 +1,3 @@
-import { getChatId } from "../services/user/userProfile";
 import { apiUrl } from "./common";
 
 const serviceApi = apiUrl + "/api/user/service";
@@ -26,4 +25,6 @@ export const userProfile = {
   getChatOfOneToOne: apiToProfile + "/getchatofOneToOne",
   fetchChat: apiToProfile + "/getchat",
   addMessage: apiToProfile + "/newmessage",
+  notification:apiToProfile+'/notificationUpdater',
+  notificationGetter:apiToProfile+'/notificationGetter'
 };

@@ -12,37 +12,48 @@ function ProviderChatComponnent() {
   const messagedivref = useRef<HTMLDivElement>(null);
   const { providerInfo } = useSelector((state: RootState) => state.provider);
   const [message, setMessage] = useState<string>("");
-  const [typing, setTyping] = useState<{ typer: "user" | "provider", indicate: "typing...." | null }>({ typer: "user", indicate: null })
+  const [typing, setTyping] = useState<{
+    typer: "user" | "provider";
+    indicate: "typing...." | null;
+  }>({ typer: "user", indicate: null });
 
-  const [chatConverstaion, setChatConverstaion] = useState<IChatingUser | null>(null);
+  const [chatConverstaion, setChatConverstaion] = useState<IChatingUser | null>(
+    null
+  );
   const { socket } = useSocket();
-  const [online, setOnline] = useState<boolean>(false)
-  const params = useParams()
+  const [online, setOnline] = useState<boolean>(false);
+  const params = useParams();
 
   useEffect(() => {
-
     getOneToOneChat(params.chatid + "").then((response: any) => {
-      setChatConverstaion(response.data.data)
-      socket?.emit("oppositeGuysIsInOnlineOrNot", { userId: params.userid, emitTo: providerInfo?.id })
-    })
+      setChatConverstaion(response.data.data);
+      socket?.emit("oppositeGuysIsInOnlineOrNot", {
+        userId: params.userid,
+        emitTo: providerInfo?.id,
+      });
+    });
     socket?.on("isOnline", (response) => {
-      setOnline(response.online)
-    })
+      setOnline(response.online);
+    });
     socket?.on("userOffline", (response) => {
-     
       if (params.userid === response.id) {
-        setOnline(response.online)
+        setOnline(response.online);
       }
-
-
-    })
+    });
     socket?.on("setup", (response) => {
       if (params.userid === response.id) {
-        setOnline(true)
+        setOnline(true);
       }
-    })
-    socket?.emit("join-chat", params.chatid)
+    });
+    socket?.emit("join-chat", params.chatid);
     socket?.on("receivemessage", (response) => {
+
+      if (response.response.sender==="user") {
+        socket.emit("updateMessageseen",{messageId:response.response._id})
+       }
+          
+        
+
       setChatConverstaion((prev) => {
         if (prev && prev._id === response.response.chatId) {
           return {
@@ -52,61 +63,33 @@ function ProviderChatComponnent() {
         }
         return prev;
       });
-      if (response.response.sender === "provider") {
-        socket.emit("updatelivemessageSeen", ({ messageid: response.response._id, chatid: params.chatid }))
-        socket.on("livemessageupdated", (response) => {
-          if (response.chatid === params.chatid) {
-            const updatedMessage = chatConverstaion?.messages?.map((data) => {
-              if (data._id === response.response._id) {
-                return { ...data, seen: true }
-              }
-              return data
-            })
-            setChatConverstaion((prev) => {
-              if (prev && prev._id === response.response.chatId) {
-                return {
-                  ...prev,
-                  messages: updatedMessage,
-                };
-              }
-              return prev;
-            });
-          }
-        })
-      }
+     
     });
 
     socket?.on("typing", (response) => {
       if (response.typer === "user") {
-        setTyping({ typer: response.typer, indicate: "typing...." })
+        setTyping({ typer: response.typer, indicate: "typing...." });
         setTimeout(() => {
-          setTyping({ typer: "provider", indicate: null })
-        }, 5000)
+          setTyping({ typer: "provider", indicate: null });
+        }, 5000);
       }
-
-    })
+    });
 
     socket?.on("setup", (response) => {
       if (response.id === params.userid) {
-        setOnline(true)
+        setOnline(true);
       }
-
-    })
+    });
 
     return () => {
       socket?.off("receivemessage");
-      socket?.off("join-chat")
-      socket?.off("typing")
-      socket?.off("isOnline")
-      socket?.off("userOffline")
-      socket?.off("setup")
-    }
-
+      socket?.off("join-chat");
+      socket?.off("typing");
+      socket?.off("isOnline");
+      socket?.off("userOffline");
+      socket?.off("setup");
+    };
   }, [socket]);
- 
-
-
-
 
   useEffect(() => {
     if (messagedivref.current) {
@@ -131,16 +114,11 @@ function ProviderChatComponnent() {
     setMessage("");
   };
 
-
   const typingIndicator = () => {
-    socket?.emit("isTyping", { typer: "provider", chatid: params.chatid })
-  }
+    socket?.emit("isTyping", { typer: "provider", chatid: params.chatid });
+  };
 
-
-  const  callUser = ()=>{
-    
-  }
-
+  const callUser = () => { };
 
   return (
     <>
@@ -202,9 +180,10 @@ function ProviderChatComponnent() {
         </div>
         {/*  end chat listing */}
         <div
-          className={`${!chatConverstaion ? "w-[100%]" : " w-[100%] md:w-[60%]"} h-[580px]  ${chatConverstaion
-            ? "flex flex-col"
-            : "flex justify-center items-center"
+          className={`${!chatConverstaion ? "w-[100%]" : " w-[100%] md:w-[60%]"
+            } h-[580px]  ${chatConverstaion
+              ? "flex flex-col"
+              : "flex justify-center items-center"
             } bg-banner-gray `}
         >
           {chatConverstaion ? (
@@ -225,17 +204,28 @@ function ProviderChatComponnent() {
                     </h1>
                   </div>
                   <div className="w-[100%] h-[80px]   ">
-                    {
-                      online === true ? <h1 className="truncate text-green-500 text-sm mt-3 animate-pulse  ">{(online && !typing.indicate) ? "online" : (typing.indicate && typing.typer === "user") && typing.indicate}</h1>
-                        : <h1 className="truncate text-gray-400 text-sm mt-3 animate-pulse  ">Offline</h1>
-
-                    }
+                    {online === true ? (
+                      <h1 className="truncate text-green-500 text-sm mt-3 animate-pulse  ">
+                        {online && !typing.indicate
+                          ? "online"
+                          : typing.indicate &&
+                          typing.typer === "user" &&
+                          typing.indicate}
+                      </h1>
+                    ) : (
+                      <h1 className="truncate text-gray-400 text-sm mt-3 animate-pulse  ">
+                        Offline
+                      </h1>
+                    )}
                   </div>
                 </div>
                 <div className="w-[30%]  flex justify-center items-center">
-                  <MdOutlineCall className="text-2xl text-blue-500" onClick={()=>{
-                    callUser()
-                  }} />
+                  <MdOutlineCall
+                    className="text-2xl text-blue-500"
+                    onClick={() => {
+                      callUser();
+                    }}
+                  />
                 </div>
               </div>
               <div className="w-[100%] h-[460px]  bg-black">
@@ -256,10 +246,15 @@ function ProviderChatComponnent() {
                                 <p className=" text-white break-words text-sm text-start ml-2 pr-2 mt-1 mb-2 font-medium rounded-md">
                                   {data.message}
                                 </p>
-                                <p className="text-end text-sm text-white mr-3 tracking-tighter">{`${new Date(data.createdAt).getHours() +
-                                  " : " +
-                                  new Date(data.createdAt).getMinutes()
-                                  }`}</p>
+                                <p className="text-end text-sm text-white mr-3 tracking-tighter">
+                                  {`${new Date(data.createdAt).toLocaleString('en-IN', {
+                                    timeZone: 'Asia/Kolkata',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true,
+                                  })}`}
+                                </p>
+
                               </div>
                             </div>
                           ) : (
@@ -268,15 +263,20 @@ function ProviderChatComponnent() {
                                 <p className=" text-white break-words text-sm text-start mr-2 pl-3 mt-1 mb-2 font-medium rounded-md">
                                   {data.message}
                                 </p>
-                                <p className="text-end text-sm text-white mr-3 tracking-tighter">{`${new Date(data.createdAt).getHours() +
-                                  " : " +
-                                  new Date(data.createdAt).getMinutes()
-                                  }`}</p>
+                                <p className="text-end text-sm text-white mr-3 tracking-tighter">
+                                  {`${new Date(data.createdAt).toLocaleString('en-IN', {
+                                    timeZone: 'Asia/Kolkata',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    hour12: true,
+                                  })}`}
+                                </p>
                                 <div className="w-[100%] h-[5px] hidden ">
-                                  <p className="text-sm text-gray-500 text-end">{data.seen ? "seen" : "Not seen"}</p>
+                                  <p className="text-sm text-gray-500 text-end">
+                                    {data.seen ? "seen" : "Not seen"}
+                                  </p>
                                 </div>
                               </div>
-
                             </div>
                           )}
                         </>
@@ -294,8 +294,8 @@ function ProviderChatComponnent() {
                   <input
                     value={message}
                     onChange={(e) => {
-                      typingIndicator()
-                      setMessage(e.target.value)
+                      typingIndicator();
+                      setMessage(e.target.value);
                     }}
                     maxLength={151}
                     className="w-[100%] ml-3   text-white bg-banner-gray h-[40px] rounded-md pl-3"
@@ -327,7 +327,8 @@ function ProviderChatComponnent() {
                   No Active Chat Selected
                 </h1>
                 <p className="text-sm">
-                  Click on a customer's name from the list on the Any of Bookings
+                  Click on a customer's name from the list on the Any of
+                  Bookings
                 </p>
                 <p className="mt-4 text-gray-500">
                   Build strong relationships with your customers by engaging in

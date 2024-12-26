@@ -12,7 +12,8 @@ export const providerProfile = {
   changelogo: apiToProfile + "/changelogo",
   getChatId: apiToProfile + "/getchatid",
   getOnetoOneChat:apiToProfile+'/getonetonechat',
-  addMessage:apiToProfile+"/newmessage"
+  addMessage:apiToProfile+"/newmessage",
+  notificationCounterUpdater:apiToProfile+'/notificationCounterUpdater'
 };
 
 const apiToBookingDate = apiUrl + "/api/provider/bookings";

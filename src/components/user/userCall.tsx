@@ -30,6 +30,7 @@ const servers: RTCConfiguration = {
 function UserCallComponent() {
   const { socket } = useSocket();
   const navigate = useNavigate();
+  const [mute,setMute] = useState<boolean>(false)
   const { userInfo } = useSelector((state: RootState) => state.user);
   const localStream = useRef<MediaStream | undefined>();
   const peerConection = useRef<RTCPeerConnection | null>(null);
@@ -265,6 +266,18 @@ function UserCallComponent() {
     }, 2000);
   };
 
+
+  const onClickMuteUnmute = ()=>{
+    if (localStream.current) {
+      const isNowMuted = !mute;
+      localStream.current.getVideoTracks().forEach((track) => {
+        track.enabled = !isNowMuted;
+      });
+    setMute(!mute)
+
+  }
+}
+
   return (
     <>
       <div className="w-[100%] h-[742px] bg-black flex justify-center items-center">
@@ -298,9 +311,11 @@ function UserCallComponent() {
           </div>
           <div className="w-[100%] h-[100px] flex justify-center items-center cursor-pointer">
             <div className=" w-[100%] md:w-[50%] h-[100px]   flex justify-center space-x-4">
-              <div className="w-[20%] hidden md:w-[10%] h-[50px] bg-gray-600 rounded-full flex justify-center items-center">
-                <BsFillMicMuteFill className="text-xl" />
-                <AiFillAudio className="text-2xl hidden" />
+              <div className="w-[20%]  md:w-[10%] h-[50px] bg-gray-600 rounded-full flex justify-center items-center" onClick={onClickMuteUnmute}>
+                {
+                  !mute?<AiFillAudio className="text-2xl " />:<BsFillMicMuteFill className="text-xl"  />
+
+                }
               </div>
               <div className="w-[20%] md:w-[10%] h-[50px] shadow-md hover:shadow-[0_10px_20px_rgba(255,_0,_0,_0.7)] transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  bg-red rounded-full flex justify-center items-center animate-fadeInDownBig" onClick={cutTheCall}>
                 {" "}

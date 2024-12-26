@@ -2,7 +2,6 @@ import img from "../../../../src/assets/user.png";
 import { RiImageEditFill } from "react-icons/ri";
 import { IoIosDoneAll } from "react-icons/io";
 import { motion } from "framer-motion";
-
 import { CiEdit } from "react-icons/ci";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";

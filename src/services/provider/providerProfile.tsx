@@ -37,3 +37,14 @@ export const addNewMessage = (sender:string,chatId:string,message:string)=>{
     })
   })
 }
+
+
+export const notificationCounter = (id:string)=>{
+  return new Promise((resolve,reject)=>{
+    axiosInstance.get(providerProfile.notificationCounterUpdater+`/${id}`).then((response)=>{
+      resolve(response)
+    }).catch((error)=>{
+      reject(error)
+    })
+  })
+}

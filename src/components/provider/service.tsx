@@ -15,11 +15,16 @@ import { useNavigate } from "react-router-dom";
 import { getChatId } from "../../services/provider/providerProfile";
 import { useSocket } from "../../context/socketioContext";
 import { toast } from "sonner";
+import { GrFormNext } from "react-icons/gr";
 
 
 function Services() {
   const { providerInfo } = useSelector((state: RootState) => state.provider);
   const [searchString, setSearchString] = useState<any>("");
+  const [pageNumber,setPageNumber] = useState(0)
+    const [totalCount,setTotalCount] = useState<number>(0)
+    const [startIndexAndEndIndex,setStartIndexAndEndIndex] = useState<{start:number,end:number}>({start:0,end:5})
+
   const {socket} = useSocket()
    const useridRef = useRef<string|null>(null)
   const [isModal, setModalState] = useState<boolean>(false);
@@ -55,9 +60,11 @@ function Services() {
 
    useEffect(() => {
     if (providerInfo) {
-      getBookingStillTodaysDate(providerInfo?.id).then((response: any) => {
+      getBookingStillTodaysDate(providerInfo?.id,0).then((response: any) => {
+       
         setDummyServiceDatas(response.data.data);
         setServiceDatas(response.data.data);
+        setTotalCount(response.count)
       });
     }
   }, []);
@@ -91,6 +98,7 @@ function Services() {
     if (providerInfo) {
       getBookingStillTodaysDate(
         providerInfo.id,
+        startIndexAndEndIndex.start,
         status === "GetAll Services" ? undefined : status
       )
         .then((response: any) => {
@@ -153,6 +161,17 @@ function Services() {
        socket?.emit("checkOnlineorNot",{userid:userid,providerid:providerInfo?.id,checker:"provider"}) 
   }
 
+
+  const onClickPagination = (start:number)=>{
+    if (providerInfo) {
+      getBookingStillTodaysDate(providerInfo?.id,start).then((response: any) => {
+       
+        setDummyServiceDatas(response.data.data);
+        setServiceDatas(response.data.data);
+      });
+    
+  }
+}
   
 
 
@@ -212,7 +231,8 @@ function Services() {
                            <img src={sample} width={200} alt="" />
                         </div>
           </div>
-          <div className="w-[70%] h-[600px]   ml-2 space-y-2 overflow-y-scroll  scrollbar-hide ">
+          <div className="w-[70%] h-[600px] ">
+            <div className="w-[100%] h-[560px]   ml-2 space-y-2 overflow-y-scroll  scrollbar-hide  ">
             {dummyServiceDatas.map((item, index) => (
               <div  className="w-[95%] animate-fadeInDownBig h-[70px]  bg-banner-gray flex rounded-md space-x-2 justify-between" key={index}>
                 <div className="w-[15%] h-[70px]  text-white flex flex-col justify-center items-center">
@@ -262,6 +282,35 @@ function Services() {
                 </div>
               </div>
             ))}
+            </div>
+            <div className="w-[100%] h-[40px]  flex justify-center items-start space-x-2 cursor-pointer rounded-md">
+                           <div className={`w-[4%] h-[40px] bg-orange ${pageNumber+1>1?"flex":"hidden"} items-center justify-center rounded-md`} onClick={()=>{
+                                                onClickPagination(startIndexAndEndIndex.start<0?0:startIndexAndEndIndex.start-10)
+            
+                              setStartIndexAndEndIndex({start:startIndexAndEndIndex.start<0?0:startIndexAndEndIndex.start-10,end:startIndexAndEndIndex.end<10?10: startIndexAndEndIndex.end-5})
+                
+                                setPageNumber(pageNumber<=0?0:pageNumber-1)
+                            
+                            }} >
+                              {pageNumber+1>1&& <GrFormNext className="text-xl text-white rotate-180" />
+                              }
+                            </div>
+                            <div className="w-[4%] h-[40px] bg-orange flex items-center justify-center rounded-md">
+                              <h1 className="text-white text-center">{pageNumber+1}</h1>
+                            </div>
+                            <div className={`w-[4%] h-[40px] bg-orange flex  ${startIndexAndEndIndex.start+10> Math.ceil(totalCount / 10) * 10 ?"hidden":"flex"} items-center justify-center rounded-md`} onClick={()=>{
+                                 onClickPagination(startIndexAndEndIndex.start+10)
+            
+                              setStartIndexAndEndIndex({start:startIndexAndEndIndex.start+10,end:startIndexAndEndIndex.end*(pageNumber+1)})
+                             
+                                setPageNumber(pageNumber+1)
+            
+                            
+                            }}>
+                            <GrFormNext className="text-xl text-white" />
+                            </div>
+            
+                          </div>
           </div>
         </div>
       </div>

@@ -66,3 +66,14 @@ export const deleteSubTypeApi = async (id: string, typeToDelete: string) => {
         return { error, statusCode };
     }
 };
+
+
+export const callEditServiceName = (id:string,newName:string)=>{
+    return new Promise((resolve,reject)=>{
+        axiosInstance.patch(settings.editServiceName+`/${id}`,{newName:newName}).then((response)=>{
+            resolve(response)
+        }).catch((error)=>{
+            reject(error)
+        })
+    })
+}

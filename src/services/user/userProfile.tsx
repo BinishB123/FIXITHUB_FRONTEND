@@ -16,7 +16,7 @@ export const getChatId = (providerId:string,userId:string)=>{
 
 export const getChatOfOneToOne = (chatId:string)=>{
       return new Promise((resolve,reject)=>{
-        axiosInstance.post(userProfile.getChatOfOneToOne+`/${chatId}`).then((response)=>{
+        axiosInstance.post(userProfile.getChatOfOneToOne+`/${chatId}/user`).then((response)=>{
             resolve(response)
             console.log(response);
             
@@ -43,6 +43,28 @@ export const addNewMessage = (sender:string,chatId:string,message:string)=>{
   return new Promise((resolve,reject)=>{
     axiosInstance.post(userProfile.addMessage,{sender,chatId,message}).then((response)=>{
       resolve(response)
+    }).catch((error)=>{
+      reject(error)
+    })
+  })
+}
+
+
+export const NotificationUpdater = (id:string)=>{
+  return new Promise((resolve,reject)=>{
+    axiosInstance.get(userProfile.notification+`/${id}`).then((response)=>{
+      resolve(response)
+    }).catch((error)=>{
+      reject(error)
+    })
+  })
+}
+
+
+export const notificationGetter = (id:string)=>{
+  return new Promise((resolve,reject)=>{
+    axiosInstance.get(userProfile.notificationGetter+`/${id}`).then((Response)=>{
+      resolve(Response)
     }).catch((error)=>{
       reject(error)
     })
