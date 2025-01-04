@@ -47,7 +47,7 @@ export function ChatComponenet() {
     socket?.on("receivemessage", (response) => {
     
      
-     if (response.response.sender==="provider") {
+     if (response.response.sender==="provider") { 
       socket.emit("updateMessageseen",{messageId:response.response._id})
      }
         

@@ -48,3 +48,13 @@ export const notificationCounter = (id:string)=>{
     })
   })
 }
+
+export const notificationGetter = (id:string)=>{
+  return new Promise((resolve,reject)=>{
+    axiosInstance.get(providerProfile.notificationGetter+`/${id}`).then((response)=>{
+      resolve(response)
+    }).catch((error)=>{
+      reject(error)
+    })
+  })
+}

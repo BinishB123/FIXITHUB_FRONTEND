@@ -76,7 +76,9 @@ function Header() {
                             navigate('/provider/profile')
                         }}>VIEW PROFILE</h1>
                 </div>
-                <div className="flex space-x-3 w-[100%] items-center">
+                <div className="flex space-x-3 w-[100%] items-center" onClick={()=>{
+                    navigate('/provider/notification')
+                }}>
                 <div className="relative" >
                                     <IoIosNotifications className="text-orange text-2xl" />
                                    
@@ -86,7 +88,10 @@ function Header() {
                                     </div>
                                 </div>
                     {/* <IoIosNotifications className="text-orange text-xl" /> */}
-                    <h1 className={`font-dm font-semibold text-sm text-white hover:text-orange hover:scale-90 hover:text-md duration-200 ease-in animate-fadeInDownBig hover:border-b-2 hover:border-orange-400`}>Notification</h1>
+                    <h1 className={`font-dm font-semibold text-sm ${location.pathname !== '/provider/notification'
+                            ? "text-white"
+                            : "text-orange border-b-2 border-orange-400"
+                        } hover:scale-90 hover:text-md duration-200 ease-in animate-fadeInDownBig hover:border-b-2 hover:border-orange-400`}>Notification</h1>
                 </div>
                 
                 

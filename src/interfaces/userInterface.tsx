@@ -140,6 +140,7 @@ interface BookedDate {
 
 interface ServiceName {
   serviceType: string;
+  _id:string
 }
 
 interface VehicleDetails {
@@ -173,7 +174,8 @@ export interface ResponsegetBookingGreaterThanTodaysDate {
   brand: {
     brand: string
   }
-  suggestions: string
+  suggestions: string,
+  review?:string|null
 }
 
 
@@ -196,8 +198,8 @@ export interface NotificationGetter {
   };
   providerId: string; // ObjectId represented as a string
   updatedAt: string; // ISO date string
-  user: {
-    name: string;
+  provider: {
+    workshopName: string;
     logoUrl: string;
   };
   userId: string; // ObjectId represented as a string
@@ -205,8 +207,22 @@ export interface NotificationGetter {
 }
 
 
+export interface responseGetReviewDetails{
+  _id: string;  
+  userId: string;
+  ServiceId: string;
+  bookingId: string;
+  opinion: string;
+  reply: string | null;
+  like: boolean;
+  images: { url: string }[];
+  provider:{
+    _id:string
+    logoUrl:string
+    workshopName:string
+  }
 
-
+}
 
 
 

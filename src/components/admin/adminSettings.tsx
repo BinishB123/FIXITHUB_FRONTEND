@@ -229,6 +229,10 @@ function AdminSettingsComponent() {
              if (generalService===name) {
                 return
              } 
+             const data = generalServices.find((data)=>data.serviceType.toLowerCase()===generalService.toLowerCase())
+             if (data) {
+                return toast.warning("Cannot same service type")
+             }
             callEditServiceName(id,generalService).then(()=>{
                 const updatedData = generalServices.map((data)=>{
                     if (data._id===id&&name===name) {

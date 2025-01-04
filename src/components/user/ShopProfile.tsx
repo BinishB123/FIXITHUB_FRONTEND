@@ -43,15 +43,11 @@ function ShopProfile() {
             axiosInstance.get(`${services.getshopdetail}?serviceId=${location.state.data.seviceId}&vehicleType=${location.state.data.vehicleType}&providerId=${location.state.providerId}`)
                 .then((response) => {
                     const { shopDetail } = response.data;
-                    console.log("res", shopDetail);
-
                     setWorkshopDetails((prev) => {
-
                         const updatedServices = shopDetail.services.map((service: any) => {
                             const matchedService = data?.find((stored: { typeid: string; typename: string; startingprice: number; isAdded: boolean }) => stored.typeid === service.typeid);
                             return matchedService ? { ...service, ...matchedService } : service;
                         });
-
                         return {
                             ...shopDetail,
                             services: updatedServices,

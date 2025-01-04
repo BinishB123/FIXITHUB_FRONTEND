@@ -14,6 +14,12 @@ export const services = {
   servicHistory: serviceApi + "/servicehistory",
   makefullpayement: serviceApi + "/makefullpayment",
   cancelBooking: serviceApi + "/cancelpayment",
+  addReview :serviceApi+"/addReview",
+  getreviewdetails:serviceApi+"/getreviewdetails",
+  deleteanimage:serviceApi+"/deleteanimage",
+  editreview:serviceApi+"/editreview",
+  addanimage:serviceApi+"/addanimage"
+  
 };
 
 export const userAuth = {

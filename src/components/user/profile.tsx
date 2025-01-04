@@ -21,7 +21,6 @@ function UserProfile() {
         if (userInfo?.id) {
             NotificationUpdater(userInfo?.id).then((response:any)=>{
                 setNotificationCount(response.data.count)
-                
             })
         }
         

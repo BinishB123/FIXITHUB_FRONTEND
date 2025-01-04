@@ -16,6 +16,8 @@ function UserNotification() {
     useEffect(() => {
         if (userInfo?.id) {
             notificationGetter(userInfo?.id).then((response:any) => {
+                console.log(response);
+                
                 setNotification(response.data.notfiyData)
             })
 
@@ -42,7 +44,7 @@ function UserNotification() {
             {notification.map((data, index) => (<div className="w-[100%] h-[70px] bg-banner-gray rounded-md flex " key={index}>
                 <div className="w-[50%] h-[70px] flex flex-col justify-between">
                     <div className="w-[50%]  h-[30px]">
-                        <h1 className="text-md font-dm font-semibold text-white pl-4 pt-2">{data.user.name}</h1>
+                        <h1 className="text-md font-dm font-semibold text-white pl-4 pt-2">{data.provider.workshopName}</h1>
                     </div>
                     <div className="w-[50%]  h-[30px]">
                     </div>

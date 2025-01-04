@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { ImHappy2 } from "react-icons/im";
-import {  useLocation, useNavigate} from "react-router-dom";
+import {  useNavigate} from "react-router-dom";
 function BookingSucess(){
         const navigate = useNavigate()
         

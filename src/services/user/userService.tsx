@@ -11,7 +11,6 @@ export const updateOrAddImageService = async (
 ) => {
     try {
         const formData = new FormData();
-        console.log(image,id);
         
         formData.append("files", image);
         formData.append("id", id); 

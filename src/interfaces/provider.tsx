@@ -123,3 +123,32 @@ export interface IproviderReponseData {
     logoUrl:string
     mobile:number
   }
+
+
+
+
+  export interface NotificationGetter {
+    count: number;
+    createdAt: string; // ISO date string
+    latestMessage: string; // ObjectId represented as a string
+    message: {
+      _id: string; // ObjectId represented as a string
+      sender: string;
+      chatId: string; // ObjectId represented as a string
+      message: string;
+      providerdelete: boolean;
+      userdelete: boolean;
+      seen: boolean;
+      createdAt: string; // ISO date string
+      updatedAt: string; // ISO date string
+      __v: number;
+    };
+    providerId: string; // ObjectId represented as a string
+    updatedAt: string; // ISO date string
+    user: {
+      name: string;
+      logoUrl: string;
+    };
+    userId: string; // ObjectId represented as a string
+    _id: string; // ObjectId represented as a string
+  }

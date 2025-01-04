@@ -1,4 +1,4 @@
-import { transform } from "typescript";
+// import { transform } from "typescript";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -6,7 +6,7 @@ export default {
   theme: {
    
     extend: {
-
+     
       textShadow: {
         blue: '2px 2px 5px rgba(0, 0, 255, 0.6)',  
       },
@@ -20,6 +20,9 @@ export default {
       fontFamily: {
         dm: ["DM Sans"],
         "days-one": ["Days One"],
+      },
+      outlineColor:{
+        red : '#ff0000'
       },
       backgroundColor: {
         signcardblue: "#0A1418",

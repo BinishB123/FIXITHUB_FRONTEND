@@ -298,7 +298,13 @@ function Services() {
                             <div className="w-[4%] h-[40px] bg-orange flex items-center justify-center rounded-md">
                               <h1 className="text-white text-center">{pageNumber+1}</h1>
                             </div>
-                            <div className={`w-[4%] h-[40px] bg-orange flex  ${startIndexAndEndIndex.start+10> Math.ceil(totalCount / 10) * 10 ?"hidden":"flex"} items-center justify-center rounded-md`} onClick={()=>{
+                            <div className="w-[4%] h-[40px] bg-orange flex items-center justify-center rounded-md" onClick={()=>{
+                              onClickPagination(startIndexAndEndIndex.start+10)
+                              
+                            }}>
+                              <h1 className="text-white text-center">{pageNumber+2}</h1>
+                            </div>
+                            <div className={`w-[4%] h-[40px] bg-orange flex   ${startIndexAndEndIndex.start+10> Math.ceil(totalCount / 10) * 10 ?"hidden":"flex"} items-center justify-center rounded-md`} onClick={()=>{
                                  onClickPagination(startIndexAndEndIndex.start+10)
             
                               setStartIndexAndEndIndex({start:startIndexAndEndIndex.start+10,end:startIndexAndEndIndex.end*(pageNumber+1)})

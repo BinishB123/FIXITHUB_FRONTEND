@@ -51,6 +51,9 @@ function userSignIn() {
   }, [success, error, message]);
 
   const signIn = () => {
+    if (userInfo) {
+      return
+    }
     const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formstate.email.trim());
     if (!isValidEmail || formstate.email.trim() === '') {
       setvalidation({ field: "email", message: "please provide a valid emailid" })
