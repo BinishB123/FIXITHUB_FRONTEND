@@ -1,7 +1,7 @@
 import { RiDashboardHorizontalLine } from "react-icons/ri";
 import { TbBrandBooking } from "react-icons/tb";
 import { GiMechanicGarage } from "react-icons/gi";
-import { MdAddCircle } from "react-icons/md";
+import { MdAddCircle, MdOutlineReviews } from "react-icons/md";
 import { RiProfileLine } from "react-icons/ri";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoIosNotifications } from "react-icons/io";
@@ -92,6 +92,10 @@ function Header() {
                             ? "text-white"
                             : "text-orange border-b-2 border-orange-400"
                         } hover:scale-90 hover:text-md duration-200 ease-in animate-fadeInDownBig hover:border-b-2 hover:border-orange-400`}>Notification</h1>
+                </div>
+                <div className="flex space-x-3 w-[100%] items-center" onClick={() => navigate('/provider/feedbacks')}>
+                    <MdOutlineReviews className="text-orange text-2xl" />
+                    <h1 className={`font-dm font-semibold text-sm ${location.pathname === '/provider/feedbacks' ? "text-orange border-b-2 border-orange-400" : "text-white"} hover:text-orange hover:scale-90 hover:text-md duration-200 ease-in animate-fadeInDownBig hover:border-b-2 hover:border-orange-400`}>Feedbacks</h1>
                 </div>
                 
                 

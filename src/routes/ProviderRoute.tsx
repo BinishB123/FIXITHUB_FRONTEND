@@ -32,6 +32,7 @@ import ProviderCallPage from '../pages/provider/providerCallPage';
 import ProviderInCommigCallModal from '../components/provider/providerIncomingCall';
 import { useSocket } from '../context/socketioContext';
 import NotificationPage from '../pages/provider/NotifcationPages';
+import ViewFeedBackPage from '../pages/provider/viewFeedBackPage';
 interface ProtectedRouteProps {
     children: ReactNode;
 }
@@ -128,6 +129,7 @@ const ProviderRoute = () => {
                 </Route>
                 <Route path='/services' element={<ProtectedRoute><ServicePage /></ProtectedRoute>} />
                 <Route path='/notification' element={<ProtectedRoute><NotificationPage></NotificationPage></ProtectedRoute>}/>
+                <Route path='/feedbacks' element={<ProtectedRoute><ViewFeedBackPage></ViewFeedBackPage></ProtectedRoute>}/>
 
             </Route>
         </Routes>

@@ -31,4 +31,8 @@ export const serviceBookings = {
   getBookingStillTodaysDate:apiToServiceBookings + "/getBookingStillTodaysDate",
   updateServiceStatus: apiToServiceBookings + "/updatestatus",
   viewBookings: apiToServiceBookings + "/viewbookings",
+  getfeedbacks:apiToServiceBookings+'/getfeedbacks',
+  like:apiToServiceBookings+'/like',
+  reply:apiToServiceBookings+'/reply'
+
 };

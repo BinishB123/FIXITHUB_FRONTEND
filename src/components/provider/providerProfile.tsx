@@ -75,7 +75,7 @@ function ProviderProfile() {
               Chat
             </h1>
           </div>
-          <div className="w-[12%] h-[60px] text-sm text-blue-100 place-content-center cursor-pointer ">
+          {/* <div className="w-[12%] h-[60px] text-sm text-blue-100 place-content-center cursor-pointer ">
             <h1
               className={`hover:text-orange text-md font-dm font-medium tracking-wid`}
               onClick={() => {
@@ -84,7 +84,7 @@ function ProviderProfile() {
             >
               FeedBacks
             </h1>
-          </div>
+          </div> */}
         </div>
         <Outlet />
       </div>

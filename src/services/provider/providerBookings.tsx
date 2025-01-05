@@ -84,3 +84,35 @@ export const updateServiceBookingStatus = (id:string,status:string,amount:number
           })
         })
 }
+
+export const getFeedBacks = (id:string)=>{
+  return new Promise((resolve,reject)=>{
+    axiosInstance.get(serviceBookings.getfeedbacks+`/${id}`).then((Response)=>{
+      resolve(Response)
+    }).catch((error)=>{
+      reject(error)
+    })
+  })
+}
+
+export const like = (id:string,status:boolean)=>{
+  return new Promise((resolve, reject) => {
+    axiosInstance.patch(serviceBookings.like,{id,status}).then((response)=>{
+      resolve(response)
+    }).catch((error)=>{
+      reject(error)
+    })
+    
+  })
+}
+
+export const replyService = (id:string,reply:string)=>{
+  return new Promise((resolve, reject) => {
+    axiosInstance.patch(serviceBookings.reply,{id,reply}).then((response)=>{
+      resolve(response)
+    }).catch((error)=>{
+      reject(error)
+    })
+    
+  })
+}
