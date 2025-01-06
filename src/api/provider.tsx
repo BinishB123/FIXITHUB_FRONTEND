@@ -11,10 +11,12 @@ export const providerProfile = {
   getallBrand: apiToProfile + "/getallBrands",
   changelogo: apiToProfile + "/changelogo",
   getChatId: apiToProfile + "/getchatid",
-  getOnetoOneChat:apiToProfile+'/getonetonechat',
-  addMessage:apiToProfile+"/newmessage",
-  notificationCounterUpdater:apiToProfile+'/notificationCounterUpdater',
-  notificationGetter:apiToProfile+'/notificationGetter'
+  getOnetoOneChat: apiToProfile + "/getonetonechat",
+  addMessage: apiToProfile + "/newmessage",
+  notificationCounterUpdater: apiToProfile + "/notificationCounterUpdater",
+  notificationGetter: apiToProfile + "/notificationGetter",
+  monthlyrevenue:apiToProfile+'/monthly-revenue',
+  topbookedService:apiToProfile+'/top-booked-Service'
 };
 
 const apiToBookingDate = apiUrl + "/api/provider/bookings";
@@ -28,11 +30,11 @@ export const bookings = {
 const apiToServiceBookings = apiUrl + "/api/provider/servicebooking";
 export const serviceBookings = {
   getBookingsAccordingToDate: apiToServiceBookings + "/getservicebooking",
-  getBookingStillTodaysDate:apiToServiceBookings + "/getBookingStillTodaysDate",
+  getBookingStillTodaysDate:
+    apiToServiceBookings + "/getBookingStillTodaysDate",
   updateServiceStatus: apiToServiceBookings + "/updatestatus",
   viewBookings: apiToServiceBookings + "/viewbookings",
-  getfeedbacks:apiToServiceBookings+'/getfeedbacks',
-  like:apiToServiceBookings+'/like',
-  reply:apiToServiceBookings+'/reply'
-
+  getfeedbacks: apiToServiceBookings + "/getfeedbacks",
+  like: apiToServiceBookings + "/like",
+  reply: apiToServiceBookings + "/reply",
 };

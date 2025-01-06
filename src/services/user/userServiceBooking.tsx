@@ -137,3 +137,18 @@ export const editReviewService = (id:string,newReview:string)=>{
 
 }
 
+export const getFeedBacks = (id:string,limit:number)=>{
+    console.log(id);
+    
+    return new Promise((resolve,reject)=>{
+        axiosInstance.get(services.getfeedbacks+`/${id}/${limit}`,).then((response)=>{
+            resolve(response)
+        }).catch((error)=>{
+            reject(error)
+        })
+    })
+
+}
+
+
+

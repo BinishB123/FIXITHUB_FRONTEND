@@ -191,60 +191,14 @@ function UserHome() {
             </div>
           </div>
         </div>
-        <div className="h-[1200px] md:h-[450px] w-[100%] mt-20 flex flex-col place-items-center">
+        {/* <div className="h-[1200px] md:h-[450px] w-[100%] mt-20 flex flex-col place-items-center">
           <div className="h-[50px] w-[30%] ">
             <h1 className="text-center text-white text-4xl font-dm">
               Testimonials
             </h1>
           </div>
-          <div className=" h-[770px] md:h-[350px] w-[90%] mt-20 flex flex-col md:flex-row justify-between">
-            <div className="h-[350px] w-[100%] md:w-[30%]  flex flex-col place-items-center bg-gradient-to-b from-gray-950 rounded-md    ">
-              <div className="h-[200px] w-[100%]  flex place-content-center items-center">
-                <p className="w-[50%] text-center text-white text-md font-thin">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
-              <div className="h-[150px] w-[100%] ml-5 flex flex-row">
-                <img src={user} className="h-[100px] w-[25%] rounded-full " />
-
-                <div className="h-[100px] w-[70%]  flex place-content-center items-center ">
-                  <h1 className="text-2xl text-orange">Catherine Lopez</h1>
-                </div>
-              </div>
-            </div>
-            <div className="h-[350px] w-[100%] mt-2 md:mt-0 md:w-[30%]  flex flex-col place-items-center bg-gradient-to-b from-gray-950 rounded-md   ">
-              <div className="h-[200px] w-[100%]  flex place-content-center items-center">
-                <p className="w-[50%] text-center text-white text-md font-thin">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
-              <div className="h-[150px] w-[100%] ml-5 flex flex-row">
-                <img src={user} className="h-[100px] w-[25%] rounded-full" />
-
-                <div className="h-[100px] w-[70%]  flex place-content-center items-center ">
-                  <h1 className="text-2xl text-orange">Catherine Lopez</h1>
-                </div>
-              </div>
-            </div>
-            <div className="h-[350px] w-[100%] mt-2 md:mt-0 md:w-[30%] flex flex-col place-items-center bg-gradient-to-b from-gray-950 rounded-md   ">
-              <div className="h-[200px] w-[100%]  flex place-content-center items-center">
-                <p className="w-[50%] text-center text-white text-md font-thin">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
-              <div className="h-[150px] w-[100%] ml-5 flex flex-row">
-                <img src={user} className="h-[100px] w-[25%] rounded-full" />
-
-                <div className="h-[100px] w-[70%]  flex place-content-center items-center ">
-                  <h1 className="text-2xl text-orange">Catherine Lopez</h1>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+            
+        </div> */}
         {/* users ,pincodes tec... section */}
         <div className="w-[100%] h-[200px] mt-20  flex place-content-center">
           <div className="w-[90%] h-[200px]  flex  flex-row justify-between">

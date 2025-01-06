@@ -18,7 +18,8 @@ export const services = {
   getreviewdetails:serviceApi+"/getreviewdetails",
   deleteanimage:serviceApi+"/deleteanimage",
   editreview:serviceApi+"/editreview",
-  addanimage:serviceApi+"/addanimage"
+  addanimage:serviceApi+"/addanimage",
+  getfeedbacks:serviceApi+'/getfeedbacks'
   
 };
 

@@ -166,7 +166,9 @@ export function BookingHistory() {
   };
 
   const onClickGetReviewDetails = (bookingid: string) => {
-    getreviewdetails(bookingid).then((response: any) => {
+      getreviewdetails(bookingid).then((response: any) => {
+        console.log(response);
+        
       setReviewData(response.data.ReviewData)
       setLoading(false)
     }).catch(() => {
@@ -194,36 +196,36 @@ export function BookingHistory() {
   };
 
 
-  const ediTReview = (id:string)=>{
-    console.log(reviewText.trim().toLowerCase(),reviewData?.opinion.trim().toLocaleLowerCase());
-    
+  const ediTReview = (id: string) => {
+    console.log(reviewText.trim().toLowerCase(), reviewData?.opinion.trim().toLocaleLowerCase());
+
     if (reviewData) {
-      if (reviewText.trim()===""||reviewText.trim().toLowerCase()===reviewData?.opinion.trim().toLocaleLowerCase()) {
+      if (reviewText.trim() === "" || reviewText.trim().toLowerCase() === reviewData?.opinion.trim().toLocaleLowerCase()) {
         window.alert()
         return
       }
-       editReviewService(id,reviewText).then((response)=>{
-        setReviewData({...reviewData,opinion:reviewText})
+      editReviewService(id, reviewText).then((response) => {
+        setReviewData({ ...reviewData, opinion: reviewText })
         setEditreviewText(false)
         console.log(response);
-  
-       })
+
+      })
     }
   }
 
 
-  const deleteanimage = (id:string,url:string)=>{
-   if (reviewData) {
-    deleteImageservice(id,url).then((response)=>{
-      const images = reviewData.images.filter((data)=>{
-        if (data.url!==url) {
-          return data
-        }
-        
+  const deleteanimage = (id: string, url: string) => {
+    if (reviewData) {
+      deleteImageservice(id, url).then((response) => {
+        const images = reviewData.images.filter((data) => {
+          if (data.url !== url) {
+            return data
+          }
+
+        })
+        setReviewData({ ...reviewData, images: images })
       })
-      setReviewData({...reviewData,images:images})
-    })
-   }
+    }
   }
 
 
@@ -306,8 +308,8 @@ export function BookingHistory() {
               </div>
               <div
                 className={`w-full h-[200px] rounded-md bg-banner-gray flex ${upanddown && indext === index
-                    ? "animate-fadeInDownBig transition ease-linear"
-                    : "hidden"
+                  ? "animate-fadeInDownBig transition ease-linear"
+                  : "hidden"
                   }`}
               >
                 {/* Left Section */}
@@ -332,11 +334,28 @@ export function BookingHistory() {
                       </div>
                     )}
 
-                  {item.status === "completed" &&
-                    ((item.paymentStatus === "paid" && !item.review) ? (
-                      <div className="w-[60%] h-[100px] flex justify-center items-end">
+                  {item.status === "completed" && item.paymentStatus === "paid" && (
+                    <div className="w-[60%] h-[100px] flex justify-center items-end">
+                      {item.review ? (
+                        // If the review exists, allow editing or viewing the review
                         <button
-                          className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold "
+                          className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold"
+                          onClick={() => {
+                            setAddReview(false);
+                            setViewReview(true);
+                            setLoading(true);
+                            if (item.review) {
+                            onClickGetReviewDetails(item.review);
+                              
+                            }
+                          }}
+                        >
+                          Edit Or View Review
+                        </button>
+                      ) : (
+                        // If no review exists, allow adding a review
+                        <button
+                          className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold"
                           onClick={() => {
                             setAddReview(true);
                             setSinglesService(item);
@@ -344,24 +363,10 @@ export function BookingHistory() {
                         >
                           Add Review
                         </button>
-                      </div>
-                    ) : (
-                      <div className="w-[60%] h-[100px] flex justify-center items-end">
-                        <button
-                          className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold "
-                          onClick={() => {
-                            if (item.review) {
-                              setAddReview(false);
-                              setViewReview(true);
-                              setLoading(true);
-                              onClickGetReviewDetails(item.review);
-                            }
-                          }}
-                        >
-                          Edit Or View Review
-                        </button>
-                      </div>
-                    ))}
+                      )}
+                    </div>
+                  )}
+
                 </div>
 
                 {/* Center Section */}
@@ -371,13 +376,13 @@ export function BookingHistory() {
                       {" "}
                       <h1
                         className={`${item.advance === true && item.status == "cancelled"
-                            ? "text-blue-400"
-                            : "text-green-400"
+                          ? "text-blue-400"
+                          : "text-green-400"
                           } text-sm flex items-center space-x-2 `}
                       >
                         {`Advance Fee :  ${item.advance === true && item.status == "cancelled"
-                            ? "Refunded"
-                            : "paid"
+                          ? "Refunded"
+                          : "paid"
                           }`}
                       </h1>
                     </>
@@ -385,8 +390,8 @@ export function BookingHistory() {
                   {item.status !== "cancelled" && (
                     <h1
                       className={`${item.paymentStatus === "paid"
-                          ? "text-green-500"
-                          : "text-red"
+                        ? "text-green-500"
+                        : "text-red"
                         }`}
                     >{`Full Payment Status: ${item.paymentStatus} `}</h1>
                   )}
@@ -443,8 +448,8 @@ export function BookingHistory() {
           </div>
           <div
             className={`w-[4%] h-[40px] bg-orange flex ${startIndexAndEndIndex.start + 10 > Math.ceil(totalCount / 5) * 5
-                ? "hidden"
-                : "flex"
+              ? "hidden"
+              : "flex"
               } items-center justify-center rounded-md`}
             onClick={() => {
               onClickPagination(startIndexAndEndIndex.start + 5);
@@ -592,29 +597,29 @@ export function BookingHistory() {
                       {!editreviewText ?
                         <h1 className="text-md text-start text-gray-300">
                           {reviewData?.opinion}
-                        </h1> 
+                        </h1>
                         :
-                         <input onChange={(e) => {
+                        <input onChange={(e) => {
                           setReviewText(e.target.value);
-                         }}
+                        }}
                           value={reviewText}
                           maxLength={150}
                           type="text"
                           placeholder="Type your review"
                           className="w-[100%] h-[50px] text-white pl-4 font-dm font-light border-2 border-gray-900  rounded-sm bg-banner-gray" />
                       }
-                      
+
                       {
-                        !editreviewText?<CiEdit className=" text-2xl text-blue-300 cursor-pointer" onClick={()=>{
+                        !editreviewText ? <CiEdit className=" text-2xl text-blue-300 cursor-pointer" onClick={() => {
                           if (reviewData) {
-                           setReviewText(reviewData?.opinion)
-                           setEditreviewText(true)
+                            setReviewText(reviewData?.opinion)
+                            setEditreviewText(true)
                           }
-                         }} />:<IoMdDoneAll className="text-2xl text-blue-300 cursor-pointer" onClick={()=>{
+                        }} /> : <IoMdDoneAll className="text-2xl text-blue-300 cursor-pointer" onClick={() => {
                           if (reviewData) {
                             ediTReview(reviewData?._id)
                           }
-                         }} />
+                        }} />
                       }
                     </div>
                     <hr className="bg-gray-500 w-[100%]" />
@@ -639,8 +644,8 @@ export function BookingHistory() {
                               className="object-contain w-full h-full"
                             />
                             <div className="absolute w-[100%] top-0 left-44  cursor-pointer ">
-                              <MdDelete className="text-xl text-red" onClick={()=>{
-                                 deleteanimage(reviewData._id,data.url)
+                              <MdDelete className="text-xl text-red" onClick={() => {
+                                deleteanimage(reviewData._id, data.url)
                               }} />
                             </div>
                           </div>

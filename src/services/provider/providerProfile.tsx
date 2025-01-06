@@ -58,3 +58,23 @@ export const notificationGetter = (id:string)=>{
     })
   })
 }
+
+export const monthlyRevenue = (id:string)=>{
+  return new Promise((resolve,reject)=>{
+    axiosInstance.get(providerProfile.monthlyrevenue+`/${id}`).then((response)=>{
+      resolve(response)
+    }).catch((error)=>{
+      reject(error)
+    })
+  })
+}
+
+export const bookedService = (id:string)=>{
+  return new Promise((resolve,reject)=>{
+    axiosInstance.get(providerProfile.topbookedService+`/${id}`).then((response)=>{
+      resolve(response)
+    }).catch((error)=>{
+      reject(error)
+    })
+  })
+}

@@ -125,7 +125,6 @@ const ProviderRoute = () => {
                     <Route path='viewbookings' element={<ProtectedRoute><ViewBookingsOutlet /></ProtectedRoute>} />
                     <Route path='cancelledBookings' element={<ProtectedRoute><ReuseCancelledAndLatestBookingPage value={"cancelled"}></ReuseCancelledAndLatestBookingPage></ProtectedRoute>} />
                     <Route path='latestBookings' element={<ProtectedRoute><ReuseCancelledAndLatestBookingPage value={"latest"}></ReuseCancelledAndLatestBookingPage></ProtectedRoute>} />
-
                 </Route>
                 <Route path='/services' element={<ProtectedRoute><ServicePage /></ProtectedRoute>} />
                 <Route path='/notification' element={<ProtectedRoute><NotificationPage></NotificationPage></ProtectedRoute>}/>

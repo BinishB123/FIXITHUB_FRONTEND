@@ -8,45 +8,101 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { axiosInstance } from "../../api/common";
 import { services } from "../../api/user";
-import { Workshop } from "../../interfaces/userInterface";
+import { reviewDatas, Workshop } from "../../interfaces/userInterface";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "sonner";
 import { getChatId } from "../../services/user/userProfile";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store/store";
+import { AiFillCaretRight } from "react-icons/ai";
+import { FaCaretLeft } from "react-icons/fa";
+import { getFeedBacks } from "../../services/user/userServiceBooking";
 
 function ShopProfile() {
-    const location = useLocation()
-    const [workshopDetails, setWorkshopDetails] = useState<Workshop | null>(null)
-    const [isModal, setIsModal] = useState<boolean>(false)
-    const { userInfo } = useSelector((state: RootState) => state.user)
-    const [selectService, setselectedService] = useState<{ typeid: string; typename: string; startingprice: number; isAdded: boolean }[] | []>([])
+    const location = useLocation();
+    const [reviewUpdater, setReviewUpdater] = useState<number>(3);
+    const [animationClass, setAnimationClass] = useState("");
+    const [reviews,setreviews] = useState<reviewDatas[]|[]>([])
+    const [workshopDetails, setWorkshopDetails] = useState<Workshop | null>(null);
+    const [isModal, setIsModal] = useState<boolean>(false);
+    const { userInfo } = useSelector((state: RootState) => state.user);
+    const [selectService, setselectedService] = useState<
+        | {
+            typeid: string;
+            typename: string;
+            startingprice: number;
+            isAdded: boolean;
+        }[]
+        | []
+    >([]);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const arr = [1, 2, 3, 4, 54, 5, 6, 7, 88, 90];
 
-    useEffect(() => {
-        if (!location.state) {
-            navigate('/services')
 
+    useEffect(() => {
+        
+        getFeedBacks(location.state.data.seviceId,reviewUpdater).then((response:any)=>{
+            setreviews(response.data.feedBacks)
+            console.log(response);
+            
+        })
+       
+        setAnimationClass("animate-fadeInDownBig");
+
+        const timeout = setTimeout(() => {
+            setAnimationClass("");
+        }, 1000);
+
+        return () => clearTimeout(timeout);
+    }, [reviewUpdater]);
+
+    useEffect(() => {
+        setAnimationClass("animate-fadeInDownBig");
+        if (!location.state) {
+            navigate("/services");
         } else {
             const storedService = localStorage.getItem("servicesSelected");
-            let data: { typeid: string; typename: string; startingprice: number; isAdded: boolean }[] | undefined;
+            let data:
+                | {
+                    typeid: string;
+                    typename: string;
+                    startingprice: number;
+                    isAdded: boolean;
+                }[]
+                | undefined;
 
             if (storedService) {
-                data = JSON.parse(storedService) as { typeid: string; typename: string; startingprice: number; isAdded: boolean }[];
-                setselectedService(data)
+                data = JSON.parse(storedService) as {
+                    typeid: string;
+                    typename: string;
+                    startingprice: number;
+                    isAdded: boolean;
+                }[];
+                setselectedService(data);
             }
 
-            axiosInstance.get(`${services.getshopdetail}?serviceId=${location.state.data.seviceId}&vehicleType=${location.state.data.vehicleType}&providerId=${location.state.providerId}`)
+            axiosInstance
+                .get(
+                    `${services.getshopdetail}?serviceId=${location.state.data.seviceId}&vehicleType=${location.state.data.vehicleType}&providerId=${location.state.providerId}`
+                )
                 .then((response) => {
                     const { shopDetail } = response.data;
                     setWorkshopDetails((prev) => {
                         const updatedServices = shopDetail.services.map((service: any) => {
-                            const matchedService = data?.find((stored: { typeid: string; typename: string; startingprice: number; isAdded: boolean }) => stored.typeid === service.typeid);
-                            return matchedService ? { ...service, ...matchedService } : service;
+                            const matchedService = data?.find(
+                                (stored: {
+                                    typeid: string;
+                                    typename: string;
+                                    startingprice: number;
+                                    isAdded: boolean;
+                                }) => stored.typeid === service.typeid
+                            );
+                            return matchedService
+                                ? { ...service, ...matchedService }
+                                : service;
                         });
                         return {
                             ...shopDetail,
@@ -61,12 +117,13 @@ function ShopProfile() {
     }, []);
 
     const add = (id: string) => {
-        const updated = workshopDetails?.services.map((item) => {
-            if (item.typeid === id) {
-                return { ...item, isAdded: true };
-            }
-            return item;
-        }) || [];
+        const updated =
+            workshopDetails?.services.map((item) => {
+                if (item.typeid === id) {
+                    return { ...item, isAdded: true };
+                }
+                return item;
+            }) || [];
 
         if (updated.length > 0) {
             setWorkshopDetails((prev) => {
@@ -74,25 +131,25 @@ function ShopProfile() {
 
                 const newWorkshopDetails = {
                     ...prev,
-                    services: updated
+                    services: updated,
                 };
 
                 localStorage.setItem("servicesSelected", JSON.stringify(updated));
-                const filtered = updated.filter((item) => item.isAdded === true)
-                setselectedService(filtered)
+                const filtered = updated.filter((item) => item.isAdded === true);
+                setselectedService(filtered);
                 return newWorkshopDetails;
             });
         }
     };
 
-
     const remove = (id: string) => {
-        const updated = workshopDetails?.services.map((item) => {
-            if (item.typeid === id) {
-                return { ...item, isAdded: false }
-            }
-            return item
-        }) || []
+        const updated =
+            workshopDetails?.services.map((item) => {
+                if (item.typeid === id) {
+                    return { ...item, isAdded: false };
+                }
+                return item;
+            }) || [];
 
         if (updated?.length > 0) {
             setWorkshopDetails((prev) => {
@@ -100,28 +157,28 @@ function ShopProfile() {
 
                 return {
                     ...prev,
-                    services: updated
+                    services: updated,
                 };
             });
             localStorage.setItem("servicesSelected", JSON.stringify(updated));
-            const filtered = updated.filter((item) => item.isAdded === true)
-            setselectedService(filtered)
-
+            const filtered = updated.filter((item) => item.isAdded === true);
+            setselectedService(filtered);
         }
-
-    }
-
-
+    };
 
     const chatCreation = (providerId: string, userId: string) => {
-        getChatId(providerId, userId).then((Response: any) => {
-            navigate(`/profile/chat/${Response.data.id}/${providerId}`)
-        }).catch((error) => {
-            console.log(error);
+        getChatId(providerId, userId)
+            .then((Response: any) => {
+                navigate(`/profile/chat/${Response.data.id}/${providerId}`);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
 
-        })
 
-    }
+
+    
 
     return (
         <>
@@ -145,30 +202,39 @@ function ShopProfile() {
                             </h1>
                             {/* Desktop Description */}
                             <div className="hidden md:flex h-[160px] text-md text-gray-500">
-                                Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
-                                We take pride in providing high-quality service for all vehicle types.
-                                From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
-                                Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
-                                We take pride in providing high-quality service for all vehicle types.
-                                From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
-                                Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
-                                We take pride in providing high-quality service for all vehicle types.
-                                From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
+                                Welcome to [Workshop Name], your trusted partner for all
+                                automotive care and repair needs. We take pride in providing
+                                high-quality service for all vehicle types. From diagnostics and
+                                repairs to custom modifications, we ensure your car's longevity
+                                and safety on the road. Welcome to [Workshop Name], your trusted
+                                partner for all automotive care and repair needs. We take pride
+                                in providing high-quality service for all vehicle types. From
+                                diagnostics and repairs to custom modifications, we ensure your
+                                car's longevity and safety on the road. Welcome to [Workshop
+                                Name], your trusted partner for all automotive care and repair
+                                needs. We take pride in providing high-quality service for all
+                                vehicle types. From diagnostics and repairs to custom
+                                modifications, we ensure your car's longevity and safety on the
+                                road.
                             </div>
                         </div>
                     </div>
 
                     {/* Mobile Description */}
                     <div className="h-[200p] mt-8 block md:hidden px-4 text-sm text-gray-500">
-                        Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
-                        We take pride in providing high-quality service for all vehicle types.
-                        From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
-                        Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
-                        We take pride in providing high-quality service for all vehicle types.
-                        From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
-                        Welcome to [Workshop Name], your trusted partner for all automotive care and repair needs.
-                        We take pride in providing high-quality service for all vehicle types.
-                        From diagnostics and repairs to custom modifications, we ensure your car's longevity and safety on the road.
+                        Welcome to [Workshop Name], your trusted partner for all automotive
+                        care and repair needs. We take pride in providing high-quality
+                        service for all vehicle types. From diagnostics and repairs to
+                        custom modifications, we ensure your car's longevity and safety on
+                        the road. Welcome to [Workshop Name], your trusted partner for all
+                        automotive care and repair needs. We take pride in providing
+                        high-quality service for all vehicle types. From diagnostics and
+                        repairs to custom modifications, we ensure your car's longevity and
+                        safety on the road. Welcome to [Workshop Name], your trusted partner
+                        for all automotive care and repair needs. We take pride in providing
+                        high-quality service for all vehicle types. From diagnostics and
+                        repairs to custom modifications, we ensure your car's longevity and
+                        safety on the road.
                     </div>
 
                     {/* Contact and Action Buttons */}
@@ -198,11 +264,14 @@ function ShopProfile() {
                         </div>
 
                         <div className="w-full md:w-[30%] flex justify-around md:justify-end space-x-2 mt-4 md:mt-0">
-                            <button className="w-[40%] h- bg-orange text-white text-md font-semibold rounded-md flex items-center justify-center space-x-1" onClick={() => {
-                                if (userInfo) {
-                                    chatCreation(location.state.providerId, userInfo?.id)
-                                }
-                            }}>
+                            <button
+                                className="w-[40%] h- bg-orange text-white text-md font-semibold rounded-md flex items-center justify-center space-x-1"
+                                onClick={() => {
+                                    if (userInfo) {
+                                        chatCreation(location.state.providerId, userInfo?.id);
+                                    }
+                                }}
+                            >
                                 <span>Chat</span>
                                 <BsChatRightDotsFill className="text-xl" />
                             </button>
@@ -234,25 +303,39 @@ function ShopProfile() {
                             {workshopDetails?.services.map((item, index) => (
                                 <div
                                     key={index}
-                                    className={`w-[40%] md:w-[25%] h-[140px] bg-banner-gray flex flex-col justify-center items-center space-x-1 rounded-md ${index === 0 ? "ml-4" : ""} animate-fadeInDownBig`}
+                                    className={`w-[40%] md:w-[25%] h-[140px] bg-banner-gray flex flex-col justify-center items-center space-x-1 rounded-md ${index === 0 ? "ml-4" : ""
+                                        } animate-fadeInDownBig`}
                                 >
                                     <div className="w-[95%] h-[90%] flex flex-col items-center justify-center ">
                                         <div className="h-[70%] w-[95%] flex flex-col  items-center justify-center  ">
-                                            <h1 className="text-center text-sm font-semibold text-white break-words w-[100%]  overflow-hidden ">{item.typename}</h1>
+                                            <h1 className="text-center text-sm font-semibold text-white break-words w-[100%]  overflow-hidden ">
+                                                {item.typename}
+                                            </h1>
                                             <h1 className="text-center text-sm font-semibold text-white">{`Starting Price : ${item.startingprice}`}</h1>
                                         </div>
                                     </div>
                                     <div className="h-[30%] w-[100%] flex justify-center items-center">
-                                        {
-                                            item.isAdded ? <button className="w-[50%] md:w-[30%]  h-[80%] rounded-sm text-white bg-red mb-3 " onClick={() => {
-                                                remove(item.typeid)
-                                            }}>Remove</button> : <button className="w-[40%] md:w-[30%] h-[80%] rounded-sm text-white bg-orange mb-3 " onClick={() => {
-                                                add(item.typeid)
-                                            }}>Add</button>
-                                        }
+                                        {item.isAdded ? (
+                                            <button
+                                                className="w-[50%] md:w-[30%]  h-[80%] rounded-sm text-white bg-red mb-3 "
+                                                onClick={() => {
+                                                    remove(item.typeid);
+                                                }}
+                                            >
+                                                Remove
+                                            </button>
+                                        ) : (
+                                            <button
+                                                className="w-[40%] md:w-[30%] h-[80%] rounded-sm text-white bg-orange mb-3 "
+                                                onClick={() => {
+                                                    add(item.typeid);
+                                                }}
+                                            >
+                                                Add
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
-
                             ))}
                         </div>
                     </div>
@@ -263,33 +346,68 @@ function ShopProfile() {
                             What Our Customers Says
                         </h1>
                     </div>
-                    <div className="w-[95%] h-[400px] flex flex-wrap  space-x-2 justify-center items-center">
-                        {arr.map(
-                            (item, index) =>
-
+                    <div className="w-[95%] h-[400px] flex   space-x-2 justify-center items-center">
+                        <div className="w-[10%] h-full flex justify-center items-center ">
+                            <FaCaretLeft
+                                onClick={() => {
+                                    setReviewUpdater(reviewUpdater <= 3 ? 3 : reviewUpdater - 3);
+                                }}
+                                className="text-6xl text-orange cursor-pointer hover:shadow-[0_10px_20px_rgba(255,_165,_0,_0.7)] transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300 animate-bounce"
+                            />
+                        </div>
+                        {reviews.map(
+                            (reviewData, index) =>
                                 index <= 2 && (
-                                    <div className="h-[200px] md:h-[350px] w-[100%] md:w-[30%]  flex flex-col md:place-items-center bg-gradient-to-b from-gray-950 rounded-md  animate-fadeInDownBig   ">
-                                        <div className="h-[200px] w-[100%]  flex place-content-center items-center">
-                                            <p className="w-[50%] text-start text-white text-sm md:text-md font-thin">
-                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                                sed do eiusmod tempor incididunt ut labore et dolore
-                                                magna aliqua.
-                                            </p>
-                                        </div>
-                                        <div className="h-[150px] w-full ml-5 flex items-center space-x-4">
+                                    <div
+                                        className={`${animationClass} w-[30%] h-[300px] rounded-md space-x-2 bg-banner-gray    ${index === 0 ? "" : ""
+                                            } flex `}
+                                    >
+                                        <div className="w-[15%] h-full  flex   ">
                                             <img
-                                                src={user}
-                                                alt="User"
-                                                className="md:h-[100px] md:w-[100px] h-[50px] w-[50px] rounded-full object-cover"
+                                                src={
+                                                    reviewData.user.logoUrl ? reviewData.user.logoUrl :
+                                                    user
+                                                }
+                                                alt="Image"
+                                                className="w-12 h-12 mt-2 ml-2 rounded-full"
                                             />
-                                            <div className="flex items-center">
-                                                <h1 className="text-xl text-orange">Catherine Lopez</h1>
+                                        </div>
+
+                                        <div className="w-[70%] h-full  flex flex-col">
+                                            <div className="w-[100%] h-[50px] flex  items-center justify-between">
+                                                <h1 className="text-white">{reviewData.userId===userInfo?.id?"You":reviewData.user.name}</h1>
+                                                {/* {!reviewData.like?<FaRegHeart className="text-white cursor-pointer" onClick={()=>{
+                                            onClickLike(reviewData._id,true)
+                                        }} />: */}
+                                            </div>
+                                            <div className="w-[100%] h-[200px]  flex justify-center items-center ">
+                                                <h1 className="text-gray-300 text-sm text-start">
+                                                    {reviewData.opinion}
+                                                </h1>
+                                            </div>
+                                            <div className="w-[100%] h-[35px] flex justify-end items-end  ">
+                                                <button
+                                                    className="w-[50%] h-[30px] bg-orange rounded-sm text-white"
+                                                    onClick={() => {
+                                                        // setReviewData(reviewData)
+                                                        // setViewData(true)
+                                                    }}
+                                                >
+                                                    view in Detail
+                                                </button>
                                             </div>
                                         </div>
-
                                     </div>
                                 )
                         )}
+                        <div className="w-[10%] h-full flex justify-center items-center">
+                            <AiFillCaretRight
+                                onClick={() => {
+                                    setReviewUpdater(reviewUpdater + 3);
+                                }}
+                                className="text-6xl text-orange  cursor-pointer hover:shadow-[0_10px_20px_rgba(255,_165,_0,_0.7)] transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300 animate-bounce"
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -319,28 +437,67 @@ function ShopProfile() {
                         <div className="w-[95%] h-[70%] mt-4 flex items-center  flex-col  overflow-y-scroll  scrollbar-hide">
                             <div className="w-[90%] h-[300px]">
                                 <dl className="text-white space-y-3 ">
-                                    <li><strong className="text-orange text-sm">Non-Refundable Booking Fee </strong> :  A booking fee of Rs. 1000 is non-refundable if the booking is canceled. Upon completion of the service, this fee will be deducted from the total amount due.</li>                                    <li><strong className="text-orange text-sm">Price Variation</strong>: Prices are estimates and may change based on additional work identified during service.</li>
-                                    <li><strong className="text-orange text-sm">Drop-Off Date</strong>: Vehicles must be dropped off on the booked date.</li>
-                                    <li><strong className="text-orange text-sm">Timely Pickup</strong>: Vehicles should be collected promptly after service.</li>
-                                    <li><strong className="text-orange text-sm">Personal Belongings</strong>: The service center is not liable for personal items left in the vehicle.</li>
-                                    <li><strong className="text-orange text-sm">Additional Services</strong>: Any extra services requested will be added to the final bill.</li>
-                                    <li><strong className="text-orange text-sm">Cancellation Fee</strong>: A booking fee of Rs. 1000 is non-refundable in the event of cancellation. If full payment has been made, Rs. 1000 will be deducted from the total refund.</li>
+                                    <li>
+                                        <strong className="text-orange text-sm">
+                                            Drop-Off Date
+                                        </strong>
+                                        : Vehicles must be dropped off on the booked date.
+                                    </li>
+                                    <li>
+                                        <strong className="text-orange text-sm">
+                                            Timely Pickup
+                                        </strong>
+                                        : Vehicles should be collected promptly after service.
+                                    </li>
+                                    <li>
+                                        <strong className="text-orange text-sm">
+                                            Personal Belongings
+                                        </strong>
+                                        : The service center is not liable for personal items left
+                                        in the vehicle.
+                                    </li>
+                                    <li>
+                                        <strong className="text-orange text-sm">
+                                            Additional Services
+                                        </strong>
+                                        : Any extra services requested will be added to the final
+                                        bill.
+                                    </li>
+                                    <li>
+                                        <strong className="text-orange text-sm">
+                                            Cancellation Fee
+                                        </strong>
+                                        : A booking fee of Rs. 1000 is non-refundable in the event
+                                        of cancellation. If full payment has been made, Rs. 1000
+                                        will be deducted from the total refund.
+                                    </li>
                                 </dl>
-
-
                             </div>
-
                         </div>
 
                         <div className="w-[80%] h-[30%] bg-opacity-75 flex justify-between items-start mt-6">
-                            <button className="w-[40%] h-[40%] outline-double bg-red outline-red-600 rounded-md text-white" onClick={() => {
-                                setIsModal(false)
-                            }}>cancel</button>
-                            <button className="w-[40%] h-[40%] outline-double bg-green-400 outline-green-700 rounded-md  text-white" onClick={() => {
-
-                                navigate('/services/confirmBooking', { state: { data: location.state.data, selectedServices: selectService, providerId: location.state.providerId } })
-                            }}>Accept</button>
-
+                            <button
+                                className="w-[40%] h-[40%] outline-double bg-red outline-red-600 rounded-md text-white"
+                                onClick={() => {
+                                    setIsModal(false);
+                                }}
+                            >
+                                cancel
+                            </button>
+                            <button
+                                className="w-[40%] h-[40%] outline-double bg-green-400 outline-green-700 rounded-md  text-white"
+                                onClick={() => {
+                                    navigate("/services/confirmBooking", {
+                                        state: {
+                                            data: location.state.data,
+                                            selectedServices: selectService,
+                                            providerId: location.state.providerId,
+                                        },
+                                    });
+                                }}
+                            >
+                                Accept
+                            </button>
                         </div>
                     </div>
                 </motion.div>
