@@ -204,7 +204,7 @@ function ProviderSignIn() {
               >
                 SIGN IN
               </button>
-              <div className=" bg-black w-[100%] h-[50%] flex flex-row items-center rounded-md  ">
+              {/* <div className=" bg-black w-[100%] h-[50%] flex flex-row items-center rounded-md  ">
                 <div className="w-[30%] h-[50%] ">
                   <FcGoogle className="mt-2 w-[100%]" />
                 </div>
@@ -213,7 +213,7 @@ function ProviderSignIn() {
                     SIGNIN WITH GOOGLE
                   </p>
                 </div>
-              </div>
+              </div> */}
               <p className="text-white text-center">
                 {" "}
                 SignUp if You Don’t Have An Account

@@ -14,13 +14,12 @@ export const services = {
   servicHistory: serviceApi + "/servicehistory",
   makefullpayement: serviceApi + "/makefullpayment",
   cancelBooking: serviceApi + "/cancelpayment",
-  addReview :serviceApi+"/addReview",
-  getreviewdetails:serviceApi+"/getreviewdetails",
-  deleteanimage:serviceApi+"/deleteanimage",
-  editreview:serviceApi+"/editreview",
-  addanimage:serviceApi+"/addanimage",
-  getfeedbacks:serviceApi+'/getfeedbacks'
-  
+  addReview: serviceApi + "/addReview",
+  getreviewdetails: serviceApi + "/getreviewdetails",
+  deleteanimage: serviceApi + "/deleteanimage",
+  editreview: serviceApi + "/editreview",
+  addanimage: serviceApi + "/addanimage",
+  getfeedbacks: serviceApi + "/getfeedbacks",
 };
 
 export const userAuth = {
@@ -28,10 +27,12 @@ export const userAuth = {
 };
 
 export const userProfile = {
-  getChatId:apiToProfile+'/getChatId',
+  getChatId: apiToProfile + "/getChatId",
   getChatOfOneToOne: apiToProfile + "/getchatofOneToOne",
   fetchChat: apiToProfile + "/getchat",
   addMessage: apiToProfile + "/newmessage",
-  notification:apiToProfile+'/notificationUpdater',
-  notificationGetter:apiToProfile+'/notificationGetter'
+  notification: apiToProfile + "/notificationUpdater",
+  notificationGetter: apiToProfile + "/notificationGetter",
+  createReport: apiToProfile + "/createReport",
+  getreport: apiToProfile + "/getreport",
 };

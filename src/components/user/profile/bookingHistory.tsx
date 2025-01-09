@@ -13,9 +13,12 @@ import {
   getServiceHistory,
 } from "../../../services/user/userServiceBooking";
 import { IoAddOutline } from "react-icons/io5";
-import { ResponsegetBookingGreaterThanTodaysDate, responseGetReviewDetails } from "../../../interfaces/userInterface";
+import {
+  ResponsegetBookingGreaterThanTodaysDate,
+  responseGetReviewDetails,
+} from "../../../interfaces/userInterface";
 import { StatusColors, statusColors } from "../../../constants/colors";
-import { getChatId } from "../../../services/user/userProfile";
+import { createReport, getChatId } from "../../../services/user/userProfile";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../../../context/socketioContext";
 import { toast } from "sonner";
@@ -23,11 +26,13 @@ import { GrFormNext } from "react-icons/gr";
 import { motion } from "framer-motion";
 import { CiEdit } from "react-icons/ci";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { GoReport } from "react-icons/go";
 
 export function BookingHistory() {
-  const [editreviewText, setEditreviewText] = useState(false)
+  const [editreviewText, setEditreviewText] = useState(false);
   const { userInfo } = useSelector((state: RootState) => state.user);
   const [pageNumber, setPageNumber] = useState(0);
+  const [report, setReport] = useState<boolean>(false);
   const [totalCount, setTotalCount] = useState<number>(0);
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const [startIndexAndEndIndex, setStartIndexAndEndIndex] = useState<{
@@ -50,7 +55,10 @@ export function BookingHistory() {
   const [reviewText, setReviewText] = useState<string>("");
   const provideridRef = useRef<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [reviewData, setReviewData] = useState<null | responseGetReviewDetails>(null)
+  const [reviewData, setReviewData] = useState<null | responseGetReviewDetails>(
+    null
+  );
+  const [reportText, setReportText] = useState<string>("");
 
   useEffect(() => {
     if (userInfo?.id) {
@@ -137,7 +145,7 @@ export function BookingHistory() {
   };
 
   const AddReview = () => {
-    setLoading(true)
+    setLoading(true);
     const data = new FormData();
     data.append("userId", userInfo?.id + "");
     data.append("providerId", singleService?.provider._id + "");
@@ -150,34 +158,33 @@ export function BookingHistory() {
     addReviewApi(data).then((response: any) => {
       const updateData = serviceHistory.map((da) => {
         if (da._id + "" === "" + singleService?._id) {
-          return { ...da, review: response.data.review._id }
+          return { ...da, review: response.data.review._id };
         }
-        return da
-      })
+        return da;
+      });
       if (updateData) {
-        setHistory(updateData)
-
+        setHistory(updateData);
       }
-      setLoading(false)
-      setAddReview(false)
-      toast.success("Review Added")
+      setLoading(false);
+      setAddReview(false);
+      toast.success("Review Added");
       console.log(response);
     });
   };
 
   const onClickGetReviewDetails = (bookingid: string) => {
-      getreviewdetails(bookingid).then((response: any) => {
+    getreviewdetails(bookingid)
+      .then((response: any) => {
         console.log(response);
-        
-      setReviewData(response.data.ReviewData)
-      setLoading(false)
-    }).catch(() => {
-      toast.error("Something went wrong")
-      setLoading(false)
-      setViewReview(false)
 
-    })
-
+        setReviewData(response.data.ReviewData);
+        setLoading(false);
+      })
+      .catch(() => {
+        toast.error("Something went wrong");
+        setLoading(false);
+        setViewReview(false);
+      });
   };
 
   const removeAnImage = (ind: number) => {
@@ -195,41 +202,64 @@ export function BookingHistory() {
     setOriginalFiles(removedOrginales);
   };
 
-
   const ediTReview = (id: string) => {
-    console.log(reviewText.trim().toLowerCase(), reviewData?.opinion.trim().toLocaleLowerCase());
+    console.log(
+      reviewText.trim().toLowerCase(),
+      reviewData?.opinion.trim().toLocaleLowerCase()
+    );
 
     if (reviewData) {
-      if (reviewText.trim() === "" || reviewText.trim().toLowerCase() === reviewData?.opinion.trim().toLocaleLowerCase()) {
-        window.alert()
-        return
+      if (
+        reviewText.trim() === "" ||
+        reviewText.trim().toLowerCase() ===
+        reviewData?.opinion.trim().toLocaleLowerCase()
+      ) {
+        window.alert();
+        return;
       }
       editReviewService(id, reviewText).then((response) => {
-        setReviewData({ ...reviewData, opinion: reviewText })
-        setEditreviewText(false)
+        setReviewData({ ...reviewData, opinion: reviewText });
+        setEditreviewText(false);
         console.log(response);
-
-      })
+      });
     }
-  }
-
+  };
 
   const deleteanimage = (id: string, url: string) => {
     if (reviewData) {
       deleteImageservice(id, url).then((response) => {
         const images = reviewData.images.filter((data) => {
           if (data.url !== url) {
-            return data
+            return data;
           }
-
-        })
-        setReviewData({ ...reviewData, images: images })
-      })
+        });
+        setReviewData({ ...reviewData, images: images });
+      });
     }
-  }
+  };
 
-
-
+  const OnClickReport = () => {
+    if (reportText.trim() === "") {
+      return toast.warning("Please Say Your issue");
+    }
+    if (userInfo && singleService) {
+      const data = {
+        userId: userInfo?.id,
+        providerId: singleService?.provider._id,
+        BookingId: singleService?._id,
+        reportText,
+        report: reportText,
+      };
+      createReport({ ...data }).then((response) => {
+        toast.success("Reported your Issue");
+        setReport(false);
+        setSinglesService(null);
+      }).catch((error)=>{
+        console.log(error);
+        
+      });
+    }
+  };
 
   return (
     <>
@@ -285,7 +315,7 @@ export function BookingHistory() {
                     }}
                   />
                 </div>
-                <div className="w-[10%] h-[100%] flex flex-col justify-center items-center ">
+                <div className="w-[7%] h-[100%] flex flex-col justify-center items-center ">
                   <FaCaretDown
                     className={`text-2xl text-orange cursor-pointer ${!upanddown &&
                       indext === index &&
@@ -305,11 +335,22 @@ export function BookingHistory() {
                     }}
                   />
                 </div>
+                <div className="w-[3%] h-full cursor-pointer flex justify-center items-center  ">
+                  {item.status === "completed" && (
+                    <GoReport
+                      className="text-yellow-500  text-xl pr-1"
+                      onClick={() => {
+                        setSinglesService(item);
+                        setReport(true);
+                      }}
+                    />
+                  )}
+                </div>
               </div>
               <div
                 className={`w-full h-[200px] rounded-md bg-banner-gray flex ${upanddown && indext === index
-                  ? "animate-fadeInDownBig transition ease-linear"
-                  : "hidden"
+                    ? "animate-fadeInDownBig transition ease-linear"
+                    : "hidden"
                   }`}
               >
                 {/* Left Section */}
@@ -334,39 +375,38 @@ export function BookingHistory() {
                       </div>
                     )}
 
-                  {item.status === "completed" && item.paymentStatus === "paid" && (
-                    <div className="w-[60%] h-[100px] flex justify-center items-end">
-                      {item.review ? (
-                        // If the review exists, allow editing or viewing the review
-                        <button
-                          className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold"
-                          onClick={() => {
-                            setAddReview(false);
-                            setViewReview(true);
-                            setLoading(true);
-                            if (item.review) {
-                            onClickGetReviewDetails(item.review);
-                              
-                            }
-                          }}
-                        >
-                          Edit Or View Review
-                        </button>
-                      ) : (
-                        // If no review exists, allow adding a review
-                        <button
-                          className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold"
-                          onClick={() => {
-                            setAddReview(true);
-                            setSinglesService(item);
-                          }}
-                        >
-                          Add Review
-                        </button>
-                      )}
-                    </div>
-                  )}
-
+                  {item.status === "completed" &&
+                    item.paymentStatus === "paid" && (
+                      <div className="w-[60%] h-[100px] flex justify-center items-end">
+                        {item.review ? (
+                          // If the review exists, allow editing or viewing the review
+                          <button
+                            className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold"
+                            onClick={() => {
+                              setAddReview(false);
+                              setViewReview(true);
+                              setLoading(true);
+                              if (item.review) {
+                                onClickGetReviewDetails(item.review);
+                              }
+                            }}
+                          >
+                            Edit Or View Review
+                          </button>
+                        ) : (
+                          // If no review exists, allow adding a review
+                          <button
+                            className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold"
+                            onClick={() => {
+                              setAddReview(true);
+                              setSinglesService(item);
+                            }}
+                          >
+                            Add Review
+                          </button>
+                        )}
+                      </div>
+                    )}
                 </div>
 
                 {/* Center Section */}
@@ -376,13 +416,13 @@ export function BookingHistory() {
                       {" "}
                       <h1
                         className={`${item.advance === true && item.status == "cancelled"
-                          ? "text-blue-400"
-                          : "text-green-400"
+                            ? "text-blue-400"
+                            : "text-green-400"
                           } text-sm flex items-center space-x-2 `}
                       >
                         {`Advance Fee :  ${item.advance === true && item.status == "cancelled"
-                          ? "Refunded"
-                          : "paid"
+                            ? "Refunded"
+                            : "paid"
                           }`}
                       </h1>
                     </>
@@ -390,8 +430,8 @@ export function BookingHistory() {
                   {item.status !== "cancelled" && (
                     <h1
                       className={`${item.paymentStatus === "paid"
-                        ? "text-green-500"
-                        : "text-red"
+                          ? "text-green-500"
+                          : "text-red"
                         }`}
                     >{`Full Payment Status: ${item.paymentStatus} `}</h1>
                   )}
@@ -448,8 +488,8 @@ export function BookingHistory() {
           </div>
           <div
             className={`w-[4%] h-[40px] bg-orange flex ${startIndexAndEndIndex.start + 10 > Math.ceil(totalCount / 5) * 5
-              ? "hidden"
-              : "flex"
+                ? "hidden"
+                : "flex"
               } items-center justify-center rounded-md`}
             onClick={() => {
               onClickPagination(startIndexAndEndIndex.start + 5);
@@ -594,33 +634,43 @@ export function BookingHistory() {
                   <div className="w-[90%] h-[250px]  flex flex-col space-y-4  justify-center items-center ">
                     <div className="w-[100%] h-[100px] space-y-1 ">
                       <h1 className="text-lg text-white">{`Your Review `} </h1>
-                      {!editreviewText ?
+                      {!editreviewText ? (
                         <h1 className="text-md text-start text-gray-300">
                           {reviewData?.opinion}
                         </h1>
-                        :
-                        <input onChange={(e) => {
-                          setReviewText(e.target.value);
-                        }}
+                      ) : (
+                        <input
+                          onChange={(e) => {
+                            setReviewText(e.target.value);
+                          }}
                           value={reviewText}
                           maxLength={150}
                           type="text"
                           placeholder="Type your review"
-                          className="w-[100%] h-[50px] text-white pl-4 font-dm font-light border-2 border-gray-900  rounded-sm bg-banner-gray" />
-                      }
+                          className="w-[100%] h-[50px] text-white pl-4 font-dm font-light border-2 border-gray-900  rounded-sm bg-banner-gray"
+                        />
+                      )}
 
-                      {
-                        !editreviewText ? <CiEdit className=" text-2xl text-blue-300 cursor-pointer" onClick={() => {
-                          if (reviewData) {
-                            setReviewText(reviewData?.opinion)
-                            setEditreviewText(true)
-                          }
-                        }} /> : <IoMdDoneAll className="text-2xl text-blue-300 cursor-pointer" onClick={() => {
-                          if (reviewData) {
-                            ediTReview(reviewData?._id)
-                          }
-                        }} />
-                      }
+                      {!editreviewText ? (
+                        <CiEdit
+                          className=" text-2xl text-blue-300 cursor-pointer"
+                          onClick={() => {
+                            if (reviewData) {
+                              setReviewText(reviewData?.opinion);
+                              setEditreviewText(true);
+                            }
+                          }}
+                        />
+                      ) : (
+                        <IoMdDoneAll
+                          className="text-2xl text-blue-300 cursor-pointer"
+                          onClick={() => {
+                            if (reviewData) {
+                              ediTReview(reviewData?._id);
+                            }
+                          }}
+                        />
+                      )}
                     </div>
                     <hr className="bg-gray-500 w-[100%]" />
                     <div className="w-[60%] h-[100px] space-y-1 ">
@@ -644,9 +694,12 @@ export function BookingHistory() {
                               className="object-contain w-full h-full"
                             />
                             <div className="absolute w-[100%] top-0 left-44  cursor-pointer ">
-                              <MdDelete className="text-xl text-red" onClick={() => {
-                                deleteanimage(reviewData._id, data.url)
-                              }} />
+                              <MdDelete
+                                className="text-xl text-red"
+                                onClick={() => {
+                                  deleteanimage(reviewData._id, data.url);
+                                }}
+                              />
                             </div>
                           </div>
                         </div>
@@ -665,25 +718,72 @@ export function BookingHistory() {
           </div>
         </motion.div>
       )}
-      {
-        (addReview && loading) && (<><motion.div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center transition delay-700"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="bg-transparent rounded-lg w-[95%] md:w-[60%] h-auto flex flex-col items-center ">
-
-
-            <div className="w-[100%] h-[700px]  flex justify-center items-center ">
-              <AiOutlineLoading3Quarters className="text-center text-4xl text-white animate-spin" />
+      {addReview && loading && (
+        <>
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center transition delay-700"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="bg-transparent rounded-lg w-[95%] md:w-[60%] h-auto flex flex-col items-center ">
+              <div className="w-[100%] h-[700px]  flex justify-center items-center ">
+                <AiOutlineLoading3Quarters className="text-center text-4xl text-white animate-spin" />
+              </div>
             </div>
+          </motion.div>
+        </>
+      )}
 
-
-          </div>
-        </motion.div></>)
-      }
+      {report && (
+        <>
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center transition delay-700"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="bg-transparent  w-[95%] md:w-[60%] h-auto flex flex-col items-center  ">
+              <div className="w-[70%] h-[450px] bg-banner-gray rounded-md flex flex-col justify-center items-center space-y-2">
+                <div className="w-[90%] h-[50px] ">
+                  <h1 className="text-md text-gray-200 font-dm">
+                    Report About Service
+                  </h1>
+                </div>
+                <div className="w-[90%] h-[300px] border-2 rounded-md ">
+                  <textarea
+                    value={reportText}
+                    onChange={(e) => {
+                      setReportText(e.target.value);
+                    }}
+                    maxLength={518}
+                    className="w-[100%] h-full bg-banner-gray pl-3 pt-2 text-white"
+                    placeholder="Reason......"
+                  />
+                </div>
+                <div className="w-[90%] h-[50px] flex justify-between  ">
+                  <button
+                    className="w-[40%] h-full bg-blue-400 text-white rounded-md"
+                    onClick={OnClickReport}
+                  >
+                    Report
+                  </button>
+                  <button
+                    className="w-[40%] h-full bg-red text-white rounded-md"
+                    onClick={() => {
+                      setReport(false);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
     </>
   );
 }

@@ -50,3 +50,62 @@ export  type roadServices = {
     type: string;
     webkitRelativePath: string;
 }
+
+
+
+
+export interface reportData {
+  _id?:  string;
+  userId: string ;
+  providerId: string ;
+  BookingId: string ;
+  report: string;
+  provider?: {
+    workshopName: string;
+    logoUrl: string;
+  };
+  user?: {
+    name: string;
+    logoUrl: string;
+  };
+  status?: "Pending" | "In Progress" | "Approved" | "Rejected" | "Completed";
+}
+
+
+export interface reportDetailsData {
+  BookingId: string;
+  bookeddate: string; // ISO date string
+  date: string; // ISO date string
+  bookings: {
+    advance: boolean;
+    advanceAmount: number;
+    paymentStatus: string;
+    selectedService: {
+      price: number;
+      serviceName: string;
+      typeId: string;
+      _id: string;
+    }[];
+    status: string;
+    vechileDetails: {
+      brand: string;
+      fueltype: string;
+      kilometer: number;
+      model: string;
+    };
+  };
+  provider: {
+    logoUrl: string;
+    workshopName: string;
+  };
+  providerId: string;
+  report: string;
+  status: string;
+  user: {
+    logoUrl: string;
+    name: string;
+  };
+  userId: string;
+  _id: string;
+  servicename: {serviceType:string}
+}

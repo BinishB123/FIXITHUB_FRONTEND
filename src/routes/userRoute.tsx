@@ -30,6 +30,7 @@ import UserCallPage from '../pages/user/userCallPage';
 import UserInCommigCallModal from '../components/user/userincommingcallmodal';
 import { useSocket } from '../context/socketioContext';
 import UserNotificationPage from '../pages/user/profileOutlets/Notification';
+import ViewReportPage from '../pages/user/profileOutlets/viewReport';
 interface ProtectedRouteProps {
     children: ReactNode;
 }
@@ -112,6 +113,7 @@ const UserRoute = () => {
                     <Route path='serviceHistory' element={<ProtectedRoute><BookingHistoryPage /></ProtectedRoute>} />
                     <Route path='chat/:chatid/:providerid' element={<ProtectedRoute><ChatOutletPage /></ProtectedRoute>} />
                     <Route path='notification' element={<UserNotificationPage></UserNotificationPage>}/>
+                    <Route path='viewreports' element={<ViewReportPage/>}></Route>
                 </Route>
                 <Route path='/success' element={<BookingSuccessPage />} />
             </Route>

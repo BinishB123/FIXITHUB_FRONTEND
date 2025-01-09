@@ -11,6 +11,7 @@ import AdminprovidersPage from "../components/admin/adminProvider/adminProviders
 import axios from "axios"
 import { apiUrl, axiosInstance } from "../api/common"
 import { toast } from "sonner"
+import AdminReportPage from "../pages/admin/adminReportPage"
 
 interface ProtectedRouteProps {
     children: ReactNode;
@@ -20,12 +21,13 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     const navigate = useNavigate()
     const adminData = JSON.parse(localStorage.getItem("isAdmin") || '{}');
-    if (!adminData.isAdmin) {
-      
-        navigate("/admin/signin", { replace: true })
-    }
 
     useEffect(() => {
+        if (!adminData.isAdmin) {
+            navigate("/admin/signin", { replace: true })
+            return
+        }
+
         axiosInstance.get(apiUrl + '/api/admin/auth/checker').then(() => {
             if (!adminData.isAdmin) {
                 toast.error("Session Expired please login")
@@ -55,6 +57,7 @@ const AdminRoutes = () => {
         <Route path="/settings" element={<ProtectedRoute><AdminSettingsPage /></ProtectedRoute>}></Route>
         <Route path="/dashboard" element={<ProtectedRoute><AdminHomePage /></ProtectedRoute>}></Route>
         <Route path="/userlist" element={<ProtectedRoute><AdminUserList /></ProtectedRoute>}></Route>
+        <Route path="/reports" element={<ProtectedRoute><AdminReportPage></AdminReportPage></ProtectedRoute>}></Route>
         <Route path="/providers" element={<ProtectedRoute><AdminproviderPage /></ProtectedRoute>}>
             <Route index element={<TwocardsProviderView />} />
             <Route path="pendinglist" element={<ProviderPendingPage />} />

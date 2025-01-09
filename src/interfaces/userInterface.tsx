@@ -1,73 +1,65 @@
-
-//in redux initial state 
+//in redux initial state
 interface userInitialState {
-  userInfo: userInfo | null
-  isLoggedIn: boolean,
-  isLoading: boolean,
-  error: boolean,
-  errormessage: string,
-  message: string
-  success: null | boolean
+  userInfo: userInfo | null;
+  isLoggedIn: boolean;
+  isLoading: boolean;
+  error: boolean;
+  errormessage: string;
+  message: string;
+  success: null | boolean;
 }
 export interface HeaderProps {
   prop: boolean;
 }
 export interface userInfo {
-  id: string,
-  name: string,
-  email: string,
-  mobile: string,
-  blocked: boolean
-  logoUrl?: string
-
+  id: string;
+  name: string;
+  email: string;
+  mobile: string;
+  blocked: boolean;
+  logoUrl?: string;
 }
 
 export interface Iusersignup {
-  name: string,
-  email: string,
-  mobile: string,
-  password: string
-
+  name: string;
+  email: string;
+  mobile: string;
+  password: string;
 }
 
 export interface Ivalidation {
-  field: string,
-  message: string
+  field: string;
+  message: string;
 }
 
 export interface mainResponse {
-  message: string,
-  success: boolean
+  message: string;
+  success: boolean;
 }
 
 export interface userResponse {
-  message: string,
-  success: boolean,
+  message: string;
+  success: boolean;
   user?: {
-    id: string,
-    name: string,
-    email: string,
-    mobile: string,
-    blocked: boolean
-  }
-
+    id: string;
+    name: string;
+    email: string;
+    mobile: string;
+    blocked: boolean;
+  };
 }
 
-
 export interface SignInData {
-  email: string,
-  password: string
+  email: string;
+  password: string;
 }
 
 export interface IgetservicesResponse {
-  _id: string
-  category: string,
-  serviceType: string,
-  imageUrl: string
+  _id: string;
+  category: string;
+  serviceType: string;
+  imageUrl: string;
 }
-
-
-
 
 export interface Workshop {
   workshopName: string;
@@ -102,28 +94,22 @@ interface Location {
   coordinates: [number, number];
 }
 
-
-
 export interface IRequiredDataDForBooking {
-  providerId: string,
-  userId: string,
-  date: string,
-  vehicleType: string,
-  serviceType: string,
-  selectedService: { typeId: string, serviceName: string, price: number }[],
-  suggestions?: string,
+  providerId: string;
+  userId: string;
+  date: string;
+  vehicleType: string;
+  serviceType: string;
+  selectedService: { typeId: string; serviceName: string; price: number }[];
+  suggestions?: string;
   vehicleDetails: {
-    vehicleId: string,
-    brand: string,
-    model: string,
-    fueltype: string,
-    kilometer: string
-  },
+    vehicleId: string;
+    brand: string;
+    model: string;
+    fueltype: string;
+    kilometer: string;
+  };
 }
-
-
-
-
 
 interface SelectedService {
   typeId: string;
@@ -132,15 +118,13 @@ interface SelectedService {
   _id: string;
 }
 
-
-
 interface BookedDate {
   date: Date;
 }
 
 interface ServiceName {
   serviceType: string;
-  _id:string
+  _id: string;
 }
 
 interface VehicleDetails {
@@ -150,35 +134,32 @@ interface VehicleDetails {
   kilometer: number;
 }
 
-
 export interface ResponsegetBookingGreaterThanTodaysDate {
   _id: string;
   selectedService: SelectedService[];
   vechileDetails: VehicleDetails;
-  date:string
+  date: string;
   advanceAmount: number;
-  advance: boolean,
-  status: string,
-  amountpaid: number,
-  vechileType:string,
-  paymentStatus: string,
+  advance: boolean;
+  status: string;
+  amountpaid: number;
+  vechileType: string;
+  paymentStatus: string;
   provider: {
-    _id:string,
+    _id: string;
     workshopName: string;
     mobile: number;
-    logoUrl: string
+    logoUrl: string;
   };
   bookeddate: BookedDate;
   servicename: ServiceName;
 
   brand: {
-    brand: string
-  }
-  suggestions: string,
-  review?:string|null
+    brand: string;
+  };
+  suggestions: string;
+  review?: string | null;
 }
-
-
 
 export interface NotificationGetter {
   count: number;
@@ -206,9 +187,8 @@ export interface NotificationGetter {
   _id: string; // ObjectId represented as a string
 }
 
-
-export interface responseGetReviewDetails{
-  _id: string;  
+export interface responseGetReviewDetails {
+  _id: string;
   userId: string;
   ServiceId: string;
   bookingId: string;
@@ -216,12 +196,11 @@ export interface responseGetReviewDetails{
   reply: string | null;
   like: boolean;
   images: { url: string }[];
-  provider:{
-    _id:string
-    logoUrl:string
-    workshopName:string
-  }
-
+  provider: {
+    _id: string;
+    logoUrl: string;
+    workshopName: string;
+  };
 }
 interface Image {
   // Define properties of image (e.g., URL, description, etc.)
@@ -247,6 +226,17 @@ export interface reviewDatas {
   _id: string;
 }
 
+export interface reportData {
+  _id?: string;
+  userId: string;
+  providerId: string;
+  BookingId: string;
+  report: string;
+  provider?:{
+    workshopName:string,
+    logoUrl:string
+  }
+  status?: "Pending" | "In Progress" | "Approved" | "Rejected" | "Completed";
+}
 
-
-export default userInitialState
+export default userInitialState;

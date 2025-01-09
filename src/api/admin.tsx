@@ -1,6 +1,7 @@
 import { apiUrl } from "./common";
 
 const commonSettingApi = apiUrl + "/api/admin/settings";
+const reportApi = apiUrl+"/api/admin/report"
 const provider = apiUrl + "/api/admin/providers"
 const settings = {
   getSettingsDatas: commonSettingApi + "/settingsDatas",
@@ -11,6 +12,12 @@ const settings = {
   deleteSubType: commonSettingApi + "/deletesubtype",
   editServiceName:commonSettingApi+'/editservicename'
 };
+
+export const adminReport = {
+  report :reportApi+'/getreport',
+  editReport :reportApi+'/ediReport',
+  reportdetails:reportApi+'/reportdetails'
+}
 
 export const adminProvider = {
    monthlyrevenue:provider+'/monthly-revenue',

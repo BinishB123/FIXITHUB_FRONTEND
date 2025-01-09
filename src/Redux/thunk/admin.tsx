@@ -2,10 +2,10 @@ import { Response, SignData } from "../../interfaces/admin";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { adminSignIn, adminLogOut } from "../../services/admin/adminService";
 export const signInThunk = createAsyncThunk<
-    Response, // Response type
-    { signin: SignData } // Argument type
+    Response,
+    { signin: SignData } 
 >(
-    'admin/signin', // Action type
+    'admin/signin',
     async ({ signin }, { rejectWithValue }) => {
         try {
             const response = await adminSignIn(signin);
