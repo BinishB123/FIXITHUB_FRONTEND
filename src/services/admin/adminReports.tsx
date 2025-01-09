@@ -22,3 +22,14 @@ export const getReportDeatils = (id:string)=>{
         })
     })
 }
+
+
+export const editReport = (id:string,status:string)=>{
+    return new Promise((resolve,reject)=>{
+        axiosInstance.patch(adminReport.editReport+`/${id}/${status}`).then((response)=>{
+            resolve(response)
+        }).catch((error)=>{
+            reject(error)
+        })
+    })
+}
