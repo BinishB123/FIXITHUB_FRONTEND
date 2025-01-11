@@ -295,11 +295,16 @@ function Services() {
                               {pageNumber+1>1&& <GrFormNext className="text-xl text-white rotate-180" />
                               }
                             </div>
-                            <div className="w-[4%] h-[40px] bg-orange flex items-center justify-center rounded-md">
-                              <h1 className="text-white text-center">{pageNumber+1}</h1>
+                            <div className={`${pageNumber +1%2!=0?"bg-blue-600":"bg-orange"} w-[4%] h-[40px] b flex items-center justify-center rounded-md`} >
+                            <h1 className="text-white text-center">{pageNumber+1}</h1>
                             </div>
-                            <div className="w-[4%] h-[40px] bg-orange flex items-center justify-center rounded-md" onClick={()=>{
+                            <div className={`${pageNumber + 1%2===0?"bg-blue-600":"bg-orange"} w-[4%] h-[40px] b flex items-center justify-center rounded-md`} onClick={()=>{
                               onClickPagination(startIndexAndEndIndex.start+10)
+                              onClickPagination(startIndexAndEndIndex.start+10)
+            
+                              setStartIndexAndEndIndex({start:startIndexAndEndIndex.start+10,end:startIndexAndEndIndex.end*(pageNumber+2)})
+                             
+                                setPageNumber(pageNumber+1)
                               
                             }}>
                               <h1 className="text-white text-center">{pageNumber+2}</h1>

@@ -51,7 +51,7 @@ function Services() {
                   </div>
                   <div className="w-[20%]  flex items-center ">
                     <button className="text-white text-sm bg-orange w-[100%] h-[50px] rounded-md hover:shadow-[0_10px_20px_rgba(255,_165,_0,_0.7)] transition ease-in-out delay-150  hover:-translate-y-1 hover:scale-110  duration-300 animate-bounce  flex pl-3 justify-center items-center text-md font-semibold ">
-                      click to view the services{" "}
+                      click to view the services {" "}
                       <FaArrowRight className="text-md text-white ml-2 mt-1" />
                     </button>
                   </div>

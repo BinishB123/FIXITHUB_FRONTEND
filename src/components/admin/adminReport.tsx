@@ -10,6 +10,7 @@ import { reportData, reportDetailsData } from "../../interfaces/admin";
 function AdminReport() {
     const [reportData, setReportData] = useState<reportData[] | []>([])
     const [showReportData, setShowReportData] = useState<boolean>(false)
+    const [textMailMessage,setTextMailMessage] = useState<string>("")
     const [reportDetails, setReportDetails] = useState<reportDetailsData | null>(null)
     const FilterWithServiceStatus = [
         "Pending", "In Progress", "Approved", "Rejected", "Completed"
@@ -54,6 +55,9 @@ function AdminReport() {
 
     }
 
+    const onClickSendToProvider = (id:string)=>{
+        
+    }
 
 
     return (<>

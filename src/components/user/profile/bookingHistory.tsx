@@ -483,8 +483,19 @@ export function BookingHistory() {
               <GrFormNext className="text-xl text-white rotate-180" />
             )}
           </div>
-          <div className="w-[4%] h-[40px] bg-orange flex items-center justify-center rounded-md">
+          <div className={`${pageNumber +1%2!=0?"bg-blue-600":"bg-orange"} w-[4%] h-[40px] b flex items-center justify-center rounded-md`} >
             <h1 className="text-white text-center">{pageNumber + 1}</h1>
+          </div>
+          <div className={`${pageNumber + 1%2===0?"bg-blue-600":"bg-orange"} w-[4%] h-[40px] b flex items-center justify-center rounded-md`} onClick={()=>{
+             onClickPagination(startIndexAndEndIndex.start + 5);
+              setStartIndexAndEndIndex({
+                start: startIndexAndEndIndex.start + 5,
+                end: startIndexAndEndIndex.end * (pageNumber + 1),
+              });
+              setPageNumber(pageNumber + 1);
+
+          }}>
+            <h1 className="text-white text-center">{pageNumber + 2}</h1>
           </div>
           <div
             className={`w-[4%] h-[40px] bg-orange flex ${startIndexAndEndIndex.start + 10 > Math.ceil(totalCount / 5) * 5
