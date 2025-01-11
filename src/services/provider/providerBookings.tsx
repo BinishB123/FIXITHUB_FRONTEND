@@ -50,7 +50,7 @@ export const getBookingAccordingToDate = (providerId: string, date: Date) => {
   })
 }
 
-export const getBookingStillTodaysDate = (providerId: string,startIndex:number,status?: string|undefined) => {
+export const getBookingStillTodaysDate = (providerId: string,startIndex?:number,status?: string|undefined) => {
   return new Promise((resolve, reject) => {
     axiosInstance.get(status ? serviceBookings.getBookingStillTodaysDate + `/${providerId}/${startIndex}?status=${status}` : serviceBookings.getBookingStillTodaysDate + `/${providerId}/${startIndex}`).then((response) => {
       resolve(response)

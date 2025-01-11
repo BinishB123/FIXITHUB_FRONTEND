@@ -76,6 +76,8 @@ function ProviderCallComponent() {
     peerConection.current.ontrack = (event) => {
       const remoteStream = event.streams[0];
       if (videoRef.current) {
+        console.log(remoteStream);
+        
         videoRef.current.srcObject = remoteStream;
       }
     };

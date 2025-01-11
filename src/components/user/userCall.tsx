@@ -83,6 +83,8 @@ function UserCallComponent() {
 
     peerConection.current.ontrack = (event) => {
       if (remoteVideoRef.current) {
+        console.log(event.streams[0]);
+        
         remoteVideoRef.current.srcObject = event.streams[0];
       }
     };

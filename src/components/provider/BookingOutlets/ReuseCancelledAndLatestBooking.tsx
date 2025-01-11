@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoIosChatboxes } from "react-icons/io";
 import { MdOutlineCall } from "react-icons/md";
 import { FaCaretDown } from "react-icons/fa";
@@ -8,9 +8,15 @@ import { RootState } from "../../../Redux/store/store";
 import { ResponseAccordingToDate } from "../../../interfaces/providerServiceBooking";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getChatId } from "../../../services/provider/providerProfile";
+import { useSocket } from "../../../context/socketioContext";
+import { toast } from "sonner";
 
 function ReuseCancelledAndLatestBooking(props: { value: string }) {
   const { providerInfo } = useSelector((state: RootState) => state.provider)
+     const useridRef = useRef<string|null>(null)
+       const {socket} = useSocket()
+     
+  
   const location = useLocation()
   const navigate = useNavigate()
   const [data, setData] = useState<
@@ -19,10 +25,10 @@ function ReuseCancelledAndLatestBooking(props: { value: string }) {
   const [upanddown, setupanddown] = useState(false);
   const [indext, setindex] = useState<number | undefined>(undefined);
   useEffect(() => {
-   
     if (providerInfo) {
       if (props.value === "cancelled") {
-        getBookingStillTodaysDate(providerInfo.id, props.value).then((response:any) => {
+
+        getBookingStillTodaysDate(providerInfo.id,0,props.value).then((response:any) => {
           setData(response.data.data)
         
         }).catch((error) => {
@@ -44,13 +50,38 @@ function ReuseCancelledAndLatestBooking(props: { value: string }) {
     }
 
   }, [location.pathname])
+  useEffect(()=>{
+    socket?.on("checkedUserIsOnlineOrNot",(response)=>{
+      if(!response.success){
+          toast.warning("User is Offline")
+      }else{
+        navigate(`/provider/call/${useridRef.current}`)
+      }
+      
+    })
+
+    return()=>{
+      socket?.off("checkedUserIsOnlineOrNot")
+    }
+
+  },[socket])
+
+   
+
   const chatCreation = (providerId:string,userId:string)=>{
 
     getChatId(providerId,userId).then((Response:any)=>{
-     navigate(`/provider/profile/${Response.data.id}`)
+     navigate(`/provider/profile/chat/${Response.data.id}/${userId}`)
     })
   
 }
+
+
+
+const checkUserisOnlinOrNotBeforeCalling = (userid:string)=>{
+  socket?.emit("checkOnlineorNot",{userid:userid,providerid:providerInfo?.id,checker:"provider"}) 
+}
+
 
   return (<><div className="w-[90%] h-[500px]  flex-col overflow-y-scroll scrollbar-hide space-y-1">
     {
@@ -84,7 +115,10 @@ function ReuseCancelledAndLatestBooking(props: { value: string }) {
                   chatCreation(providerInfo?.id,item.user._id)
                 }
               }} />
-              <MdOutlineCall className="text-2xl text-blue-500" />
+              <MdOutlineCall className="text-2xl text-blue-500" onClick={()=>{
+                useridRef.current = item.user._id
+                checkUserisOnlinOrNotBeforeCalling(item.user._id)
+              }} />
             </div>
             <div className="w-[10%] h-[100%] flex flex-col justify-center items-center ">
               <FaCaretDown

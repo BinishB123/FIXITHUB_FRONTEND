@@ -3,10 +3,11 @@ import { MdOutlineCall } from "react-icons/md";
 import { getChatOfOneToOne } from "../../../services/user/userProfile";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { IChatingUser } from "../../../interfaces/chat";
 import { RootState } from "../../../Redux/store/store";
 import { useSocket } from "../../../context/socketioContext";
+import { toast } from "sonner";
 
 export function ChatComponenet() {
   const v = new Date();
@@ -22,6 +23,7 @@ export function ChatComponenet() {
   const [chatConverstaion, setChatConverstaion] = useState<IChatingUser | null>(
     null
   );
+  const naviagte = useNavigate()
   const [online, setOnline] = useState<boolean>(false);
   const params = useParams();
 
@@ -79,6 +81,14 @@ export function ChatComponenet() {
         setOnline(true);
       }
     });
+  
+    socket?.on("checkedUserIsOnlineOrNot", (response) => {
+      if (!response.success) {
+        toast.warning("User is Offline");
+      } else {
+        naviagte(`/call/${params.providerid}`);
+      }
+    });
 
     return () => {
       socket?.off("receivemessage");
@@ -87,8 +97,11 @@ export function ChatComponenet() {
       socket?.off("isOnline");
       socket?.off("userOffline");
       socket?.off("setup");
+      socket?.off("checkedUserIsOnlineOrNot");
     };
   }, [socket]);
+
+  
 
   useEffect(() => {
     if (messagedivref.current) {
@@ -117,7 +130,13 @@ export function ChatComponenet() {
     socket?.emit("isTyping", { typer: "user", chatid: params.chatid });
   };
 
-  const callProvider = () => {};
+  const checkUserisOnlinOrNotBeforeCalling = (providerid: string) => {
+    socket?.emit("checkOnlineorNot", {
+      userid: userInfo?.id,
+      providerid: providerid,
+      checker: "user",
+    });
+  };
 
   return (
     <>
@@ -205,7 +224,9 @@ export function ChatComponenet() {
               <MdOutlineCall
                 className="text-2xl text-blue-500"
                 onClick={() => {
-                  callProvider();
+                   if(params.providerid){
+                    checkUserisOnlinOrNotBeforeCalling(params.providerid);
+                   }
                 }}
               />
             </div>

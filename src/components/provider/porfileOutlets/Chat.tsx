@@ -2,16 +2,18 @@ import { IoSend } from "react-icons/io5";
 import { MdOutlineCall } from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
 import { IChatingUser } from "../../../interfaces/chat";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store/store";
 import { useSocket } from "../../../context/socketioContext";
 import { getOneToOneChat } from "../../../services/provider/providerProfile";
+import { toast } from "sonner";
 
 function ProviderChatComponnent() {
   const messagedivref = useRef<HTMLDivElement>(null);
   const { providerInfo } = useSelector((state: RootState) => state.provider);
   const [message, setMessage] = useState<string>("");
+  const navigate = useNavigate()
   const [typing, setTyping] = useState<{
     typer: "user" | "provider";
     indicate: "typing...." | null;
@@ -20,7 +22,7 @@ function ProviderChatComponnent() {
   const [chatConverstaion, setChatConverstaion] = useState<IChatingUser | null>(
     null
   );
-  const { socket } = useSocket();
+   const {socket} = useSocket()
   const [online, setOnline] = useState<boolean>(false);
   const params = useParams();
 
@@ -81,6 +83,15 @@ function ProviderChatComponnent() {
       }
     });
 
+    socket?.on("checkedUserIsOnlineOrNot",(response)=>{
+      if(!response.success){
+          toast.warning("User is Offline")
+      }else{
+        navigate(`/provider/call/${params.userid}`)
+      }
+      
+    })
+
     return () => {
       socket?.off("receivemessage");
       socket?.off("join-chat");
@@ -88,6 +99,8 @@ function ProviderChatComponnent() {
       socket?.off("isOnline");
       socket?.off("userOffline");
       socket?.off("setup");
+      socket?.off("checkedUserIsOnlineOrNot")
+      
     };
   }, [socket]);
 
@@ -118,7 +131,9 @@ function ProviderChatComponnent() {
     socket?.emit("isTyping", { typer: "provider", chatid: params.chatid });
   };
 
-  const callUser = () => { };
+  const checkUserisOnlinOrNotBeforeCalling = (userid:string)=>{
+    socket?.emit("checkOnlineorNot",{userid:userid,providerid:providerInfo?.id,checker:"provider"}) 
+  }
 
   return (
     <>
@@ -222,9 +237,14 @@ function ProviderChatComponnent() {
                 <div className="w-[30%]  flex justify-center items-center">
                   <MdOutlineCall
                     className="text-2xl text-blue-500"
-                    onClick={() => {
-                      callUser();
-                    }}
+                  
+                      onClick={()=>{
+                        if (params.userid) {
+                          checkUserisOnlinOrNotBeforeCalling(params.userid)
+                        }
+                        
+                      }}
+                  
                   />
                 </div>
               </div>
