@@ -18,8 +18,9 @@ function AdminReport() {
     useEffect(() => {
         getReport().then((response: any) => {
             setReportData(response.data)
-
-
+        }).catch((error)=>{
+            console.log();
+            
         })
 
     }, [])

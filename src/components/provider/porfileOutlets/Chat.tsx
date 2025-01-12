@@ -13,7 +13,7 @@ function ProviderChatComponnent() {
   const messagedivref = useRef<HTMLDivElement>(null);
   const { providerInfo } = useSelector((state: RootState) => state.provider);
   const [message, setMessage] = useState<string>("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [typing, setTyping] = useState<{
     typer: "user" | "provider";
     indicate: "typing...." | null;
@@ -22,7 +22,7 @@ function ProviderChatComponnent() {
   const [chatConverstaion, setChatConverstaion] = useState<IChatingUser | null>(
     null
   );
-   const {socket} = useSocket()
+  const { socket } = useSocket();
   const [online, setOnline] = useState<boolean>(false);
   const params = useParams();
 
@@ -49,12 +49,9 @@ function ProviderChatComponnent() {
     });
     socket?.emit("join-chat", params.chatid);
     socket?.on("receivemessage", (response) => {
-
-      if (response.response.sender==="user") {
-        socket.emit("updateMessageseen",{messageId:response.response._id})
-       }
-          
-        
+      if (response.response.sender === "user") {
+        socket.emit("updateMessageseen", { messageId: response.response._id });
+      }
 
       setChatConverstaion((prev) => {
         if (prev && prev._id === response.response.chatId) {
@@ -65,7 +62,6 @@ function ProviderChatComponnent() {
         }
         return prev;
       });
-     
     });
 
     socket?.on("typing", (response) => {
@@ -83,14 +79,13 @@ function ProviderChatComponnent() {
       }
     });
 
-    socket?.on("checkedUserIsOnlineOrNot",(response)=>{
-      if(!response.success){
-          toast.warning("User is Offline")
-      }else{
-        navigate(`/provider/call/${params.userid}`)
+    socket?.on("checkedUserIsOnlineOrNot", (response) => {
+      if (!response.success) {
+        toast.warning("User is Offline");
+      } else {
+        navigate(`/provider/call/${params.userid}`);
       }
-      
-    })
+    });
 
     return () => {
       socket?.off("receivemessage");
@@ -99,8 +94,7 @@ function ProviderChatComponnent() {
       socket?.off("isOnline");
       socket?.off("userOffline");
       socket?.off("setup");
-      socket?.off("checkedUserIsOnlineOrNot")
-      
+      socket?.off("checkedUserIsOnlineOrNot");
     };
   }, [socket]);
 
@@ -131,9 +125,13 @@ function ProviderChatComponnent() {
     socket?.emit("isTyping", { typer: "provider", chatid: params.chatid });
   };
 
-  const checkUserisOnlinOrNotBeforeCalling = (userid:string)=>{
-    socket?.emit("checkOnlineorNot",{userid:userid,providerid:providerInfo?.id,checker:"provider"}) 
-  }
+  const checkUserisOnlinOrNotBeforeCalling = (userid: string) => {
+    socket?.emit("checkOnlineorNot", {
+      userid: userid,
+      providerid: providerInfo?.id,
+      checker: "provider",
+    });
+  };
 
   return (
     <>
@@ -237,14 +235,11 @@ function ProviderChatComponnent() {
                 <div className="w-[30%]  flex justify-center items-center">
                   <MdOutlineCall
                     className="text-2xl text-blue-500"
-                  
-                      onClick={()=>{
-                        if (params.userid) {
-                          checkUserisOnlinOrNotBeforeCalling(params.userid)
-                        }
-                        
-                      }}
-                  
+                    onClick={() => {
+                      if (params.userid) {
+                        checkUserisOnlinOrNotBeforeCalling(params.userid);
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -267,14 +262,16 @@ function ProviderChatComponnent() {
                                   {data.message}
                                 </p>
                                 <p className="text-end text-sm text-white mr-3 tracking-tighter">
-                                  {`${new Date(data.createdAt).toLocaleString('en-IN', {
-                                    timeZone: 'Asia/Kolkata',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true,
-                                  })}`}
+                                  {`${new Date(data.createdAt).toLocaleString(
+                                    "en-IN",
+                                    {
+                                      timeZone: "Asia/Kolkata",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    }
+                                  )}`}
                                 </p>
-
                               </div>
                             </div>
                           ) : (
@@ -284,12 +281,15 @@ function ProviderChatComponnent() {
                                   {data.message}
                                 </p>
                                 <p className="text-end text-sm text-white mr-3 tracking-tighter">
-                                  {`${new Date(data.createdAt).toLocaleString('en-IN', {
-                                    timeZone: 'Asia/Kolkata',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true,
-                                  })}`}
+                                  {`${new Date(data.createdAt).toLocaleString(
+                                    "en-IN",
+                                    {
+                                      timeZone: "Asia/Kolkata",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    }
+                                  )}`}
                                 </p>
                                 <div className="w-[100%] h-[5px] hidden ">
                                   <p className="text-sm text-gray-500 text-end">

@@ -11,7 +11,7 @@ import { IoIosRemoveCircle } from "react-icons/io";
 
 function AddedServices(prop: { value: number }) {
   const service = useContext(AddServiceContext);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { providerInfo } = useSelector((state: RootState) => state.provider);
 
   service?.setvehicleType(prop.value == 2 ? "2" : "4");
@@ -82,8 +82,6 @@ function AddedServices(prop: { value: number }) {
         }
       })
       .catch((error) => {
-      
-
         if (axios.isAxiosError(error)) {
           console.log("confritm");
 
@@ -92,8 +90,10 @@ function AddedServices(prop: { value: number }) {
 
           if (statusCode === 403) {
             localStorage.removeItem("provider");
-            navigate('/provider/signin', { replace: true });
-            toast.error("Your session has expired or your access is restricted. Please sign in again.");
+            navigate("/provider/signin", { replace: true });
+            toast.error(
+              "Your session has expired or your access is restricted. Please sign in again."
+            );
           }
         } else {
           console.error("An unexpected error occurred:", error);
@@ -103,45 +103,71 @@ function AddedServices(prop: { value: number }) {
       });
   };
 
-  const removeService = (typeid:string,workshopId:string,category:string)=>{
-    axiosInstance.patch(apiUrl + `/api/provider/addservice/removerservice/${typeid}/${workshopId}/${prop.value == 2?"twoWheeler":"fourWheeler"}`).then((response)=>{
-      if (category === "road") {
-        if (service?.roadServices) {
-          const updatedData = service.roadServices.map((item) => {
+  const removeService = (
+    typeid: string,
+    workshopId: string,
+    category: string
+  ) => {
+    axiosInstance
+      .patch(
+        apiUrl +
+        `/api/provider/addservice/removerservice/${typeid}/${workshopId}/${prop.value == 2 ? "twoWheeler" : "fourWheeler"
+        }`
+      )
+      .then((response) => {
+        if (category === "road") {
+          if (service?.roadServices) {
+            const updatedData = service.roadServices.map((item) => {
+              if (item.typeid === typeid) {
+                return { ...item, isAdded: false };
+              }
+              return item;
+            });
+
+            service.setRoadServices(updatedData);
+          } else {
+            return toast.error("Adding failed try again");
+          }
+        }
+
+        if (service?.generalService) {
+          const updatedData = service.generalService.map((item) => {
             if (item.typeid === typeid) {
               return { ...item, isAdded: false };
             }
             return item;
           });
 
-          service.setRoadServices(updatedData);
-        } else {
-          return toast.error("Adding failed try again");
-        }
-      }
-
-      if (service?.generalService) {
-        const updatedData = service.generalService.map((item) => {
-          if (item.typeid === typeid) {
-            return { ...item, isAdded: false  };
+          if (updatedData) {
+            service.setGeneralservices(updatedData);
+          } else {
+            return toast.error("Adding failed try again");
           }
-          return item;
-        });
-
-        if (updatedData) {
-          service.setGeneralservices(updatedData);
         } else {
-          return toast.error("Adding failed try again");
+          console.error("generalService is not available.");
         }
-      } else {
-        console.error("generalService is not available.");
-      }
-      
-    }).catch((error)=>{
-      console.log();
-      
-    })
-  }
+      })
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          console.log("confritm");
+
+          const statusCode = error.response?.status;
+          console.log("Status Code:", statusCode);
+
+          if (statusCode === 403) {
+            localStorage.removeItem("provider");
+            navigate("/provider/signin", { replace: true });
+            toast.error(
+              "Your session has expired or your access is restricted. Please sign in again."
+            );
+          }
+        } else {
+          console.error("An unexpected error occurred:", error);
+        }
+
+        console.error("Error fetching brands:", error);
+      });
+  };
 
   return (
     <>
@@ -149,7 +175,9 @@ function AddedServices(prop: { value: number }) {
         <div className="w-[100%] h-[650px]  flex-col">
           <div className="w-[100%] h-[50px] hidden ">
             <h1 className=" text-xl text-white border-b-2 border-gray-600 w-[50%] font-semibold">
-              {prop.value === 2 ? "Add General Services Offered for Two-Wheelers in Your Workshop" : "Add General Services Offered for Four-Wheelers in Your Workshop"}
+              {prop.value === 2
+                ? "Add General Services Offered for Two-Wheelers in Your Workshop"
+                : "Add General Services Offered for Four-Wheelers in Your Workshop"}
             </h1>
           </div>
           <div className="w-[100%] h-[600px]   grid grid-cols-2 md:grid-cols-3 gap-x-2 space-y-3 overflow-y-scroll rounded-md scrollbar-hide animate-fadeInDownBig mt-4 ">
@@ -160,13 +188,20 @@ function AddedServices(prop: { value: number }) {
               >
                 {/* Remove Icon */}
                 <div className="absolute top-2 right-2">
-                 {
-                  item.isAdded&& <IoIosRemoveCircle className="w-6 h-6 bg-red-600 cursor-pointer text-red flex items-center justify-center rounded-full" onClick={() => {
-                    if (providerInfo?.id) {
-                      removeService(item.typeid,providerInfo?.id,"general")
-                    }
-                  }} />
-                 }
+                  {item.isAdded && (
+                    <IoIosRemoveCircle
+                      className="w-6 h-6 bg-red-600 cursor-pointer text-red flex items-center justify-center rounded-full"
+                      onClick={() => {
+                        if (providerInfo?.id) {
+                          removeService(
+                            item.typeid,
+                            providerInfo?.id,
+                            "general"
+                          );
+                        }
+                      }}
+                    />
+                  )}
                   {/* <button
                   className="w-6 h-6 bg-red-600 text-white flex items-center justify-center rounded-full"
                   onClick={() => {
@@ -220,7 +255,6 @@ function AddedServices(prop: { value: number }) {
                   )}
                 </div>
               </div>
-
             ))}
           </div>
         </div>
@@ -228,62 +262,68 @@ function AddedServices(prop: { value: number }) {
         <div className="w-[100%] h-[550px] hidden ">
           <div className="w-[100%] h-[50px]">
             <h1 className="text-start  text-xl text-white border-b-2 border-gray-600 w-[55%] font-semibold">
-              {prop.value === 2 ? "Add RoadAssistance Services Offered for Two-Wheelers in Your Workshop" : "Add RoadAssistance Services Offered for Four-Wheelers in Your Workshop"}
-
-
+              {prop.value === 2
+                ? "Add RoadAssistance Services Offered for Two-Wheelers in Your Workshop"
+                : "Add RoadAssistance Services Offered for Four-Wheelers in Your Workshop"}
             </h1>
           </div>
           <div className="w-[100%] h-[600px]   grid grid-cols-2 md:grid-cols-3 gap-2 space-y-3 overflow-y-scroll rounded-md scrollbar-hide animate-fadeInDownBig mt-4">
             {service?.roadServices?.map((item, index) => (
               <div
-              key={index}
-              className={`w-[85%] h-[150px] bg-banner-gray flex flex-col text-white rounded-md p-2 ${index === 0 && ""}`}
-            >
-              <div className="relative w-[100%] h-[100px] flex justify-end">
-                {/* Image Container */}
-                <div className="w-[30%] h-[100px] overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt=""
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-            
-                {/* Title Section */}
-                <div className="w-[70%] flex place-content-center place-items-center">
-                  <h1 className="text-md font-semibold">{item.typename}</h1>
-                </div>
-            
-                {/* Remove Icon - Positioned top-right */}
-                <div className="absolute top-0 right-0 p-2">
-                   {
-                    item.isAdded&& <IoIosRemoveCircle  className="cursor-pointer w-6 h-6 bg-red-600 text-red flex items-center justify-center rounded-full" onClick={() => {
-                      if (providerInfo?.id) {
-                        removeService(item.typeid,providerInfo?.id,"road")
-                      }
-                    }}/>
-                   }
+                key={index}
+                className={`w-[85%] h-[150px] bg-banner-gray flex flex-col text-white rounded-md p-2 ${index === 0 && ""
+                  }`}
+              >
+                <div className="relative w-[100%] h-[100px] flex justify-end">
+                  {/* Image Container */}
+                  <div className="w-[30%] h-[100px] overflow-hidden">
+                    <img
+                      src={item.image}
+                      alt=""
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
 
+                  {/* Title Section */}
+                  <div className="w-[70%] flex place-content-center place-items-center">
+                    <h1 className="text-md font-semibold">{item.typename}</h1>
+                  </div>
+
+                  {/* Remove Icon - Positioned top-right */}
+                  <div className="absolute top-0 right-0 p-2">
+                    {item.isAdded && (
+                      <IoIosRemoveCircle
+                        className="cursor-pointer w-6 h-6 bg-red-600 text-red flex items-center justify-center rounded-full"
+                        onClick={() => {
+                          if (providerInfo?.id) {
+                            removeService(
+                              item.typeid,
+                              providerInfo?.id,
+                              "road"
+                            );
+                          }
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Bottom Section */}
+                <div className="w-[100%] h-[50px] flex place-content-end pb-6 pr-2">
+                  {!item.isAdded ? (
+                    <button
+                      className="w-[40%] bg-orange h-[30px] mt-1 rounded-md font-semibold"
+                      onClick={() => {
+                        AddGeneralOrRoadService(item.typeid, item.category);
+                      }}
+                    >
+                      ADD
+                    </button>
+                  ) : (
+                    <SiTicktick className="text-2xl text-green-500" />
+                  )}
                 </div>
               </div>
-            
-              {/* Bottom Section */}
-              <div className="w-[100%] h-[50px] flex place-content-end pb-6 pr-2">
-                {!item.isAdded ? (
-                  <button
-                    className="w-[40%] bg-orange h-[30px] mt-1 rounded-md font-semibold"
-                    onClick={() => {
-                      AddGeneralOrRoadService(item.typeid, item.category);
-                    }}
-                  >
-                    ADD
-                  </button>
-                ) : (
-                  <SiTicktick className="text-2xl text-green-500" />
-                )}
-              </div>
-            </div>
-            
             ))}
           </div>
         </div>

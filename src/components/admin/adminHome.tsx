@@ -31,7 +31,7 @@ function AdminHome() {
             const formattedData = rawData.map((item: any) => ({
                 name: months[item.month - 1],
                 uv: item.revenue,
-            }));
+            }))
 
             setrevenue(formattedData)
 

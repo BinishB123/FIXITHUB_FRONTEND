@@ -261,6 +261,8 @@ function AdminSettingsComponent() {
             toast.error("Session Expired. Please log in again.");
             navigate("/admin/signin", { replace: true });
         } else if (error?.response) {
+            console.log(error);
+            
             toast.warning(error.response.data.message);
         }
     };

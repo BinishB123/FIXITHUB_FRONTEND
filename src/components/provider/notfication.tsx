@@ -17,8 +17,6 @@ function NotificationComponent(){
         useEffect(()=>{
             if (providerInfo) {
                 notificationGetter(providerInfo.id).then((response:any)=>{
-                    console.log(response);
-                    
                     setNotification(response.data.notfiyData)
                 })
             }

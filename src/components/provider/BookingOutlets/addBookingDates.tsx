@@ -65,7 +65,6 @@ function AddBookings() {
         setDates(newDate)
     }
     }
-    console.log(datesAndCount);
     
 
     const OnClickUpdateCount = (dateId:string,toDo:string)=>{

@@ -7,6 +7,9 @@ import { getFeedBacks, like, replyService } from "../../services/provider/provid
 import { reviewDatas } from "../../interfaces/providerServiceBooking";
 import { IoMdClose } from "react-icons/io";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import axios from "axios";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 function ViewFeeBackComponent() {
     const { providerInfo } = useSelector((state: RootState) => state.provider);
@@ -15,6 +18,7 @@ function ViewFeeBackComponent() {
     const [viewData,setViewData] = useState<boolean>(false)
     const [replytext,setReplyText] = useState<string>('')
     const [reply,setReply] = useState<boolean>(false)
+    const navigate = useNavigate()
     useEffect(() => {
         if (providerInfo) {
             getFeedBacks(providerInfo.id).then((response: any) => {
@@ -33,6 +37,26 @@ function ViewFeeBackComponent() {
             })
 
             setReviews(updatedData)
+        }).catch((error)=>{
+          if (axios.isAxiosError(error)) {
+            console.log("confritm");
+  
+            const statusCode = error.response?.status;
+            console.log("Status Code:", statusCode);
+  
+            if (statusCode === 403) {
+              localStorage.removeItem("provider");
+              navigate("/provider/signin", { replace: true });
+              toast.error(
+                "Your session has expired or your access is restricted. Please sign in again."
+              );
+            }
+          } else {
+            console.error("An unexpected error occurred:", error);
+          }
+  
+          console.error("Error fetching brands:", error);
+           
         })
 
     }
@@ -52,6 +76,25 @@ function ViewFeeBackComponent() {
             setReviews(updatedData)
             setReply(false)
                
+        }).catch((error)=>{
+          if (axios.isAxiosError(error)) {
+            console.log("confritm");
+  
+            const statusCode = error.response?.status;
+            console.log("Status Code:", statusCode);
+  
+            if (statusCode === 403) {
+              localStorage.removeItem("provider");
+              navigate("/provider/signin", { replace: true });
+              toast.error(
+                "Your session has expired or your access is restricted. Please sign in again."
+              );
+            }
+          } else {
+            console.error("An unexpected error occurred:", error);
+          }
+  
+          console.error("Error fetching brands:", error);
         })
     }
 

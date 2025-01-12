@@ -27,6 +27,7 @@ import { motion } from "framer-motion";
 import { CiEdit } from "react-icons/ci";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GoReport } from "react-icons/go";
+import axios from "axios";
 
 export function BookingHistory() {
   const [editreviewText, setEditreviewText] = useState(false);
@@ -90,7 +91,18 @@ export function BookingHistory() {
         navigate(`/profile/chat/${Response.data.id}/${providerId}`);
       })
       .catch((error) => {
-        console.log(error);
+        if (axios.isAxiosError(error)) {
+          const statusCode = error.response?.status;
+          if (statusCode === 403 || statusCode === 401) {
+            localStorage.removeItem("user");
+            toast.error(
+              "Your session has expired or your access is restricted. Please sign in again."
+            );
+            navigate("/login", { replace: true });
+          }
+        } else {
+          console.error("An error occurred:", error);
+        }
       });
   };
 
@@ -116,7 +128,19 @@ export function BookingHistory() {
           setTotalCount(response.data.count);
         })
         .catch((error) => {
-          console.log(error);
+          if (axios.isAxiosError(error)) {
+            const statusCode = error.response?.status;
+            if (statusCode === 403 || statusCode === 401) {
+              localStorage.removeItem("user");
+
+              toast.error(
+                "Your session has expired or your access is restricted. Please sign in again."
+              );
+              navigate("/login", { replace: true });
+            }
+          } else {
+            console.error("An error occurred:", error);
+          }
         });
     }
   };
@@ -155,21 +179,37 @@ export function BookingHistory() {
     originalFiles.forEach((file) => {
       data.append(`images`, file);
     });
-    addReviewApi(data).then((response: any) => {
-      const updateData = serviceHistory.map((da) => {
-        if (da._id + "" === "" + singleService?._id) {
-          return { ...da, review: response.data.review._id };
+    addReviewApi(data)
+      .then((response: any) => {
+        const updateData = serviceHistory.map((da) => {
+          if (da._id + "" === "" + singleService?._id) {
+            return { ...da, review: response.data.review._id };
+          }
+          return da;
+        });
+        if (updateData) {
+          setHistory(updateData);
         }
-        return da;
+        setLoading(false);
+        setAddReview(false);
+        toast.success("Review Added");
+        console.log(response);
+      })
+      .catch((error) => {
+        if (axios.isAxiosError(error)) {
+          const statusCode = error.response?.status;
+          if (statusCode === 403 || statusCode === 401) {
+            localStorage.removeItem("user");
+
+            toast.error(
+              "Your session has expired or your access is restricted. Please sign in again."
+            );
+            navigate("/login", { replace: true });
+          }
+        } else {
+          console.error("An error occurred:", error);
+        }
       });
-      if (updateData) {
-        setHistory(updateData);
-      }
-      setLoading(false);
-      setAddReview(false);
-      toast.success("Review Added");
-      console.log(response);
-    });
   };
 
   const onClickGetReviewDetails = (bookingid: string) => {
@@ -180,10 +220,23 @@ export function BookingHistory() {
         setReviewData(response.data.ReviewData);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((error) => {
         toast.error("Something went wrong");
         setLoading(false);
         setViewReview(false);
+        if (axios.isAxiosError(error)) {
+          const statusCode = error.response?.status;
+          if (statusCode === 403 || statusCode === 401) {
+            localStorage.removeItem("user");
+
+            toast.error(
+              "Your session has expired or your access is restricted. Please sign in again."
+            );
+            navigate("/login", { replace: true });
+          }
+        } else {
+          console.error("An error occurred:", error);
+        }
       });
   };
 
@@ -212,7 +265,7 @@ export function BookingHistory() {
       if (
         reviewText.trim() === "" ||
         reviewText.trim().toLowerCase() ===
-        reviewData?.opinion.trim().toLocaleLowerCase()
+          reviewData?.opinion.trim().toLocaleLowerCase()
       ) {
         window.alert();
         return;
@@ -250,14 +303,15 @@ export function BookingHistory() {
         reportText,
         report: reportText,
       };
-      createReport({ ...data }).then((response) => {
-        toast.success("Reported your Issue");
-        setReport(false);
-        setSinglesService(null);
-      }).catch((error)=>{
-        console.log(error);
-        
-      });
+      createReport({ ...data })
+        .then((response) => {
+          toast.success("Reported your Issue");
+          setReport(false);
+          setSinglesService(null);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
@@ -284,8 +338,9 @@ export function BookingHistory() {
                 </div>
                 <div className="w-[10%] h-[100%] text-white flex justify-center items-center ">
                   <h1
-                    className={`text-sm ${statusColors[item.status as keyof StatusColors]
-                      }`}
+                    className={`text-sm ${
+                      statusColors[item.status as keyof StatusColors]
+                    }`}
                   >{` ${item.status}`}</h1>
                 </div>
                 <div className="w-[15%] h-[100%] flex justify-center items-center  flex-col ">
@@ -317,13 +372,15 @@ export function BookingHistory() {
                 </div>
                 <div className="w-[7%] h-[100%] flex flex-col justify-center items-center ">
                   <FaCaretDown
-                    className={`text-2xl text-orange cursor-pointer ${!upanddown &&
+                    className={`text-2xl text-orange cursor-pointer ${
+                      !upanddown &&
                       indext === index &&
                       "rotate-360 transition ease-linear"
-                      } ${upanddown &&
+                    } ${
+                      upanddown &&
                       indext === index &&
                       "rotate-180 transition ease-linear"
-                      } `}
+                    } `}
                     onClick={() => {
                       setupanddown(!upanddown);
 
@@ -348,10 +405,11 @@ export function BookingHistory() {
                 </div>
               </div>
               <div
-                className={`w-full h-[200px] rounded-md bg-banner-gray flex ${upanddown && indext === index
+                className={`w-full h-[200px] rounded-md bg-banner-gray flex ${
+                  upanddown && indext === index
                     ? "animate-fadeInDownBig transition ease-linear"
                     : "hidden"
-                  }`}
+                }`}
               >
                 {/* Left Section */}
                 <div className="w-[40%] h-full p-4 text-white flex flex-col text-sm  space-y-2">
@@ -415,24 +473,27 @@ export function BookingHistory() {
                     <>
                       {" "}
                       <h1
-                        className={`${item.advance === true && item.status == "cancelled"
+                        className={`${
+                          item.advance === true && item.status == "cancelled"
                             ? "text-blue-400"
                             : "text-green-400"
-                          } text-sm flex items-center space-x-2 `}
+                        } text-sm flex items-center space-x-2 `}
                       >
-                        {`Advance Fee :  ${item.advance === true && item.status == "cancelled"
+                        {`Advance Fee :  ${
+                          item.advance === true && item.status == "cancelled"
                             ? "Refunded"
                             : "paid"
-                          }`}
+                        }`}
                       </h1>
                     </>
                   )}
                   {item.status !== "cancelled" && (
                     <h1
-                      className={`${item.paymentStatus === "paid"
+                      className={`${
+                        item.paymentStatus === "paid"
                           ? "text-green-500"
                           : "text-red"
-                        }`}
+                      }`}
                     >{`Full Payment Status: ${item.paymentStatus} `}</h1>
                   )}
                   <h1
@@ -456,8 +517,9 @@ export function BookingHistory() {
         </div>
         <div className="w-[100%] h-[50px]  flex justify-center items-start space-x-2 cursor-pointer rounded-md">
           <div
-            className={`w-[4%] h-[40px] bg-orange ${pageNumber + 1 > 1 ? "flex" : "hidden"
-              } items-center justify-center rounded-md`}
+            className={`w-[4%] h-[40px] bg-orange ${
+              pageNumber + 1 > 1 ? "flex" : "hidden"
+            } items-center justify-center rounded-md`}
             onClick={() => {
               onClickPagination(
                 startIndexAndEndIndex.start < 0
@@ -483,25 +545,34 @@ export function BookingHistory() {
               <GrFormNext className="text-xl text-white rotate-180" />
             )}
           </div>
-          <div className={`${pageNumber +1%2!=0?"bg-blue-600":"bg-orange"} w-[4%] h-[40px] b flex items-center justify-center rounded-md`} >
+          <div
+            className={`${
+              pageNumber + (1 % 2) != 0 ? "bg-blue-600" : "bg-orange"
+            } w-[4%] h-[40px] b flex items-center justify-center rounded-md`}
+          >
             <h1 className="text-white text-center">{pageNumber + 1}</h1>
           </div>
-          <div className={`${pageNumber + 1%2===0?"bg-blue-600":"bg-orange"} w-[4%] h-[40px] b flex items-center justify-center rounded-md`} onClick={()=>{
-             onClickPagination(startIndexAndEndIndex.start + 5);
+          <div
+            className={`${
+              pageNumber + (1 % 2) === 0 ? "bg-blue-600" : "bg-orange"
+            } w-[4%] h-[40px] b flex items-center justify-center rounded-md`}
+            onClick={() => {
+              onClickPagination(startIndexAndEndIndex.start + 5);
               setStartIndexAndEndIndex({
                 start: startIndexAndEndIndex.start + 5,
                 end: startIndexAndEndIndex.end * (pageNumber + 1),
               });
               setPageNumber(pageNumber + 1);
-
-          }}>
+            }}
+          >
             <h1 className="text-white text-center">{pageNumber + 2}</h1>
           </div>
           <div
-            className={`w-[4%] h-[40px] bg-orange flex ${startIndexAndEndIndex.start + 10 > Math.ceil(totalCount / 5) * 5
+            className={`w-[4%] h-[40px] bg-orange flex ${
+              startIndexAndEndIndex.start + 10 > Math.ceil(totalCount / 5) * 5
                 ? "hidden"
                 : "flex"
-              } items-center justify-center rounded-md`}
+            } items-center justify-center rounded-md`}
             onClick={() => {
               onClickPagination(startIndexAndEndIndex.start + 5);
               setStartIndexAndEndIndex({
@@ -568,8 +639,9 @@ export function BookingHistory() {
                     </>
                   ))}
                   <div
-                    className={`w-[200px] h-full outline-dashed outline-neutral-400 rounded-sm   cursor-pointer ${imagePreview.length === 4 && "hidden"
-                      }`}
+                    className={`w-[200px] h-full outline-dashed outline-neutral-400 rounded-sm   cursor-pointer ${
+                      imagePreview.length === 4 && "hidden"
+                    }`}
                     onClick={() => {
                       if (imageInputRef.current) {
                         imageInputRef.current.click();

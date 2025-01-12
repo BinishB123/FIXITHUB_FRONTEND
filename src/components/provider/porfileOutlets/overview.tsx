@@ -15,9 +15,13 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { profileContext } from "../providerProfile";
 import { TiTick } from "react-icons/ti";
 import loadingImg from '../../../assets/rotation.png'
+import { toast } from "sonner";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function OverView() {
   const imageInputref = useRef<HTMLInputElement | null>(null);
+  const navigate = useNavigate()
   const { providerInfo } = useSelector((state: RootState) => state.provider);
   const profile = useContext(profileContext)
   const [file, setFile] = useState<null | Blob>(null);
@@ -70,7 +74,24 @@ function OverView() {
         setFile(null)
       })
       .catch((error) => {
-        console.error("Error uploading logo:", error);
+        if (axios.isAxiosError(error)) {
+          console.log("confritm");
+
+          const statusCode = error.response?.status;
+          console.log("Status Code:", statusCode);
+
+          if (statusCode === 403) {
+            localStorage.removeItem("provider");
+            navigate("/provider/signin", { replace: true });
+            toast.error(
+              "Your session has expired or your access is restricted. Please sign in again."
+            );
+          }
+        } else {
+          console.error("An unexpected error occurred:", error);
+        }
+
+        console.error("Error fetching brands:", error);
       }).finally(() => {
         setloading(false)
       });

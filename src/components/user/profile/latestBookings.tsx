@@ -7,8 +7,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store/store";
 import { ResponsegetBookingGreaterThanTodaysDate } from "../../../interfaces/userInterface";
 import { toast } from "sonner";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 function LatestBooking(){
-    const arr = [1,2,3,4,45,5,6,7]
+    const navigate = useNavigate()
     const [latestBooking,setlatestBooking] = useState<ResponsegetBookingGreaterThanTodaysDate[]|[]>([])
     const {userInfo} = useSelector((state:RootState)=>state.user)
     const [upanddown, setupanddown] = useState(false);
@@ -36,6 +38,19 @@ function LatestBooking(){
                 })
                 setlatestBooking(updateddata)
                 toast.success("Your booking has been canceled. The advance payment will be refunded within 5–7 business days.",{duration:10000})
+             }).catch((error)=>{
+              if (axios.isAxiosError(error)) {
+                const statusCode = error.response?.status;
+                if (statusCode === 403 || statusCode === 401) {
+                    localStorage.removeItem("user")
+
+                    toast.error("Your session has expired or your access is restricted. Please sign in again.");
+                    navigate("/login", { replace: true })
+                }
+            } else {
+
+                console.error('An error occurred:', error);
+            }
              })
            
            
