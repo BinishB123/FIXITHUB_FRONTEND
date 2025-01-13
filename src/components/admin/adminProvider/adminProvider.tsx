@@ -4,7 +4,7 @@ import { Outlet } from 'react-router-dom'
 
 function AdminProvider() {
     return (<>
-        <div className='w-[100%] h-[30%] bg-slate-100-'>
+        <div className='w-[100%] h-[30%] bg-slate-100 '>
             <div className="h-[20%] md:h-[100%] w-[100%] flex place-content-center ">
                 <div className="h-[100%] w-[95%] bg-gradient-to-b from-gray-900 rounded-md mt-3 flex  flex-col md:flex-row">
                     <div className="h-[50%] md:h-[100%]  w-[100%] md:w-[50%] flex place-content-center mt-6">

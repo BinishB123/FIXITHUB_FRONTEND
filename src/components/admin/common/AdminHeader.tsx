@@ -49,6 +49,11 @@ function Header() {
                 }}>
                   REPORTS
                 </h1>
+                <h1 className='font-dm font-sans-semibold text-sm text-white hover:scale-90 hover:translate-x-3 hover:text-orange hover:text-lg duration-200  ease-in' onClick={() => {
+                    navigate('/admin/salesreport')
+                }}>
+                  SALES REPORT
+                </h1>
 
             </div>
 

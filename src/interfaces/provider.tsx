@@ -152,3 +152,30 @@ export interface IproviderReponseData {
     userId: string; // ObjectId represented as a string
     _id: string; // ObjectId represented as a string
   }
+
+
+
+  interface sel{
+  
+    typeId : string
+    serviceName:string
+    price:number
+    _id:string
+ }
+export interface SalesReportProvider {
+  _id:  string,
+  service: {
+    serviceType: string
+  }
+  user: {
+    name: string,
+  }
+  selectedDate: {
+    date: Date
+  }
+  selectedService: sel[]
+  totalPrice:number
+
+  
+}
+

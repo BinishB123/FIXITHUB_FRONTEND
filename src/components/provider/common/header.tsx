@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store/store";
 import { notificationCounter } from "../../../services/provider/providerProfile";
 import { useSocket } from "../../../context/socketioContext";
+import { FaCoins } from "react-icons/fa";
 
 
 function Header() {
@@ -97,8 +98,14 @@ function Header() {
                     <MdOutlineReviews className="text-orange text-2xl" />
                     <h1 className={`font-dm font-semibold text-sm ${location.pathname === '/provider/feedbacks' ? "text-orange border-b-2 border-orange-400" : "text-white"} hover:text-orange hover:scale-90 hover:text-md duration-200 ease-in animate-fadeInDownBig hover:border-b-2 hover:border-orange-400`}>Feedbacks</h1>
                 </div>
+
+                <div className="flex space-x-3 w-[100%] items-center" onClick={() => navigate('/provider/salesReport')}>
+                    <FaCoins className="text-orange text-2xl" />
+                    <h1 className={`font-dm font-semibold text-sm ${location.pathname === '/provider/salesReport' ? "text-orange border-b-2 border-orange-400" : "text-white"} hover:text-orange hover:scale-90 hover:text-md duration-200 ease-in animate-fadeInDownBig hover:border-b-2 hover:border-orange-400`}>Sales Report</h1>
+                </div>
                 
                 
+            
             </div>
         </div>
 

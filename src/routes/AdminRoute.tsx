@@ -12,6 +12,8 @@ import axios from "axios"
 import { apiUrl, axiosInstance } from "../api/common"
 import { toast } from "sonner"
 import AdminReportPage from "../pages/admin/adminReportPage"
+import SalesReport from "../components/admin/salesReport"
+import SalesReportPage from "../pages/admin/salesReportPage"
 
 interface ProtectedRouteProps {
     children: ReactNode;
@@ -58,6 +60,7 @@ const AdminRoutes = () => {
         <Route path="/dashboard" element={<ProtectedRoute><AdminHomePage /></ProtectedRoute>}></Route>
         <Route path="/userlist" element={<ProtectedRoute><AdminUserList /></ProtectedRoute>}></Route>
         <Route path="/reports" element={<ProtectedRoute><AdminReportPage></AdminReportPage></ProtectedRoute>}></Route>
+        <Route path='/salesreport' element={<ProtectedRoute><SalesReportPage></SalesReportPage></ProtectedRoute>}/>
         <Route path="/providers" element={<ProtectedRoute><AdminproviderPage /></ProtectedRoute>}>
             <Route index element={<TwocardsProviderView />} />
             <Route path="pendinglist" element={<ProviderPendingPage />} />

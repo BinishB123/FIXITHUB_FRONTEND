@@ -78,3 +78,13 @@ export const bookedService = (id:string)=>{
     })
   })
 }
+
+export const getSalesReport = (id:string,year:number,month:number)=>{
+  return new Promise((resolve,reject)=>{
+    axiosInstance.get(providerProfile.getSalesReport+`/${id}/${month}/${year}`).then((response)=>{
+      resolve(response)
+    }).catch((error)=>{
+      reject(error)
+    })
+  })
+}

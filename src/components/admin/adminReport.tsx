@@ -90,7 +90,7 @@ function AdminReport() {
                                         </div>
                                     </div>
                                     <div className="w-[90%] h-[100px] flex justify-center items-center ">
-                                        <p className="text-sm font-dm text-gray-300 ">{data.report}</p>
+                                        <p className="text-sm font-dm text-gray-300 truncate ">{data.report}</p>
                                     </div>
                                     <div className="w-[90%] h-[50px]  flex justify-center">
                                         <button className="w-[50%] text-sm font-semibold h-[35px] text-white rounded-sm bg-orange" onClick={() => {

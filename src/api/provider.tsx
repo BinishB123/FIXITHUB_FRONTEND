@@ -16,7 +16,8 @@ export const providerProfile = {
   notificationCounterUpdater: apiToProfile + "/notificationCounterUpdater",
   notificationGetter: apiToProfile + "/notificationGetter",
   monthlyrevenue:apiToProfile+'/monthly-revenue',
-  topbookedService:apiToProfile+'/top-booked-Service'
+  topbookedService:apiToProfile+'/top-booked-Service',
+  getSalesReport:apiToProfile+'/get-sales-report'
 };
 
 const apiToBookingDate = apiUrl + "/api/provider/bookings";

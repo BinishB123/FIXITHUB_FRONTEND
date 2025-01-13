@@ -109,3 +109,31 @@ export interface reportDetailsData {
   _id: string;
   servicename: {serviceType:string}
 }
+
+interface sel{
+  
+  typeId : string
+  serviceName:string
+  price:number
+  _id:string
+}
+export interface SalesReportAdmin {
+_id:  string,
+service: {
+  serviceType: string
+}
+user: {
+  name: string,
+}
+provider:{
+  workshopName: string;
+}
+selectedDate: {
+  date: Date
+}
+selectedService: sel[]
+
+
+
+}
+
