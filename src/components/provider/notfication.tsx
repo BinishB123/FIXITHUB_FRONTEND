@@ -19,6 +19,7 @@ function NotificationComponent(){
                 notificationGetter(providerInfo.id).then((response:any)=>{
                     setNotification(response.data.notfiyData)
                 })
+                
             }
 
         },[])

@@ -28,6 +28,7 @@ function Header() {
         }
         socket?.on("notifictaionUpdated",(response:{count:number})=>{
             console.log("response",response);
+            console.log(response);
             
             setNotificationCount(response.count)
          })

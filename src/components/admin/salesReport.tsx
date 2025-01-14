@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { getAdminSalesReport } from "../../services/admin/adminReports";
 import { SalesReportAdmin } from "../../interfaces/admin";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 
 function SalesReport() {
-    const arr = Array(50).fill("")
     const [selectedMonth, setSelectedMonth] = useState<any>(new Date().getMonth())
     const [years,setYears] = useState<any>(null)
     const [report,setReports] = useState<SalesReportAdmin[]|[]>([])
@@ -28,6 +29,39 @@ function SalesReport() {
             })
 
         },[year,selectedMonth])
+
+
+        const generatePDF = () => {
+            const doc = new jsPDF();
+            let pageNumber = 1;
+            const rowsPerPage = 10; 
+            const chunkedReports = [];
+            for (let i = 0; i < report.length; i += rowsPerPage) {
+              chunkedReports.push(report.slice(i, i + rowsPerPage));
+            }
+        
+            chunkedReports.forEach((chunk, index) => {
+              if (index > 0) doc.addPage(); 
+              doc.text(`Sales Report - Page ${pageNumber}`, 14, 10);
+              const tableData = chunk.map((report) => [
+                report.provider.workshopName,
+                report.user.name,
+                report.service.serviceType,
+                new Date(report.selectedDate.date).toLocaleDateString(),
+                50,
+              ]);
+        
+              doc.autoTable({
+                startY: 20,     
+                head: [["Provider","customer", "Service Type", "Date", "PlatForm Fee"]]  ,
+                body: tableData,
+              });
+        
+              pageNumber++;
+            });
+            doc.save("sales_report.pdf");
+          };
+        
 
     return (<><div className="w-[100%] h-[655px] flex flex-col items-center mt-5 space-y-3 bg-black">
         <div className="w-[100%] h-[30px] ">
@@ -68,6 +102,9 @@ function SalesReport() {
                     </select>
                 </div>
             </div>
+            <div className="w-[30%] h-full  flex items-center">
+            <button onClick={generatePDF} className="w-[50%] h-[45px] text-white bg-slate-800 rounded-md">Download Report</button>
+          </div>
 
         </div>
         <div className="overflow-y-scroll scrollbar-hide w-[90%] h-[450px] flex justify-center" >

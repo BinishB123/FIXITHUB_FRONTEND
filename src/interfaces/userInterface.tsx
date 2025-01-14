@@ -158,7 +158,7 @@ export interface ResponsegetBookingGreaterThanTodaysDate {
     brand: string;
   };
   suggestions: string;
-  review?: string | null;
+  review?: string | null|undefined;
 }
 
 export interface NotificationGetter {

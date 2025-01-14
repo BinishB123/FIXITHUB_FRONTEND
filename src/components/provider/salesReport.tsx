@@ -3,11 +3,12 @@ import { getSalesReport } from "../../services/provider/providerProfile";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store/store";
 import { SalesReportProvider } from "../../interfaces/provider";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 function SalesReport() {
   const { providerInfo } = useSelector((state: RootState) => state.provider);
   const [reports,setReports] = useState<SalesReportProvider[]|[]>([])
-  const arr = Array(50).fill("");
   const [years, setYears] = useState<any>(null);
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState<any | number[]>(
@@ -45,6 +46,38 @@ function SalesReport() {
       }
 
   },[year,selectedMonth])
+
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    let pageNumber = 1;
+    const rowsPerPage = 10; 
+    const chunkedReports = [];
+    for (let i = 0; i < reports.length; i += rowsPerPage) {
+      chunkedReports.push(reports.slice(i, i + rowsPerPage));
+    }
+
+    chunkedReports.forEach((chunk, index) => {
+      if (index > 0) doc.addPage(); 
+      doc.text(`Sales Report - Page ${pageNumber}`, 14, 10);
+      const tableData = chunk.map((report) => [
+        report.user.name,
+        report.service.serviceType,
+        new Date(report.selectedDate.date).toLocaleDateString(),
+        report.totalPrice,
+      ]);
+
+      doc.autoTable({
+        startY: 20,     
+        head: [["User Name", "Service Type", "Date", "Total Price"]]  ,
+        body: tableData,
+      });
+
+      pageNumber++;
+    });
+    doc.save("sales_report.pdf");
+  };
+
 
   return (
     <>
@@ -98,6 +131,9 @@ function SalesReport() {
                   ))}
               </select>
             </div>
+          </div>
+          <div className="w-[30%] h-full  flex items-center">
+            <button onClick={generatePDF} className="w-[50%] h-[45px] text-white bg-slate-800 rounded-md">Download Report</button>
           </div>
         </div>
         <div className="overflow-y-scroll scrollbar-hide w-[95%] h-[450px] flex justify-center">

@@ -28,6 +28,8 @@ import { CiEdit } from "react-icons/ci";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GoReport } from "react-icons/go";
 import axios from "axios";
+import InvoicePage from "../PdfGenerator";
+import PDFGenerator from "../PdfGenerator";
 
 export function BookingHistory() {
   const [editreviewText, setEditreviewText] = useState(false);
@@ -60,6 +62,7 @@ export function BookingHistory() {
     null
   );
   const [reportText, setReportText] = useState<string>("");
+  const [buttClick,setButClick] = useState<boolean>(false)
 
   useEffect(() => {
     if (userInfo?.id) {
@@ -69,6 +72,8 @@ export function BookingHistory() {
         startIndexAndEndIndex.end
       )
         .then((response: any) => {
+          console.log(response);
+          
           setHistory(response.data.data);
           console.log("response.data.data", response.data.data);
 
@@ -315,6 +320,8 @@ export function BookingHistory() {
     }
   };
 
+  
+
   return (
     <>
       <div className="w-[80%] h-[600px]  flex flex-col ml-2 space-y-2">
@@ -435,11 +442,12 @@ export function BookingHistory() {
 
                   {item.status === "completed" &&
                     item.paymentStatus === "paid" && (
-                      <div className="w-[60%] h-[100px] flex justify-center items-end">
+                      <div className="w-[100%] h-[100px] flex justify-center items-end space-x-7">
                         {item.review ? (
                           // If the review exists, allow editing or viewing the review
+                         <>
                           <button
-                            className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold"
+                            className="w-[50%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold"
                             onClick={() => {
                               setAddReview(false);
                               setViewReview(true);
@@ -451,10 +459,16 @@ export function BookingHistory() {
                           >
                             Edit Or View Review
                           </button>
+                           <PDFGenerator data={item}/>
+                          
+                         </>
+
+                          
                         ) : (
                           // If no review exists, allow adding a review
-                          <button
-                            className="w-[100%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold"
+                         <>
+                           <button
+                            className="w-[50%] h-[40px] bg-gray-800 text-sm text-gray-400 rounded-md font-dm font-semibold"
                             onClick={() => {
                               setAddReview(true);
                               setSinglesService(item);
@@ -462,9 +476,11 @@ export function BookingHistory() {
                           >
                             Add Review
                           </button>
+                          <PDFGenerator data={item}/>                         </>
                         )}
                       </div>
                     )}
+                   
                 </div>
 
                 {/* Center Section */}
