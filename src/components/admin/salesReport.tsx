@@ -34,7 +34,7 @@ function SalesReport() {
         const generatePDF = () => {
             const doc = new jsPDF();
             let pageNumber = 1;
-            const rowsPerPage = 10; 
+            const rowsPerPage = 50; 
             const chunkedReports = [];
             for (let i = 0; i < report.length; i += rowsPerPage) {
               chunkedReports.push(report.slice(i, i + rowsPerPage));
