@@ -259,7 +259,7 @@ function UserlocationAndvehicleDetails() {
             </div>
             <div className="w-[90%] h-[480px]  flex flex-col space-y-3">
               
-              <div className="w-[100%] h-[260px] bg-gradient-to-b from-gray-950 ">
+              <div className="w-[100%] h-[260px] bg-gradient-to-b from-gray-950 rounded-md ">
                 <div className="w-[100%] h-[250px] bg-banner-gray flex flex-col items-center">
                   <h1 className="text-center text-white text-md">
                     Add vehicle Details

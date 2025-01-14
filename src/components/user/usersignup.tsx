@@ -19,7 +19,7 @@ import { useDispatch } from 'react-redux';
 function UserSignUp() {
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
-  const [preventClick,setPreventClick] = useState<boolean>(false)
+  const [preventClick, setPreventClick] = useState<boolean>(false)
 
   // const {error ,message} = useSelector((state:RootState)=>state.user)
   const [validation, setvalidation] = useState<Ivalidation>({
@@ -79,7 +79,7 @@ function UserSignUp() {
       }, 5000)
       return
     }
-    
+
     setPreventClick(true)
     const response = await axios.post('http://localhost:3000/api/user/auth/sendotp', formdata)
     if (response.data.success) {
@@ -141,7 +141,7 @@ function UserSignUp() {
   return (<div className='h-screen bg-black  md:h-screen flex-col'>
     <div className='h-[10%] w-[100%]  flex flex-row  justify-between'>
       <div className='h-[50%] w-[15%] space-x-2 flex mt-6 ml-6'>
-      <GiAutoRepair className="text-3xl text-center text-orange " /> <h1 className='font-dm font-bold text-white text-2xl'>FIXITHUB</h1>
+        <GiAutoRepair className="text-3xl text-center text-orange " /> <h1 className='font-dm font-bold text-white text-2xl'>FIXITHUB</h1>
       </div>
       <div className='h-[50%] w-[15%]  flex mt-6  space-x-3'>
         <h1 className='text-md font-dm text-white mt-2'>LOGIN </h1><RiLoginCircleFill className=' w-[20%] h-[100%] text-white' />
@@ -171,14 +171,15 @@ function UserSignUp() {
             {validation.field === "mobile" ? <p className='  text-red text-sm text-center font-semibold  ' >{validation.message}</p> : ""}
             <input className='w-[100%] h-[15%] bg-gray-300 rounded-md text-center ' placeholder='email' onChange={onchange} name='email' value={formdata.email}></input>
             {validation.field === "email" ? <p className='  text-red text-sm text-center font-semibold  ' >{validation.message}</p> : ""}
-            <input className='w-[100%] h-[15%] bg-gray-300 rounded-md text-center ' placeholder='password' name='password' value={formdata.password} onChange={onchange}></input>
+            <input className='w-[100%] h-[15%] bg-gray-300 rounded-md text-center ' type="password"
+              placeholder='password' name='password' value={formdata.password} onChange={onchange}></input>
             {validation.field === "password" ? <p className='  text-red text-sm text-center font-semibold  ' onChange={onchange}>{validation.message}</p> : ""}
           </div>
           <div className='w-[80%] h-[10%]  mt-0 space-y-3 '>
             <button className=' bg-orange w-[100%] h-[80%]  rounded-md text-2xl text-white ' onClick={() => {
-             if (!preventClick) {
-              onClickToOtp()
-             }
+              if (!preventClick) {
+                onClickToOtp()
+              }
             }}>SIGN UP</button>
             {/* <div className=' bg-black w-[100%] h-[80%] flex flex-row items-center rounded-md'>
               <div className='w-[30%] h-[50%] ' ><FcGoogle className='mt-2 w-[100%]' />

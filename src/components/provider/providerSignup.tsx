@@ -231,6 +231,7 @@ function ProviderSignupComponent() {
                 name="password"
                 value={formdata.password}
                 onChange={onchange}
+                type="password"
               ></input>
               {validation.field === "password" ? (
                 <p

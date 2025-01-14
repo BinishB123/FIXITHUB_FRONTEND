@@ -15,11 +15,13 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store/store";
 import { Brand } from "../../interfaces/admin";
+import { apiUrl, axiosInstance } from "../../api/common";
 
 function UserHome() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [brands, setBrands] = useState<Brand[]>([]);
+  const [brands, setBrands] = useState<{brand:string}[]|[]>([]);
   const { userInfo } = useSelector((state: RootState) => state.user);
+  
   const navigate = useNavigate();
   const handleScroll = () => {
     const scrollY = window.scrollY;
@@ -28,6 +30,12 @@ function UserHome() {
   };
 
   useEffect(() => {
+     
+    axiosInstance.get(apiUrl+'/api/user/auth/getBrands').then((response)=>{
+      setBrands(response.data.brands)
+      
+    })
+
     window.addEventListener("scroll", handleScroll);
 
     return () => {
@@ -80,15 +88,13 @@ function UserHome() {
         <div className="w-[95%] h-[70px] md:h-[90px] overflow-hidden relative">
           <div className="flex animate-marquee whitespace-nowrap">
             {/* Duplicating the cards for continuous looping */}
-            {Array(10)
-              .fill(0)
-              .map((_, index) => (
+            {brands&&brands.map((data, index) => (
                 <div
                   key={index}
                   className="min-w-[300px] bg-banner-gray h-[90px] flex flex-col place-content-center mx-2"
                 >
                   <h1 className="text-white text-center text-xl md:text-2xl font-dm font-semibold">
-                    HONDA
+                    {data.brand}
                   </h1>
                 </div>
               ))}
