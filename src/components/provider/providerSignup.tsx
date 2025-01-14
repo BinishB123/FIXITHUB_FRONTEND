@@ -154,7 +154,9 @@ function ProviderSignupComponent() {
         <GiAutoRepair className="text-3xl text-center text-orange " />
           <h1 className="font-dm font-bold text-white text-2xl">FIXITHUB</h1>
         </div>
-        <div className="h-[50%] w-[15%]  flex mt-6  space-x-3">
+        <div className="h-[50%] w-[15%]  flex mt-6  space-x-3  cursor-pointer" onClick={()=>{
+          navigate("/provider/signin")
+        }} >
           <h1 className="text-md font-dm text-white mt-2">LOGIN </h1>
           <RiLoginCircleFill className=" w-[20%] h-[100%] text-white" />
         </div>

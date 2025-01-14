@@ -1,5 +1,6 @@
 import { CiCircleChevDown } from "react-icons/ci";
 import appLogo from '../../../assets/Rectangle 168.png'
+import { GiAutoRepair } from "react-icons/gi";
 
 function Footer() {
     return (<footer className=' w-[100%] h-auto    flex place-content-center bg-black'>
@@ -57,8 +58,10 @@ function Footer() {
             </div>
             <div className='w-[20%] h-[400px] flex flex-col place-content-end '>
                 <div className='w-[100%] h-[50px] flex flex-row '>
-                    <img src={appLogo} className='w-[20%]' /><h1 className='font-dm font-bold text-white text-2xl hover:text-orange-500 mt-2'>FIXITHUB</h1>
-                </div>
+           <GiAutoRepair className="text-3xl text-center text-orange " /> 
+           <h1 className="font-dm font-bold text-white text-sm md:text-xl hover:text-orange-500">
+          FIXITHUB
+           </h1>                </div>
 
             </div>
 

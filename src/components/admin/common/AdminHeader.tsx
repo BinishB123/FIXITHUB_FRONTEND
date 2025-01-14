@@ -7,6 +7,7 @@ import { toast } from "sonner"
 import { useDispatch } from 'react-redux'
 import { resetError, resetSuccess } from '../../../Redux/slice/adminSlice'
 import { logoutThunk } from '../../../Redux/thunk/admin'
+import { GiAutoRepair } from 'react-icons/gi'
 function Header() {
     const navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>()
@@ -28,8 +29,10 @@ function Header() {
 
     return (<div className='h-[10%] w-[100%]  flex flex-row   justify-between bg-black'>
         <div className='h-[50%] w-[15%] space-x-2 flex mt-6 ml-6 animate-flipInX '>
-            <img src={appLogo} alt=""  /><h1 className='font-dm font-bold text-white text-2xl hover:text-orange-500 '>FIXITHUB</h1>
-        </div>
+         <GiAutoRepair className="text-3xl text-center text-orange " /> 
+           <h1 className="font-dm font-bold text-white text-sm md:text-xl hover:text-orange-500">
+          FIXITHUB
+           </h1>         </div>
         <div className='hidden md:w-[70%] md:flex  justify-center animate-fadeInDownBig'>   
             <div className='w-[85%] flex justify-evenly items-center cursor-pointer '>
                 <h1 className='font-dm font-semibold text-sm text-white hover:scale-90 hover:-translate-x-3 hover:text-orange hover:text-lg duration-200  ease-in' onClick={() => {

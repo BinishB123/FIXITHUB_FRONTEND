@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import { IoIosChatboxes } from "react-icons/io";
@@ -9,10 +9,15 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store/store";
 import { toast } from "sonner";
 import { ResponseAccordingToDate } from "../../../interfaces/providerServiceBooking";
+import { getChatId } from "../../../services/provider/providerProfile";
+import { useNavigate } from "react-router-dom";
+import { useSocket } from "../../../context/socketioContext";
 
 function ViewBookings() {
+  const {socket} = useSocket()
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const { providerInfo } = useSelector((state: RootState) => state.provider);
+  const navigate = useNavigate()
   const [dataAccordingToDate, setDataAccordingToDate] = useState<
     ResponseAccordingToDate[] | []
   >([]);
@@ -21,6 +26,7 @@ function ViewBookings() {
 
   const [upanddown, setupanddown] = useState(false);
   const [index, setindex] = useState<number|undefined>(undefined);
+  const useridRef = useRef<string|null>(null)
  
   
   useEffect(()=>{
@@ -39,6 +45,20 @@ function ViewBookings() {
 
   },[])
 
+
+  useEffect(() => {
+    socket?.on("checkedUserIsOnlineOrNot", (response) => {
+      if (!response.success) {
+        toast.warning("User is Offline");
+      } else {
+        navigate(`/provider/call/${useridRef.current}`);
+      }
+    });
+
+    return () => {
+      socket?.off("checkedUserIsOnlineOrNot");
+    };
+  }, [socket]);
 
   const handleOnChangeDate = (date: any) => {
     setSelectedDate(date);
@@ -60,6 +80,23 @@ function ViewBookings() {
       }
     }
   };
+
+
+  const chatCreation = (providerId: string, userId: string) => {
+      ``;
+      getChatId(providerId, userId).then((Response: any) => {
+        navigate(`/provider/profile/chat/${Response.data.id}/${userId}`);
+      });
+    };
+
+
+    const checkUserisOnlinOrNotBeforeCalling = (userid: string) => {
+      socket?.emit("checkOnlineorNot", {
+        userid: userid,
+        providerid: providerInfo?.id,
+        checker: "provider",
+      });
+    };
 
   return (
     <>
@@ -101,8 +138,16 @@ function ViewBookings() {
                   <p>{ }</p>
                 </div>
                 <div className="w-[15%] h-[100%] flex justify-evenly items-center  space-x-3 ">
-                  <IoIosChatboxes className="text-orange text-2xl" />
-                  <MdOutlineCall className="text-2xl text-blue-500" />
+                  <IoIosChatboxes className="text-orange text-2xl cursor-pointer"  onClick={()=>{
+                    
+                    if (providerInfo) {
+                      chatCreation(providerInfo.id,item.user._id)
+                    }
+                  }}/>
+                  <MdOutlineCall className="text-2xl text-blue-500 cursor-pointer" onClick={()=>{
+                    useridRef.current = item.user._id
+                    checkUserisOnlinOrNotBeforeCalling (item.user._id)
+                  }} />
                 </div>
                 <div className="w-[10%] h-[100%] flex flex-col justify-center items-center ">
                   <FaCaretDown
