@@ -9,9 +9,9 @@ import { apiUrl } from '../../api/common';
 import { Iusersignup } from '../../interfaces/userInterface';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../Redux/store/store';
-import { resetSuccessAndMessage, verfiyAndSignupThunk } from '../../Redux/slice/userSlice';
+import {  verfiyAndSignupThunk } from '../../Redux/slice/userSlice';
 import { RootState } from '../../Redux/store/store';
-import { resetErrorAndErrorMessage, urgentreset } from '../../Redux/slice/userSlice';
+import {  urgentreset } from '../../Redux/slice/userSlice';
 import { useSelector } from 'react-redux';
 
 

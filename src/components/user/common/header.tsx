@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { GiAutoRepair } from "react-icons/gi";
 import { AppDispatch, RootState } from "../../../Redux/store/store";
 import { useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { logoutthunk, urgentreset } from "../../../Redux/slice/userSlice";
 import { toast } from "sonner";
 import { IoReorderThreeOutline } from "react-icons/io5";
@@ -17,7 +17,7 @@ function Header() {
   const navigate = useNavigate();
   const {socket} = useSocket()
   const [mobileMenuOpen, setMobileMenu] = useState<boolean>(false);
-  const loaction = useLocation()
+  // const loaction = useLocation()
 
   const handleLogoutOnClick = () => {
    

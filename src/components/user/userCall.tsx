@@ -1,4 +1,3 @@
-import img from "../../assets/workshops.png";
 import { BsFillMicMuteFill } from "react-icons/bs";
 import { MdCallEnd } from "react-icons/md";
 import { AiFillAudio } from "react-icons/ai";

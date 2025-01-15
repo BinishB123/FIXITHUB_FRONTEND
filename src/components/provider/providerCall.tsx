@@ -1,4 +1,4 @@
-import img from "../../assets/workshops.png";
+// import img from "../../assets/workshops.png";
 import { BsFillMicMuteFill } from "react-icons/bs";
 import { MdCallEnd } from "react-icons/md";
 import { AiFillAudio } from "react-icons/ai";
@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store/store";
-import { setTime } from "react-datepicker/dist/date_utils";
+// import { setTime } from "react-datepicker/dist/date_utils";
 
 
 const servers: RTCConfiguration = {

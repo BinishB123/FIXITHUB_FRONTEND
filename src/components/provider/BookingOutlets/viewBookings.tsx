@@ -36,7 +36,7 @@ function ViewBookings() {
         getBookingAccordingToDate(providerInfo?.id, d)
           .then((response: any) => {
             setDataAccordingToDate(response.data.data)
-          }).catch((error) => {
+          }).catch(() => {
             toast.warning("There is no Bookings Today")
             setDataAccordingToDate([])
           });

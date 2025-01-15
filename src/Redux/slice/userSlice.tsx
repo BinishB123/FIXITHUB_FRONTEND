@@ -185,7 +185,7 @@ const userSlice = createSlice({
                     state.success = true
                 }
 
-            }).addCase(updateProfileDetail.rejected, (state, action) => {
+            }).addCase(updateProfileDetail.rejected, (state) => {
                 state.error = true
                 state.errormessage = "Something went wrong try again"
             }).addCase(updateOrAddImage.fulfilled,(state, action) => {

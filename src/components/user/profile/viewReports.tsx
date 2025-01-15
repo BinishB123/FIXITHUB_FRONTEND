@@ -29,7 +29,7 @@ function ViewReports(){
         <div className="w-[100%] h-[550px] overflow-y-scroll scrollbar-hide space-y-3">
             {
                 reports.map((data,key)=>(<>
-                <div className="w-[80%] h-[60px] bg-banner-gray rounded-sm flex flex-col">
+                <div key={key} className="w-[80%] h-[60px] bg-banner-gray rounded-sm flex flex-col">
                     <div className="h-[30px] w-[100%] text-white pl-4 flex justify-between">
                       <h1>{`Reported ${data.provider?.workshopName} `}</h1>
                       <h1 className="pr-4 pt-3">{data.status}</h1>

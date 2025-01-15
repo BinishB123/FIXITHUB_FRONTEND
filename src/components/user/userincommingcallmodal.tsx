@@ -1,5 +1,5 @@
 import {  motion } from "framer-motion";
-import img from "../../assets/workshops.png";
+// import img from "../../assets/workshops.png";
 import { FaPhone } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 import { useSocket } from "../../context/socketioContext";

@@ -108,7 +108,7 @@ function OverView() {
     }
     axiosInstance
       .patch(providerProfile.editabout, { data })
-      .then((response) => {
+      .then(() => {
         profile?.setProfile((prevState) => {
           if (prevState) {
             return {

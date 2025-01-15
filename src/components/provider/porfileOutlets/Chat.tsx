@@ -2,7 +2,7 @@ import { IoSend } from "react-icons/io5";
 import { MdOutlineCall } from "react-icons/md";
 import { useEffect, useRef, useState } from "react";
 import { IChatingUser } from "../../../interfaces/chat";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Redux/store/store";
 import { useSocket } from "../../../context/socketioContext";

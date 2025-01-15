@@ -4,7 +4,7 @@ import bikerepairimg from "../../assets/bikerepair.png";
 import calendersetting from "../../assets/calendarsetting.png";
 import tyre from "../../assets/tyre.png";
 import tow from "../../assets/tow.png";
-import user from "../../assets/userico.png";
+// import user from "../../assets/userico.png";
 import { IoLocation } from "react-icons/io5";
 import { IoCarSportSharp } from "react-icons/io5";
 import { FaRunning } from "react-icons/fa";
@@ -14,7 +14,6 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store/store";
-import { Brand } from "../../interfaces/admin";
 import { apiUrl, axiosInstance } from "../../api/common";
 
 function UserHome() {

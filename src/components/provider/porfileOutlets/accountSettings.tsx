@@ -15,7 +15,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 function AccountSettings() {
   const imageInputref = useRef<HTMLInputElement | null>(null);
-  const [file, setFile] = useState<null | Blob>(null);
+  // const [file, setFile] = useState<null | Blob>(null);
 
   const [editSelector, setEditSelector] = useState<{
     ownerName: boolean;
@@ -101,7 +101,7 @@ function AccountSettings() {
         currentpassowrd: password,
         newpassowrd: newPassword,
       })
-      .then((response) => {
+      .then(() => {
         toast.success("password changed");
       })
       .catch((error) => {
@@ -209,7 +209,7 @@ function AccountSettings() {
             accept="image/png, image/jpeg"
             onChange={(e) => {
               if (e.target.files) {
-                setFile(e.target.files[0]);
+                // setFile(e.target.files[0]);
                 changeLogo(e.target.files[0]);
                 console.log(e.target.files[0]);
               }

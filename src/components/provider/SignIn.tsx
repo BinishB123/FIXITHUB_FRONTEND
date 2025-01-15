@@ -1,7 +1,6 @@
 import signInImage from "../../assets/providerSignIn.png";
 import { GiAutoRepair } from 'react-icons/gi';
 import { TiUserAdd } from "react-icons/ti";
-import { FcGoogle } from "react-icons/fc";
 import { useNavigate } from "react-router-dom";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";

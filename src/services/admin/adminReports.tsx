@@ -1,4 +1,3 @@
-import axios from "axios";
 import { adminReport } from "../../api/admin";
 import { axiosInstance } from "../../api/common";
 

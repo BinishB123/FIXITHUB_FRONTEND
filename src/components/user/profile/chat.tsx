@@ -3,14 +3,13 @@ import { MdOutlineCall } from "react-icons/md";
 import { getChatOfOneToOne } from "../../../services/user/userProfile";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IChatingUser } from "../../../interfaces/chat";
 import { RootState } from "../../../Redux/store/store";
 import { useSocket } from "../../../context/socketioContext";
 import { toast } from "sonner";
 
 export function ChatComponenet() {
-  const v = new Date();
 
   const { socket } = useSocket();
   const messagedivref = useRef<HTMLDivElement>(null);

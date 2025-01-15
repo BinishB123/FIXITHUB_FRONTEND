@@ -1,5 +1,5 @@
 import { CiCircleChevDown } from "react-icons/ci";
-import appLogo from '../../../assets/Rectangle 168.png'
+// import appLogo from '../../../assets/Rectangle 168.png'
 import { GiAutoRepair } from "react-icons/gi";
 
 function Footer() {

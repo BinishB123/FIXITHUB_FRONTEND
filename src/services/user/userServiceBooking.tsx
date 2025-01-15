@@ -11,9 +11,9 @@ export const getbookingdates = (id: string) => {
                 'Cache-Control': 'no-cache'
             }
         }).then((Response) => {
-
-
             resolve(Response.data)
+        }).catch((error)=>{
+            reject(error)
         })
     })
 }

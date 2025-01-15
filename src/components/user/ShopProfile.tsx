@@ -39,7 +39,6 @@ function ShopProfile() {
 
     const navigate = useNavigate();
 
-    const arr = [1, 2, 3, 4, 54, 5, 6, 7, 88, 90];
 
 
     useEffect(() => {
@@ -90,7 +89,7 @@ function ShopProfile() {
                 )
                 .then((response) => {
                     const { shopDetail } = response.data;
-                    setWorkshopDetails((prev) => {
+                    setWorkshopDetails(() => {
                         const updatedServices = shopDetail.services.map((service: any) => {
                             const matchedService = data?.find(
                                 (stored: {

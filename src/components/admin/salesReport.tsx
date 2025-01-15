@@ -96,7 +96,7 @@ function SalesReport() {
                     }}>
                          {
                     years&& years.map((data:number,index:number)=>(
-                        <option value={data}>{data}</option>                    ))
+                        <option key={index} value={data}>{data}</option>                    ))
                    }
 
                     </select>
@@ -120,7 +120,7 @@ function SalesReport() {
                 </thead>
                 <tbody className=" h-[415px]  w-[100%] ">
                     {report.map((data, index) => (
-                        <tr className=" h-[20px] text-sm text-center">
+                        <tr className=" h-[20px] text-sm text-center" key={index}>
                             <td className="border-2 border-slate-600 h-[20px] w-[20%] truncate">{data.provider.workshopName}</td>
                             <td className="border-2 border-slate-600 h-[40px] w-[20%] truncate">{data.user.name}</td>
                             <td className="border-2 border-slate-600 h-[20px] w-[30%] truncate">{data.service.serviceType}</td>

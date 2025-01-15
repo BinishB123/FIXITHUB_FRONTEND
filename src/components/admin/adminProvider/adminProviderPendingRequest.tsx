@@ -24,7 +24,7 @@ function ProviderPendingRequest() {
                 return
             }
         }
-        axiosInstance.patch(apiUrl + '/api/admin/providers/acceptorreject',{id,state,reason,email,accept}).then((response) => {
+        axiosInstance.patch(apiUrl + '/api/admin/providers/acceptorreject',{id,state,reason,email,accept}).then(() => {
             
             
             const updated = providers.filter((provider)=>{

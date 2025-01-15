@@ -28,7 +28,7 @@ import { CiEdit } from "react-icons/ci";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GoReport } from "react-icons/go";
 import axios from "axios";
-import InvoicePage from "../PdfGenerator";
+// import InvoicePage from "../PdfGenerator";
 import PDFGenerator from "../PdfGenerator";
 
 export function BookingHistory() {
@@ -62,7 +62,7 @@ export function BookingHistory() {
     null
   );
   const [reportText, setReportText] = useState<string>("");
-  const [buttClick,setButClick] = useState<boolean>(false)
+  // const [buttClick,setButClick] = useState<boolean>(false)
 
   useEffect(() => {
     if (userInfo?.id) {
@@ -285,7 +285,7 @@ export function BookingHistory() {
 
   const deleteanimage = (id: string, url: string) => {
     if (reviewData) {
-      deleteImageservice(id, url).then((response) => {
+      deleteImageservice(id, url).then(() => {
         const images = reviewData.images.filter((data) => {
           if (data.url !== url) {
             return data;
@@ -309,7 +309,7 @@ export function BookingHistory() {
         report: reportText,
       };
       createReport({ ...data })
-        .then((response) => {
+        .then(() => {
           toast.success("Reported your Issue");
           setReport(false);
           setSinglesService(null);

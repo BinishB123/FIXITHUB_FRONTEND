@@ -12,7 +12,7 @@ import axios from "axios"
 import { apiUrl, axiosInstance } from "../api/common"
 import { toast } from "sonner"
 import AdminReportPage from "../pages/admin/adminReportPage"
-import SalesReport from "../components/admin/salesReport"
+// import SalesReport from "../components/admin/salesReport"
 import SalesReportPage from "../pages/admin/salesReportPage"
 
 interface ProtectedRouteProps {

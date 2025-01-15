@@ -1,6 +1,4 @@
 import usersignupimage from '../../assets/usersignupimg.png'
-import { FcGoogle } from "react-icons/fc";
-import appLogo from '../../assets/Rectangle 168.png'
 import { GiAutoRepair } from 'react-icons/gi';
 import { RiLoginCircleFill } from "react-icons/ri";
 import { useEffect, useState } from 'react';
@@ -10,15 +8,13 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../Redux/store/store';
-import { useDispatch } from 'react-redux';
+import { RootState } from '../../Redux/store/store';
 
 
 
 
 function UserSignUp() {
   const navigate = useNavigate()
-  const dispatch = useDispatch<AppDispatch>()
   const [preventClick, setPreventClick] = useState<boolean>(false)
 
   // const {error ,message} = useSelector((state:RootState)=>state.user)

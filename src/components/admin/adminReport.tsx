@@ -10,7 +10,7 @@ import { reportData, reportDetailsData } from "../../interfaces/admin";
 function AdminReport() {
     const [reportData, setReportData] = useState<reportData[] | []>([])
     const [showReportData, setShowReportData] = useState<boolean>(false)
-    const [textMailMessage,setTextMailMessage] = useState<string>("")
+    // const [textMailMessage,setTextMailMessage] = useState<string>("")
     const [reportDetails, setReportDetails] = useState<reportDetailsData | null>(null)
     const FilterWithServiceStatus = [
         "Pending", "In Progress", "Approved", "Rejected", "Completed"
@@ -18,9 +18,6 @@ function AdminReport() {
     useEffect(() => {
         getReport().then((response: any) => {
             setReportData(response.data)
-        }).catch((error)=>{
-            console.log();
-            
         })
 
     }, [])
@@ -37,7 +34,7 @@ function AdminReport() {
 
     const onChangeStatusOfReport = (id:string,value:string)=>{
         console.log(value);
-        editReport(id,value).then((response)=>{
+        editReport(id,value).then(()=>{
             if (reportDetails) {
                 setReportDetails({...reportDetails,status:value})
             }
@@ -54,10 +51,6 @@ function AdminReport() {
         })
         
 
-    }
-
-    const onClickSendToProvider = (id:string)=>{
-        
     }
 
 
@@ -199,7 +192,7 @@ function AdminReport() {
                         <div className="flex w-[30%] h-full   flex-col space-y-2 overflow-y-scroll ">
                             <h1 className="text-center text-white">Selected Services</h1>
                             {reportDetails?.bookings.selectedService.map((data, index) => (
-                                <div className="w-[100%] h-[20px]  flex justify-center">
+                                <div className="w-[100%] h-[20px]  flex justify-center" key={index}>
                                     <h1 className="text-gray-400">{`${data.serviceName} : ${data.price}`}</h1>
                                 </div>
                             ))}

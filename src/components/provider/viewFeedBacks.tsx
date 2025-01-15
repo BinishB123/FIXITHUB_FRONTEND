@@ -28,7 +28,7 @@ function ViewFeeBackComponent() {
     }, []);
 
     const onClickLike = (id:string,status:boolean)=>{
-        like(id,status).then((response)=>{
+        like(id,status).then(()=>{
             const updatedData = reviews.map((data)=>{
                 if (data._id===id) {
                     return {...data,like:status}
@@ -62,7 +62,7 @@ function ViewFeeBackComponent() {
     }
 
     const onClickReply =(id:string)=>{
-        replyService(id,replytext).then((response)=>{
+        replyService(id,replytext).then(()=>{
             if (reviewData) {
                 setReviewData({...reviewData,reply:replytext})
             }

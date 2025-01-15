@@ -1,4 +1,4 @@
-import { FcGoogle } from "react-icons/fc";
+// import { FcGoogle } from "react-icons/fc";
 import { GiAutoRepair } from 'react-icons/gi';
 import providerSignupImage from "../../assets/providerSignup.png";
 import { RiLoginCircleFill } from "react-icons/ri";

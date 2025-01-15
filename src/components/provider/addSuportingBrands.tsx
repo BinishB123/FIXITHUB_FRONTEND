@@ -69,7 +69,7 @@ function AddSupportingBrands() {
         id: providerInfo?.id,
         brandid: brandid,
       })
-      .then((response) => {
+      .then(() => {
         const updatedData = tempbrandStore.map((data) => {
           if (data._id === brandid) {
             return { ...data, isAdded: true };
@@ -104,7 +104,7 @@ function AddSupportingBrands() {
         id: providerInfo?.id,
         brandid: brandid,
       })
-      .then((response) => {
+      .then(() => {
         const updatedData = tempbrandStore.map((data) => {
           if (data._id === brandid) {
             return { ...data, isAdded: false };

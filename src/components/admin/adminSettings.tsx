@@ -8,7 +8,7 @@ import { axiosInstance } from "../../api/common";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { IoIosDoneAll } from "react-icons/io";
-import { Brand, FileDetails, generalServices, roadServices } from "../../interfaces/admin";
+import { Brand,  generalServices, roadServices } from "../../interfaces/admin";
 import { CiEdit } from "react-icons/ci";
 import { addBrandApi, addVehicleTypeApi, addServicesApi, addNewSubTypeApi, deleteSubTypeApi, callEditServiceName } from "../../services/admin/settings";
 
@@ -17,7 +17,7 @@ import { addBrandApi, addVehicleTypeApi, addServicesApi, addNewSubTypeApi, delet
 function AdminSettingsComponent() {
     const navigate = useNavigate();
     const inputref = useRef<HTMLInputElement | null>(null)
-    const generalServiceAddIconref = useRef()
+    // const generalServiceAddIconref = useRef()
     const roadref = useRef<HTMLInputElement | null>(null)
     const [isModal, setModalState] = useState<boolean>(false);
     const [vehicletype, setType] = useState<number>(0);

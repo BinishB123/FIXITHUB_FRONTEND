@@ -114,7 +114,7 @@ function AddedServices(prop: { value: number }) {
         `/api/provider/addservice/removerservice/${typeid}/${workshopId}/${prop.value == 2 ? "twoWheeler" : "fourWheeler"
         }`
       )
-      .then((response) => {
+      .then(() => {
         if (category === "road") {
           if (service?.roadServices) {
             const updatedData = service.roadServices.map((item) => {
