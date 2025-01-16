@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../Redux/store/store';
+import { apiUrl } from '../../api/common';
 
 
 
@@ -77,7 +78,7 @@ function UserSignUp() {
     }
 
     setPreventClick(true)
-    const response = await axios.post('http://localhost:3000/api/user/auth/sendotp', formdata)
+    const response = await axios.post(apiUrl+'/api/user/auth/sendotp', formdata)
     if (response.data.success) {
 
       toast.success(response.data.message)

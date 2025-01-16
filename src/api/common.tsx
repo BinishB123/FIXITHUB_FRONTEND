@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const apiUrl = 'https://api.binish.site'
+export const apiUrl = 'http://localhost:3000'
 export const axiosInstance = axios.create({
   baseURL: apiUrl,
   withCredentials: true,                
@@ -13,7 +13,7 @@ export const axiosInstance = axios.create({
 });
 
 
-     
+
 
 
 
