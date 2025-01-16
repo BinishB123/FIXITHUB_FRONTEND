@@ -14,7 +14,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../Redux/store/store";
-import { apiUrl, axiosInstance } from "../../api/common";
+import {  axiosInstance } from "../../api/common";
 
 function UserHome() {
   const [isScrolled, setIsScrolled] = useState(false);
