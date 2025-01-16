@@ -33,6 +33,9 @@ function UserHome() {
     axiosInstance.get('/api/user/auth/getBrands').then((response)=>{
       setBrands(response.data.brands)
       
+    }).catch((error)=>{
+      console.log(error.message);
+      
     })
 
     window.addEventListener("scroll", handleScroll);
