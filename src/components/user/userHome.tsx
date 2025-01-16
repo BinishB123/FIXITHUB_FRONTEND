@@ -30,7 +30,7 @@ function UserHome() {
 
   useEffect(() => {
      
-    axiosInstance.get(apiUrl+'/api/user/auth/getBrands').then((response)=>{
+    axiosInstance.get('/api/user/auth/getBrands').then((response)=>{
       setBrands(response.data.brands)
       
     })
