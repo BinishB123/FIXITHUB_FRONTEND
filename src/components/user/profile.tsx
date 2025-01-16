@@ -1,6 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { GrOverview } from "react-icons/gr";
-import { FaLock } from "react-icons/fa";
+// import { FaLock } from "react-icons/fa";
 import { IoIosNotifications } from "react-icons/io";
 import { FaHistory } from "react-icons/fa";
 import { TbBrandBooking } from "react-icons/tb";
