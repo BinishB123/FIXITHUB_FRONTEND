@@ -8,6 +8,7 @@ import { Iusersignup } from "../../interfaces/userInterface";
 import axios from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { apiUrl } from '../../api/common';
 
 function ProviderSignupComponent() {
   const navigate = useNavigate();
@@ -128,7 +129,7 @@ function ProviderSignupComponent() {
     }
     setPreventClick(true)
     axios
-      .post("http://localhost:3000/api/provider/auth/sendotp", formdata)
+      .post(apiUrl+"/api/provider/auth/sendotp", formdata)
       .then((response) => {
         toast.success(response.data.message);
         navigate("/provider/otpverify", { state: { formdata } });
