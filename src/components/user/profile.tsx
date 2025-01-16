@@ -78,7 +78,7 @@ function UserProfile() {
                             </div>
 
                             {/* Password Section */}
-                            <div
+                            {/* <div
                                 className={`w-[90%] h-[50px] flex items-center space-x-3 cursor-pointer ${location.pathname === "" &&
                                     "bg-gray-800 rounded-md transition duration-150"
                                     } px-4`}
@@ -87,7 +87,7 @@ function UserProfile() {
                                 <h1 className="text-white hover:border-b-2 border-orange transition">
                                     Password
                                 </h1>
-                            </div>
+                            </div> */}
 
                             {/* Service History Section */}
                             <div
