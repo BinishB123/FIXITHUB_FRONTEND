@@ -247,7 +247,7 @@ function ProviderCallComponent() {
   const onClickMuteUnmute = ()=>{
     if (localStream.current) {
       const isNowMuted = !mute;
-      localStream.current.getVideoTracks().forEach((track) => {
+      localStream.current.getAudioTracks().forEach((track) => {
         track.enabled = !isNowMuted;
       });
       
@@ -264,16 +264,15 @@ function ProviderCallComponent() {
         <div className=" w-[100%] md:w-[60%] h-full md:h-[520px] bg-banner-gray flex flex-col justify-between rounded-sm">
           <div className="w-[100%] h-[300px]  flex flex-col justify-center items-center mt-4">
             <div className="w-[50%] h-[150px]  flex justify-between items-center bg-red overflow-hidden">
-              <h1>provider side video</h1>
-              <video ref={providerSideVideoRef} autoPlay playsInline className="w-[40%] h-full bg-gray-800 " />
+              {/* <h1>provider side video</h1> */}
          
-              <video ref={videoRef} autoPlay playsInline className="w-[40%] h-full  bg-green-700" />
+              <video ref={videoRef} autoPlay playsInline className="w-[40%] h-full  bg-green-700 hidden" />
 
-              {/* <img
-                src={img}
+              <img
+                src={calleData.logoUrl+""}
                 alt=""
                 className="object-cover rounded-full w-full h-full"
-              /> */}
+              />
             </div>
             <div className="w-[30%] h-[100px]  space-y-2">
               <h5 className="text-center text-white font-dm text-md pt-1">

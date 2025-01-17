@@ -271,7 +271,7 @@ function UserCallComponent() {
   const onClickMuteUnmute = ()=>{
     if (localStream.current) {
       const isNowMuted = !mute;
-      localStream.current.getVideoTracks().forEach((track) => {
+      localStream.current.getAudioTracks().forEach((track) => {
         track.enabled = !isNowMuted;
       });
     setMute(!mute)
@@ -286,20 +286,20 @@ function UserCallComponent() {
           <div className="w-[100%] h-[300px]  flex flex-col justify-center items-center mt-4">
             <div className="w-[50%] h-[150px]  flex justify-between items-center  overflow-hidden bg-red">
               <h1>sender</h1>
-              <video ref={videoRef} autoPlay playsInline className="w-[40%] h-full  bg-green-300" />
+              {/* <video  ref={videoRef} autoPlay playsInline className="w-[40%] h-full  bg-green-300" /> */}
               <video
                 ref={remoteVideoRef}
                 autoPlay
                 playsInline
-                className="w-[40%] h-full bg-blue-500 "
+                className="w-[40%] h-full bg-blue-500 hidden "
               />
               <h1>Reciever</h1>
 
-              {/* <img
-                src={img}
+              <img
+                src={calleData.logoUrl+""}
                 alt=""
                 className="object-cover rounded-full w-full h-full"
-              /> */}
+              />
             </div>
             <div className="w-[30%] h-[100px]  space-y-2">
               <h5 className="text-center text-white font-dm text-md pt-1">
