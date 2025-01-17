@@ -297,7 +297,7 @@ function UserCallComponent() {
               <img
                 src={calleData.logoUrl+""}
                 alt=""
-                className="object-cover rounded-full w-full h-full"
+                className="object-cover rounded-full w-[50%] h-full"
               />
             </div>
             <div className="w-[30%] h-[100px]  space-y-2">
