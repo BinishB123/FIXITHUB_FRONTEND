@@ -284,8 +284,8 @@ function UserCallComponent() {
       <div className="w-[100%] h-[742px] bg-black flex justify-center items-center">
         <div className=" w-[100%] md:w-[60%] h-full md:h-[520px] bg-banner-gray flex flex-col justify-between rounded-sm">
           <div className="w-[100%] h-[300px]  flex flex-col justify-center items-center mt-4">
-            <div className="w-[50%] h-[150px]  flex justify-between items-center  overflow-hidden bg-red">
-              <h1>sender</h1>
+            <div className="w-[50%] h-[150px]  flex justify-between items-center  overflow-hidden">
+              
               {/* <video  ref={videoRef} autoPlay playsInline className="w-[40%] h-full  bg-green-300" /> */}
               <video
                 ref={remoteVideoRef}
@@ -293,8 +293,7 @@ function UserCallComponent() {
                 playsInline
                 className="w-[40%] h-full bg-blue-500 hidden "
               />
-              <h1>Reciever</h1>
-
+\
               <img
                 src={calleData.logoUrl+""}
                 alt=""
