@@ -29,7 +29,7 @@ const servers: RTCConfiguration = {
 function UserCallComponent() {
   const { socket } = useSocket();
   const navigate = useNavigate();
-  const [mute,setMute] = useState<boolean>(false)
+  const [mute, setMute] = useState<boolean>(false)
   const { userInfo } = useSelector((state: RootState) => state.user);
   const localStream = useRef<MediaStream | undefined>();
   const peerConection = useRef<RTCPeerConnection | null>(null);
@@ -40,7 +40,7 @@ function UserCallComponent() {
     logoUrl: string | null;
   }>({ workshopName: null, logoUrl: null });
   const [callingState, setCallingState] = useState<
-    "calling" | "connected" | "callEnded" | "disconnected" | "failed To Connect" |"Rejected" | "trying To connect"
+    "calling" | "connected" | "callEnded" | "disconnected" | "failed To Connect" | "Rejected" | "trying To connect"
   >("trying To connect");
   const location = useLocation();
   const params = useParams();
@@ -66,12 +66,12 @@ function UserCallComponent() {
     if (!peerConection.current) {
       peerConection.current = new RTCPeerConnection(servers);
     }
-    socket?.on("rejected",()=>{
+    socket?.on("rejected", () => {
       setCallingState("Rejected")
-      setTimeout(()=>{
-          navigate(-1)
-      },6000)
-   })
+      setTimeout(() => {
+        navigate(-1)
+      }, 6000)
+    })
     socket?.on("callaccepted", callaccepted);
     socket?.on("recieveAnswer", recieveAnswer);
     socket?.on("recieveCandidate", recieveCandidate);
@@ -83,7 +83,7 @@ function UserCallComponent() {
     peerConection.current.ontrack = (event) => {
       if (remoteVideoRef.current) {
         console.log(event.streams[0]);
-        
+
         remoteVideoRef.current.srcObject = event.streams[0];
       }
     };
@@ -249,15 +249,15 @@ function UserCallComponent() {
       localStream.current.getTracks().forEach((track) => track.stop());
       localStream.current = undefined;
     }
-  
+
     if (remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = null;
     }
     if (videoRef.current) {
       videoRef.current.srcObject = null;
     }
-  
-    
+
+
     if (peerConection.current) {
       peerConection.current.close();
       peerConection.current = null;
@@ -268,38 +268,38 @@ function UserCallComponent() {
   };
 
 
-  const onClickMuteUnmute = ()=>{
+  const onClickMuteUnmute = () => {
     if (localStream.current) {
       const isNowMuted = !mute;
       localStream.current.getAudioTracks().forEach((track) => {
         track.enabled = !isNowMuted;
       });
-    setMute(!mute)
+      setMute(!mute)
 
+    }
   }
-}
 
   return (
     <>
       <div className="w-[100%] h-[742px] bg-black flex justify-center items-center">
         <div className=" w-[100%] md:w-[60%] h-full md:h-[520px] bg-banner-gray flex flex-col justify-between rounded-sm">
           <div className="w-[100%] h-[300px]  flex flex-col justify-center items-center mt-4">
-            <div className="w-[50%] h-[150px]  flex justify-between items-center  overflow-hidden">
-              
+            <div className="w-[17%] h-[160px] flex justify-center items-center overflow-hidden rounded-full ">
               {/* <video  ref={videoRef} autoPlay playsInline className="w-[40%] h-full  bg-green-300" /> */}
               <video
                 ref={remoteVideoRef}
                 autoPlay
                 playsInline
-                className="w-[40%] h-full bg-blue-500 hidden "
+                className="w-[40%] h-full bg-blue-500 hidden"
               />
-\
+
               <img
-                src={calleData.logoUrl+""}
+                src={calleData.logoUrl + ""}
                 alt=""
-                className="object-cover rounded-full w-[50%] h-full"
+                className="object-cover rounded-full w-full h-full"
               />
             </div>
+
             <div className="w-[30%] h-[100px]  space-y-2">
               <h5 className="text-center text-white font-dm text-md pt-1">
                 {calleData.workshopName}
@@ -313,7 +313,7 @@ function UserCallComponent() {
             <div className=" w-[100%] md:w-[50%] h-[100px]   flex justify-center space-x-4">
               <div className="w-[20%]  md:w-[10%] h-[50px] bg-gray-600 rounded-full flex justify-center items-center" onClick={onClickMuteUnmute}>
                 {
-                  !mute?<AiFillAudio className="text-2xl " />:<BsFillMicMuteFill className="text-xl"  />
+                  !mute ? <AiFillAudio className="text-2xl " /> : <BsFillMicMuteFill className="text-xl" />
 
                 }
               </div>
@@ -321,7 +321,7 @@ function UserCallComponent() {
                 {" "}
                 <MdCallEnd
                   className="text-2xl text-white"
-                  
+
                 />
               </div>
             </div>

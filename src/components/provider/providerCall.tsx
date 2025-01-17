@@ -263,7 +263,7 @@ function ProviderCallComponent() {
       <div className="w-[100%] h-[742px] bg-black flex justify-center items-center">
         <div className=" w-[100%] md:w-[60%] h-full md:h-[520px] bg-banner-gray flex flex-col justify-between rounded-sm">
           <div className="w-[100%] h-[300px]  flex flex-col justify-center items-center mt-4">
-            <div className="w-[50%] h-[150px]  flex justify-between items-center  overflow-hidden">
+            <div className="w-[17%] h-[160px] flex justify-center items-center overflow-hidden rounded-full ">
               {/* <h1>provider side video</h1> */}
          
               <video ref={videoRef} autoPlay playsInline className="w-[40%] h-full   hidden" />
@@ -271,7 +271,7 @@ function ProviderCallComponent() {
               <img
                 src={calleData.logoUrl+""}
                 alt=""
-                className="object-cover rounded-full w-[50%] h-full"
+                className="object-cover rounded-full w-full h-full"
               />
             </div>
             <div className="w-[30%] h-[100px]  space-y-2">
