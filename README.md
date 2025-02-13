@@ -24,15 +24,7 @@ Fixthub is a service platform that connects users with workshops , allowing them
 -  chat system and call is also implement call- webrtc ,chat -scoketio
 
 
-### Steps
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/your-username/fixthub-frontend.git
-   ```
-2. Navigate to the project directory:
-   ```sh
-   cd fixthub-frontend
-   ```
+
 3. Install dependencies:
    ```sh
    npm install
