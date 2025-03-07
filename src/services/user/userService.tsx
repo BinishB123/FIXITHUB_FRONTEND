@@ -3,6 +3,10 @@ import { apiUrl } from "../../api/common";
 import { Iusersignup, mainResponse, SignInData, userResponse } from "../../interfaces/userInterface";
 
 
+
+
+
+
 export const updateOrAddImageService = async (
     image:File,
     id:string,
