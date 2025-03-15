@@ -20,7 +20,6 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     const { userInfo } = useSelector((state: RootState) => state.user)
     const loggedUserId = userInfo?.id ? userInfo.id : providerInfo?.id
     const [online,setOnline] = useState<boolean>(false)
-console.log(loggedUserId);
 
     useEffect(() => {
         if (loggedUserId) {
