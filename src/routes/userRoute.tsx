@@ -98,9 +98,9 @@ const UserRoute = () => {
         <><Routes>
             <Route path="/" element={<FixitHub />} >
                 <Route index element={<UserHomePage />} />
-                <Route path='services' element={<ProtectedRoute><ServicesPage /></ProtectedRoute>}>
+                <Route path='services' element={<ServicesPage />}>
                     <Route index element={<Services1stUi />} />
-                    <Route path='selectGeneralservice' element={<ProtectedRoute><SelectServicePage value='general' /></ProtectedRoute>} />
+                    <Route path='selectGeneralservice' element={<SelectServicePage value='general' />} />
                     {/* <Route path='selectRoadAssistance' element={<ProtectedRoute><SelectServicePage value='road' /></ProtectedRoute>} /> */}
                     <Route path='getuservehicleDetails' element={<ProtectedRoute><UserlocationAndvehicleDetailsPage /></ProtectedRoute>} />
                     <Route path='shoplist' element={<ProtectedRoute><ShopListPage /></ProtectedRoute>} />
