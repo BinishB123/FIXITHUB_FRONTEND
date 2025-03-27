@@ -91,14 +91,16 @@ function UserCallComponent() {
       peerConection.current.oniceconnectionstatechange = () => {
         if (peerConection.current?.iceConnectionState === "disconnected") {
           setCallingState(peerConection.current?.iceConnectionState);
-        } else if (peerConection.current?.iceConnectionState === "connected") {
+        } 
+         if (peerConection.current?.iceConnectionState === "connected") {
           setCallingState(peerConection.current.iceConnectionState);
-        } else if (peerConection.current?.iceConnectionState === "checking") {
-          setCallingState("calling");
-        } else if (peerConection.current?.iceConnectionState === "failed") {
-          setCallingState("failed To Connect");
-        }
-        console.log(peerConection.current?.iceConnectionState);
+        } 
+        // else if (peerConection.current?.iceConnectionState === "checking") {
+        //   setCallingState("calling");
+        // } else if (peerConection.current?.iceConnectionState === "failed") {
+        //   setCallingState("failed To Connect");
+        // }
+        // console.log(peerConection.current?.iceConnectionState);
       };
     }
 
